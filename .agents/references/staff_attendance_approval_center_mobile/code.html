@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Staff Attendance &amp; Approval Center</title>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Plus+Jakarta+Sans:wght@600;700&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Configuration -->
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "on-tertiary-fixed": "#00201d",
+                        "surface-bright": "#fbf8fa",
+                        "tertiary-fixed-dim": "#80d5cb",
+                        "tertiary": "#0f766e",
+                        "info": "#0284c7",
+                        "surface-container-highest": "#e4e2e3",
+                        "primary-container": "#1e293b",
+                        "on-tertiary-container": "#469e95",
+                        "inverse-primary": "#bcc7de",
+                        "on-surface-variant": "#45474c",
+                        "error": "#ef4444",
+                        "on-surface": "#1b1b1d",
+                        "surface-container-lowest": "#ffffff",
+                        "outline": "#64748b",
+                        "surface-container-low": "#f5f3f4",
+                        "on-background": "#1b1b1d",
+                        "on-error-container": "#93000a",
+                        "on-error": "#ffffff",
+                        "secondary-fixed": "#e2dfff",
+                        "error-container": "#ffdad6",
+                        "surface-variant": "#e4e2e3",
+                        "primary": "#091426",
+                        "secondary-fixed-dim": "#c3c0ff",
+                        "surface-container-high": "#eae7e9",
+                        "on-primary-fixed": "#111c2d",
+                        "warning": "#f59e0b",
+                        "outline-variant": "#c5c6cd",
+                        "on-secondary-container": "#fffbff",
+                        "on-secondary": "#ffffff",
+                        "surface-tint": "#545f73",
+                        "surface-container": "#f0edef",
+                        "on-secondary-fixed-variant": "#3323cc",
+                        "on-tertiary-fixed-variant": "#00504a",
+                        "on-primary": "#ffffff",
+                        "on-secondary-fixed": "#0f0069",
+                        "tertiary-fixed": "#9cf2e8",
+                        "secondary-container": "#645efb",
+                        "background": "#fbf8fa",
+                        "on-primary-container": "#8590a6",
+                        "on-primary-fixed-variant": "#3c475a",
+                        "surface": "#f8fafc",
+                        "on-tertiary": "#ffffff",
+                        "inverse-surface": "#303032",
+                        "primary-fixed-dim": "#bcc7de",
+                        "secondary": "#4b41e1",
+                        "primary-fixed": "#d8e3fb",
+                        "inverse-on-surface": "#f3f0f2",
+                        "surface-dim": "#dcd9db",
+                        "success": "#10b981",
+                        "tertiary-container": "#002f2b"
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    spacing: {
+                        "gutter": "16px",
+                        "base": "4px",
+                        "card-padding": "20px",
+                        "margin": "24px",
+                        "section-gap": "28px",
+                        "base-unit": "4px",
+                        "container-margin": "24px"
+                    },
+                    fontFamily: {
+                        "label-sm": ["Inter"],
+                        "h3": ["Plus Jakarta Sans"],
+                        "headline-md": ["Plus Jakarta Sans"],
+                        "headline-sm": ["Plus Jakarta Sans"],
+                        "h1-mobile": ["Plus Jakarta Sans"],
+                        "body-lg": ["Inter"],
+                        "h1": ["Plus Jakarta Sans"],
+                        "body-sm": ["Inter"],
+                        "headline-lg-mobile": ["Plus Jakarta Sans"],
+                        "headline-lg": ["Plus Jakarta Sans"],
+                        "h2": ["Plus Jakarta Sans"],
+                        "body-md": ["Inter"],
+                        "label-md": ["Inter"],
+                        "mono-sm": ["\"JetBrains Mono, monospace\""]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface-container-low text-on-surface font-body-md text-body-md antialiased pb-24">
+<!-- Mobile Header -->
+<header class="sticky top-0 z-30 bg-surface-container-low/90 backdrop-blur-md px-gutter py-4 flex justify-between items-center border-b border-outline-variant">
+<div>
+<h1 class="font-h1-mobile text-h1-mobile text-primary">HR Hub</h1>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Attendance &amp; Approvals</p>
+</div>
+<div class="w-10 h-10 rounded-full overflow-hidden border-2 border-surface-container-lowest shadow-sm">
+<img alt="User Profile" class="w-full h-full object-cover" data-alt="A professional headshot of a mid-30s female human resources manager in a well-lit, modern corporate office environment. She has a welcoming expression, wearing a tailored navy blue blazer over a crisp white shirt. The background features a softly blurred, light-filled modern office space with subtle indoor plants, emphasizing a pristine, professional light-mode aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDDAkLAxB5Mv9J93V1NOY-h_eDS8Su1lrYIlpv1YjlBiTTRL9qEuL5KeQ3FU9OG2dJ05Mj4zJZ-oA9ie4iUvHRyu08VvseSru7bufDLIQfNvBB1K1S02rTAlQm17AZOB145e7nHuxvtJLy8n0e6tSlcg5VNFvBvkwom3teteY0VurvlQgHm8oWw00RqN7aPC6ZPvA8JcAn-ajueV_MF301xgk0nPHhVTkzbxZNHIh0RpdGk4XAZB9DxYQ"/>
+</div>
+</header>
+<main class="px-gutter pt-6 flex flex-col gap-section-gap">
+<!-- 1. Summary Metrics (Stacked Cards) -->
+<section>
+<h2 class="font-h3 text-h3 text-on-surface mb-4">Today's Overview</h2>
+<div class="flex flex-col gap-3">
+<!-- Present Card -->
+<div class="bg-surface-container-lowest rounded-lg p-4 flex items-center justify-between border border-outline-variant shadow-sm relative overflow-hidden">
+<div class="absolute left-0 top-0 bottom-0 w-1 bg-success"></div>
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-success/10 flex items-center justify-center text-success">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+<div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Total Present</p>
+<p class="font-headline-sm text-headline-sm text-on-surface">142</p>
+</div>
+</div>
+<span class="font-label-sm text-label-sm text-success bg-success/10 px-2 py-1 rounded-full">+4%</span>
+</div>
+<!-- Late Card -->
+<div class="bg-surface-container-lowest rounded-lg p-4 flex items-center justify-between border border-outline-variant shadow-sm relative overflow-hidden">
+<div class="absolute left-0 top-0 bottom-0 w-1 bg-warning"></div>
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-warning/10 flex items-center justify-center text-warning">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">schedule</span>
+</div>
+<div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Late Arrivals</p>
+<p class="font-headline-sm text-headline-sm text-on-surface">12</p>
+</div>
+</div>
+</div>
+<!-- On Leave Card -->
+<div class="bg-surface-container-lowest rounded-lg p-4 flex items-center justify-between border border-outline-variant shadow-sm relative overflow-hidden">
+<div class="absolute left-0 top-0 bottom-0 w-1 bg-info"></div>
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-info/10 flex items-center justify-center text-info">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">event_busy</span>
+</div>
+<div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">On Leave</p>
+<p class="font-headline-sm text-headline-sm text-on-surface">8</p>
+</div>
+</div>
+</div>
+<!-- Absent Card -->
+<div class="bg-surface-container-lowest rounded-lg p-4 flex items-center justify-between border border-outline-variant shadow-sm relative overflow-hidden">
+<div class="absolute left-0 top-0 bottom-0 w-1 bg-error"></div>
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-error/10 flex items-center justify-center text-error">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">cancel</span>
+</div>
+<div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Absent</p>
+<p class="font-headline-sm text-headline-sm text-on-surface">3</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- 2. Approval Center (Horizontal Scroll) -->
+<section>
+<div class="flex justify-between items-end mb-4">
+<h2 class="font-h3 text-h3 text-on-surface">Pending Approvals</h2>
+<span class="font-label-sm text-label-sm text-secondary bg-secondary-fixed px-2 py-1 rounded-full">5 New</span>
+</div>
+<div class="flex overflow-x-auto hide-scrollbar gap-4 pb-2 snap-x snap-mandatory">
+<!-- Request Card 1 -->
+<div class="min-w-[280px] bg-surface-container-lowest rounded-lg p-5 border border-outline-variant shadow-sm snap-start flex flex-col gap-4">
+<div class="flex items-center gap-3">
+<img alt="Employee Avatar" class="w-12 h-12 rounded-full object-cover bg-surface-variant" data-alt="A close-up portrait of an energetic young male teacher in a modern school setting. He has short hair, glasses, and is wearing a neat button-down shirt. The background shows softly out-of-focus bookshelves in a brightly lit library, reflecting a modern, optimistic educational atmosphere." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCTgJXxzIf9tf0Fn0EC4an2hromTYrcjhlL1QM05g8qY89pByUtCwr5Nd6usXxinboh4o225BPxe0y3T2OWA6S0EGUXtt8al423fY6_8PZ8l5AB7MXvH-PHzEZiQqyFXMsQAYwbnX7W5HdWkfasbxp6QXqinGPQG95gENGDKs024XpZCvD6lTldYjsuDAuOx7DpXGNlPRxTppRcKpwgZeElwbmMlFti-B2SK6tYXdzazGm5tOjlzmkxfw"/>
+<div>
+<h4 class="font-label-md text-label-md text-on-surface">Michael Chang</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Mathematics Dept.</p>
+</div>
+</div>
+<div class="bg-surface-container-low p-3 rounded-lg border border-outline-variant/50">
+<div class="flex justify-between items-center mb-1">
+<span class="font-label-sm text-label-sm text-info flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">flight_takeoff</span> Annual Leave
+                            </span>
+<span class="font-mono-sm text-mono-sm text-on-surface-variant">2 Days</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface truncate">Oct 12 - Oct 13</p>
+</div>
+<div class="flex gap-2 mt-auto">
+<button class="flex-1 bg-surface-container flex items-center justify-center py-2 rounded-lg font-label-md text-label-md text-on-surface hover:bg-surface-variant transition-colors">Reject</button>
+<button class="flex-1 bg-primary flex items-center justify-center py-2 rounded-lg font-label-md text-label-md text-on-primary hover:bg-primary/90 transition-colors">Approve</button>
+</div>
+</div>
+<!-- Request Card 2 -->
+<div class="min-w-[280px] bg-surface-container-lowest rounded-lg p-5 border border-outline-variant shadow-sm snap-start flex flex-col gap-4">
+<div class="flex items-center gap-3">
+<img alt="Employee Avatar" class="w-12 h-12 rounded-full object-cover bg-surface-variant" data-alt="A candid profile photo of a mature female administrator with glasses and a friendly smile, working in an educational administrative office. She is wearing a professional blouse. The environment is well-lit with natural light streaming through a window, conveying a sense of organized, professional calm." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCBpQD0HiwT3e_Hq8larhjYFQzg2ppA2149BnSD2iGa8fXMMHloS-zuqEuJsk_lpkWcGdBZcVlay0f756HVg3RWs4Zq42QDdfL4x6H61THU_QGk-IHz-trYqXyIP7qskzp0hUIbFHAtsl_Ux6t3-FKiNqiHgn9HYQ4wij1UVMI6OdSWCJFvv4Y2XpMbpXSPVpyW9FuIyE6Hz_0n0vqk2kqVHnUChmrNVV7T17V0dJnH4fKR8q2cyEc2tA"/>
+<div>
+<h4 class="font-label-md text-label-md text-on-surface">Sarah Jenkins</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Administration</p>
+</div>
+</div>
+<div class="bg-surface-container-low p-3 rounded-lg border border-outline-variant/50">
+<div class="flex justify-between items-center mb-1">
+<span class="font-label-sm text-label-sm text-warning flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">medical_services</span> Sick Leave
+                            </span>
+<span class="font-mono-sm text-mono-sm text-on-surface-variant">1 Day</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface truncate">Oct 10 (Today)</p>
+</div>
+<div class="flex gap-2 mt-auto">
+<button class="flex-1 bg-surface-container flex items-center justify-center py-2 rounded-lg font-label-md text-label-md text-on-surface hover:bg-surface-variant transition-colors">Reject</button>
+<button class="flex-1 bg-primary flex items-center justify-center py-2 rounded-lg font-label-md text-label-md text-on-primary hover:bg-primary/90 transition-colors">Approve</button>
+</div>
+</div>
+</div>
+</section>
+<!-- 3. Attendance List (Simplified) -->
+<section>
+<h2 class="font-h3 text-h3 text-on-surface mb-4">Live Roster</h2>
+<!-- Search & Filter -->
+<div class="flex gap-2 mb-4">
+<div class="relative flex-1">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline">search</span>
+<input class="w-full pl-10 pr-4 py-2.5 bg-surface-container-lowest border border-outline-variant rounded-lg font-body-md text-body-md text-on-surface focus:outline-none focus:border-secondary focus:ring-1 focus:ring-secondary transition-all" placeholder="Search staff..." type="text"/>
+</div>
+<button class="w-11 h-11 flex items-center justify-center bg-surface-container-lowest border border-outline-variant rounded-lg text-on-surface-variant hover:bg-surface-variant transition-colors">
+<span class="material-symbols-outlined">tune</span>
+</button>
+</div>
+<!-- List container -->
+<div class="bg-surface-container-lowest rounded-lg border border-outline-variant overflow-hidden flex flex-col">
+<!-- List Item 1 -->
+<div class="flex items-center justify-between p-4 border-b border-surface-container-high last:border-b-0">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-secondary-fixed text-secondary flex items-center justify-center font-label-md text-label-md">
+                            JD
+                        </div>
+<div>
+<p class="font-label-md text-label-md text-on-surface">John Doe</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">login</span> 07:55 AM
+                            </p>
+</div>
+</div>
+<span class="bg-success-container/30 text-success border border-success/20 px-2 py-0.5 rounded font-label-sm text-label-sm">
+                        Present
+                    </span>
+</div>
+<!-- List Item 2 -->
+<div class="flex items-center justify-between p-4 border-b border-surface-container-high last:border-b-0">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-primary-fixed text-primary flex items-center justify-center font-label-md text-label-md">
+                            ER
+                        </div>
+<div>
+<p class="font-label-md text-label-md text-on-surface">Emily Reyes</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">login</span> 08:15 AM
+                            </p>
+</div>
+</div>
+<span class="bg-warning/10 text-warning border border-warning/20 px-2 py-0.5 rounded font-label-sm text-label-sm">
+                        Late
+                    </span>
+</div>
+<!-- List Item 3 -->
+<div class="flex items-center justify-between p-4 border-b border-surface-container-high last:border-b-0 opacity-60">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-surface-variant text-on-surface-variant flex items-center justify-center font-label-md text-label-md">
+                            TW
+                        </div>
+<div>
+<p class="font-label-md text-label-md text-on-surface">Thomas Wright</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">event_busy</span> --:--
+                            </p>
+</div>
+</div>
+<span class="bg-surface-variant text-on-surface-variant border border-outline-variant px-2 py-0.5 rounded font-label-sm text-label-sm">
+                        Leave
+                    </span>
+</div>
+<!-- View All Link -->
+<a class="block w-full text-center py-3 font-label-md text-label-md text-secondary hover:bg-surface-container-low transition-colors" href="#">
+                    View Full Directory
+                </a>
+</div>
+</section>
+</main>
+<!-- 4. Navigation (BottomNavBar based on SideNavBar JSON anchor) -->
+<!-- JSON mapped: ["Dashboard", "HR Management", "Reports", "Payroll"] -->
+<!-- Active mapping logic: "HR Management" matches the page intent -->
+<nav class="fixed bottom-0 left-0 w-full bg-surface-container-lowest border-t border-outline-variant flex justify-around items-center h-16 px-2 z-40 pb-safe">
+<!-- Tab 1: Dashboard -->
+<a class="flex flex-col items-center justify-center w-full h-full text-on-surface-variant hover:text-secondary transition-colors" href="#">
+<span class="material-symbols-outlined mb-1">dashboard</span>
+<span class="font-label-sm text-label-sm text-[10px]">Dashboard</span>
+</a>
+<!-- Tab 2: HR Management (ACTIVE) -->
+<a class="flex flex-col items-center justify-center w-full h-full text-secondary font-bold relative" href="#">
+<div class="absolute top-0 w-8 h-1 bg-secondary rounded-b-full"></div>
+<span class="material-symbols-outlined mb-1" style="font-variation-settings: 'FILL' 1;">badge</span>
+<span class="font-label-sm text-label-sm text-[10px]">HR Management</span>
+</a>
+<!-- Tab 3: Reports -->
+<a class="flex flex-col items-center justify-center w-full h-full text-on-surface-variant hover:text-secondary transition-colors" href="#">
+<span class="material-symbols-outlined mb-1">assessment</span>
+<span class="font-label-sm text-label-sm text-[10px]">Reports</span>
+</a>
+<!-- Tab 4: Payroll -->
+<a class="flex flex-col items-center justify-center w-full h-full text-on-surface-variant hover:text-secondary transition-colors" href="#">
+<span class="material-symbols-outlined mb-1">payments</span>
+<span class="font-label-sm text-label-sm text-[10px]">Payroll</span>
+</a>
+</nav>
+<!-- SafeArea utility style for modern mobile devices -->
+<style>
+        .pb-safe {
+            padding-bottom: env(safe-area-inset-bottom);
+        }
+    </style>
+</body></html>

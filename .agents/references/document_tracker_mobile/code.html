@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+<title>Document Tracking &amp; Upload Center</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Plus+Jakarta+Sans:wght@600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "error-container": "#ffdad6",
+                    "info": "#0284c7",
+                    "warning": "#f59e0b",
+                    "on-primary-fixed": "#111c2d",
+                    "on-tertiary-container": "#469e95",
+                    "on-primary-container": "#8590a6",
+                    "surface-bright": "#fbf8fa",
+                    "surface-container-low": "#f5f3f4",
+                    "tertiary-container": "#002f2b",
+                    "surface-container": "#f0edef",
+                    "secondary-fixed-dim": "#c3c0ff",
+                    "surface": "#f8fafc",
+                    "outline": "#64748b",
+                    "on-secondary": "#ffffff",
+                    "on-error-container": "#93000a",
+                    "secondary": "#4b41e1",
+                    "tertiary": "#0f766e",
+                    "on-error": "#ffffff",
+                    "tertiary-fixed": "#9cf2e8",
+                    "tertiary-fixed-dim": "#80d5cb",
+                    "on-tertiary": "#ffffff",
+                    "surface-container-highest": "#e4e2e3",
+                    "on-tertiary-fixed": "#00201d",
+                    "on-primary-fixed-variant": "#3c475a",
+                    "error": "#ef4444",
+                    "primary-fixed-dim": "#bcc7de",
+                    "on-secondary-container": "#fffbff",
+                    "on-secondary-fixed-variant": "#3323cc",
+                    "secondary-fixed": "#e2dfff",
+                    "surface-dim": "#dcd9db",
+                    "surface-container-lowest": "#ffffff",
+                    "inverse-on-surface": "#f3f0f2",
+                    "primary-fixed": "#d8e3fb",
+                    "on-background": "#1b1b1d",
+                    "inverse-surface": "#303032",
+                    "surface-tint": "#545f73",
+                    "on-primary": "#ffffff",
+                    "on-surface-variant": "#45474c",
+                    "on-secondary-fixed": "#0f0069",
+                    "primary": "#091426",
+                    "success": "#10b981",
+                    "on-tertiary-fixed-variant": "#00504a",
+                    "primary-container": "#1e293b",
+                    "surface-variant": "#e4e2e3",
+                    "on-surface": "#1b1b1d",
+                    "outline-variant": "#c5c6cd",
+                    "surface-container-high": "#eae7e9",
+                    "background": "#fbf8fa",
+                    "inverse-primary": "#bcc7de",
+                    "secondary-container": "#645efb"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "section-gap": "28px",
+                    "base": "4px",
+                    "base-unit": "4px",
+                    "container-margin": "24px",
+                    "gutter": "16px",
+                    "margin": "16px", 
+                    "card-padding": "20px"
+            },
+            "fontFamily": {
+                    "mono-sm": ["\"JetBrains Mono, monospace\""],
+                    "body-lg": ["Inter"],
+                    "headline-md": ["Plus Jakarta Sans"],
+                    "h1": ["Plus Jakarta Sans"],
+                    "h1-mobile": ["Plus Jakarta Sans"],
+                    "body-md": ["Inter"],
+                    "body-sm": ["Inter"],
+                    "h3": ["Plus Jakarta Sans"],
+                    "headline-lg-mobile": ["Plus Jakarta Sans"],
+                    "label-md": ["Inter"],
+                    "headline-lg": ["Plus Jakarta Sans"],
+                    "h2": ["Plus Jakarta Sans"],
+                    "headline-sm": ["Plus Jakarta Sans"],
+                    "label-sm": ["Inter"]
+            },
+            "fontSize": {
+                    "mono-sm": ["12px", {"lineHeight": "16px", "fontWeight": "400"}],
+                    "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "headline-md": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                    "h1": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "h1-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "700"}],
+                    "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "body-sm": ["12px", {"lineHeight": "16px", "fontWeight": "400"}],
+                    "h3": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                    "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "700"}],
+                    "label-md": ["14px", {"lineHeight": "20px", "fontWeight": "600"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "h2": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                    "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                    "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "500"}]
+            }
+          }
+        }
+      }
+    </script>
+<style>
+        .pb-safe { padding-bottom: env(safe-area-inset-bottom); }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface-container-low text-on-surface font-body-lg min-h-screen pb-24 md:hidden">
+<!-- TopAppBar -->
+<header class="bg-surface w-full top-0 sticky z-40 bg-surface-container-low flex justify-between items-center h-16 px-margin w-full">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full overflow-hidden bg-surface-container-highest">
+<img class="w-full h-full object-cover" data-alt="A highly detailed close up portrait of a young male student in a bright, modern university setting. The lighting is soft and natural, creating a professional yet approachable mood. The image fits perfectly within a light-mode educational UI." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCGcK8U4IGtt6Q0AaVtNB8pzyi5kSNYB865gnRCX8Hee7jmIaxWdSAukUNitmDUfmAk-Zc3oaWmlY8egKKXmz7ADM8zW96postmiw8y9VWYfE5csAvZqI8BaQ6Cg4BLIK7WpRGusygFK3dHm0W35Ro6xVlxDMTWBmLLFgwX3GkvEVtTQ0KJDA7MpMK2y6Mc5wjD6-vEkyR5mxvAYIxsf3ZdGdCIK08WbcONImhsH5XjBu3BH6W313TXjA"/>
+</div>
+<span class="text-headline-md font-headline-md font-bold text-primary">EduFlow</span>
+</div>
+<button class="w-10 h-10 flex items-center justify-center rounded-full text-on-surface-variant hover:bg-surface-container-high transition-colors active:scale-95 duration-150">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+</header>
+<main class="px-margin pt-4 flex flex-col gap-section-gap">
+<!-- Page Title -->
+<header>
+<h1 class="font-h1-mobile text-h1-mobile text-primary">Tracker Dokumen</h1>
+<p class="font-body-md text-body-md text-on-surface-variant mt-1">Manage and track your required submissions.</p>
+</header>
+<!-- Revision Alert Banner -->
+<div class="bg-error-container rounded-lg p-4 border border-error/20 flex gap-3 items-start shadow-sm">
+<span class="material-symbols-outlined text-error mt-0.5">error</span>
+<div class="flex-1">
+<h3 class="font-label-md text-label-md text-on-error-container font-semibold">Action Required</h3>
+<p class="font-body-sm text-body-sm text-on-error-container/80 mt-1">Your 'High School Transcript' requires revision before final approval.</p>
+<button class="mt-3 bg-error text-on-error px-4 py-2 rounded-lg font-label-md text-label-md flex items-center justify-center gap-2 w-full active:scale-95 transition-transform">
+<span class="material-symbols-outlined" style="font-size: 18px;">upload</span>
+                    Re-upload Document
+                </button>
+</div>
+</div>
+<!-- Drag and Drop Card -->
+<div class="bg-surface-container-lowest rounded-xl p-card-padding border border-outline-variant border-dashed flex flex-col items-center justify-center text-center gap-2 active:bg-surface-container-low transition-colors">
+<div class="w-12 h-12 bg-secondary-container/20 rounded-full flex items-center justify-center text-secondary mb-2">
+<span class="material-symbols-outlined" style="font-size: 24px;">cloud_upload</span>
+</div>
+<span class="font-label-md text-label-md text-primary">Tap to upload files</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">PDF, JPG, PNG (Max 5MB)</span>
+</div>
+<!-- Document List -->
+<section class="flex flex-col gap-4">
+<!-- Document Card 1: Needs Revision -->
+<div class="bg-surface-container-lowest rounded-lg p-4 border border-error/40 shadow-sm relative overflow-hidden">
+<div class="absolute top-0 left-0 w-1 h-full bg-error"></div>
+<div class="flex justify-between items-start mb-3">
+<div>
+<h4 class="font-label-md text-label-md text-primary">High School Transcript</h4>
+<span class="font-body-sm text-body-sm text-on-surface-variant block mt-0.5">Uploaded Oct 12, 2023</span>
+</div>
+<span class="bg-error-container text-on-error-container px-2 py-1 rounded font-label-sm text-label-sm inline-block">Revision Needed</span>
+</div>
+<!-- Stepper -->
+<div class="flex items-center gap-2 mt-4">
+<div class="flex-1 h-1.5 rounded-full bg-success"></div>
+<div class="flex-1 h-1.5 rounded-full bg-error"></div>
+<div class="flex-1 h-1.5 rounded-full bg-surface-container-highest"></div>
+</div>
+<div class="flex justify-between mt-1 font-body-sm text-body-sm text-on-surface-variant text-[10px]">
+<span>Uploaded</span>
+<span class="text-error font-medium">Reviewed</span>
+<span>Approved</span>
+</div>
+</div>
+<!-- Document Card 2: Approved -->
+<div class="bg-surface-container-lowest rounded-lg p-4 border border-outline-variant shadow-sm">
+<div class="flex justify-between items-start mb-3">
+<div>
+<h4 class="font-label-md text-label-md text-primary">ID Card / Passport</h4>
+<span class="font-body-sm text-body-sm text-on-surface-variant block mt-0.5">Uploaded Oct 10, 2023</span>
+</div>
+<span class="bg-[#d1fae5] text-[#065f46] px-2 py-1 rounded font-label-sm text-label-sm inline-block">Approved</span>
+</div>
+<!-- Stepper -->
+<div class="flex items-center gap-2 mt-4">
+<div class="flex-1 h-1.5 rounded-full bg-success"></div>
+<div class="flex-1 h-1.5 rounded-full bg-success"></div>
+<div class="flex-1 h-1.5 rounded-full bg-success"></div>
+</div>
+<div class="flex justify-between mt-1 font-body-sm text-body-sm text-on-surface-variant text-[10px]">
+<span>Uploaded</span>
+<span>Reviewed</span>
+<span class="text-success font-medium">Approved</span>
+</div>
+</div>
+<!-- Document Card 3: Pending -->
+<div class="bg-surface-container-lowest rounded-lg p-4 border border-outline-variant shadow-sm opacity-75">
+<div class="flex justify-between items-start mb-3">
+<div>
+<h4 class="font-label-md text-label-md text-primary">Recommendation Letter</h4>
+<span class="font-body-sm text-body-sm text-on-surface-variant block mt-0.5">Not uploaded yet</span>
+</div>
+<span class="bg-surface-container-high text-on-surface-variant px-2 py-1 rounded font-label-sm text-label-sm inline-block">Pending</span>
+</div>
+<!-- Stepper -->
+<div class="flex items-center gap-2 mt-4">
+<div class="flex-1 h-1.5 rounded-full bg-surface-container-highest"></div>
+<div class="flex-1 h-1.5 rounded-full bg-surface-container-highest"></div>
+<div class="flex-1 h-1.5 rounded-full bg-surface-container-highest"></div>
+</div>
+<div class="flex justify-between mt-1 font-body-sm text-body-sm text-on-surface-variant text-[10px]">
+<span>Uploaded</span>
+<span>Reviewed</span>
+<span>Approved</span>
+</div>
+<button class="mt-4 bg-secondary-container text-on-secondary-container px-4 py-2 rounded-lg font-label-md text-label-md flex items-center justify-center w-full active:scale-95 transition-transform">
+                    Upload Now
+                </button>
+</div>
+</section>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 w-full z-50 bg-surface-container-lowest flex justify-around items-center h-20 px-2 pb-safe shadow-md">
+<a class="flex flex-col items-center justify-center text-on-surface-variant px-4 py-1 hover:text-secondary transition-all duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">home</span>
+<span class="font-label-sm text-label-sm mt-1">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant px-4 py-1 hover:text-secondary transition-all duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">school</span>
+<span class="font-label-sm text-label-sm mt-1">Classes</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-secondary-container text-on-secondary-container rounded-full px-4 py-1 transition-all duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">assignment_turned_in</span>
+<span class="font-label-sm text-label-sm mt-1">Tasks</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant px-4 py-1 hover:text-secondary transition-all duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">person</span>
+<span class="font-label-sm text-label-sm mt-1">Profile</span>
+</a>
+</nav>
+</body></html>

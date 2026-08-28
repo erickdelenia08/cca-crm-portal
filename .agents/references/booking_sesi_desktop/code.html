@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Booking Sesi Les &amp; Konsultasi - EduPortal</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Plus+Jakarta+Sans:wght@600;700&amp;family=JetBrains+Mono:wght@400&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "on-secondary": "#ffffff",
+                      "error": "#ef4444",
+                      "background": "#fbf8fa",
+                      "outline-variant": "#c5c6cd",
+                      "surface-container-low": "#f5f3f4",
+                      "primary": "#091426",
+                      "inverse-surface": "#303032",
+                      "warning": "#f59e0b",
+                      "surface-container-highest": "#e4e2e3",
+                      "secondary-container": "#645efb",
+                      "on-secondary-fixed-variant": "#3323cc",
+                      "surface-tint": "#545f73",
+                      "outline": "#64748b",
+                      "on-primary-fixed-variant": "#3c475a",
+                      "tertiary-fixed-dim": "#80d5cb",
+                      "secondary-fixed-dim": "#c3c0ff",
+                      "tertiary-container": "#002f2b",
+                      "on-error-container": "#93000a",
+                      "inverse-on-surface": "#f3f0f2",
+                      "on-tertiary-fixed": "#00201d",
+                      "surface": "#f8fafc",
+                      "on-tertiary-fixed-variant": "#00504a",
+                      "on-primary-fixed": "#111c2d",
+                      "secondary-fixed": "#e2dfff",
+                      "on-tertiary-container": "#469e95",
+                      "on-surface": "#1b1b1d",
+                      "surface-container-high": "#eae7e9",
+                      "primary-fixed-dim": "#bcc7de",
+                      "tertiary": "#0f766e",
+                      "surface-dim": "#dcd9db",
+                      "on-error": "#ffffff",
+                      "success": "#10b981",
+                      "error-container": "#ffdad6",
+                      "on-background": "#1b1b1d",
+                      "inverse-primary": "#bcc7de",
+                      "primary-fixed": "#d8e3fb",
+                      "on-surface-variant": "#45474c",
+                      "on-secondary-container": "#fffbff",
+                      "surface-variant": "#e4e2e3",
+                      "on-primary-container": "#8590a6",
+                      "surface-bright": "#fbf8fa",
+                      "on-tertiary": "#ffffff",
+                      "on-primary": "#ffffff",
+                      "primary-container": "#1e293b",
+                      "secondary": "#4b41e1",
+                      "on-secondary-fixed": "#0f0069",
+                      "info": "#0284c7",
+                      "surface-container-lowest": "#ffffff",
+                      "tertiary-fixed": "#9cf2e8",
+                      "surface-container": "#f0edef"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "base-unit": "4px",
+                      "base": "4px",
+                      "card-padding": "20px",
+                      "margin": "24px",
+                      "container-margin": "24px",
+                      "section-gap": "28px",
+                      "gutter": "16px"
+              },
+              "fontFamily": {
+                      "h2": [
+                              "Plus Jakarta Sans"
+                      ],
+                      "h1": [
+                              "Plus Jakarta Sans"
+                      ],
+                      "body-sm": [
+                              "Inter"
+                      ],
+                      "h3": [
+                              "Plus Jakarta Sans"
+                      ],
+                      "body-md": [
+                              "Inter"
+                      ],
+                      "headline-md": [
+                              "Plus Jakarta Sans"
+                      ],
+                      "mono-sm": [
+                              "\"JetBrains Mono, monospace\""
+                      ],
+                      "body-lg": [
+                              "Inter"
+                      ],
+                      "label-md": [
+                              "Inter"
+                      ],
+                      "h1-mobile": [
+                              "Plus Jakarta Sans"
+                      ],
+                      "label-sm": [
+                              "Inter"
+                      ],
+                      "headline-lg": [
+                              "Plus Jakarta Sans"
+                      ],
+                      "headline-lg-mobile": [
+                              "Plus Jakarta Sans"
+                      ],
+                      "headline-sm": [
+                              "Plus Jakarta Sans"
+                      ]
+              },
+              "fontSize": {
+                      "h2": [
+                              "24px",
+                              {
+                                      "lineHeight": "32px",
+                                      "letterSpacing": "-0.01em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "h1": [
+                              "32px",
+                              {
+                                      "lineHeight": "40px",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "body-sm": [
+                              "12px",
+                              {
+                                      "lineHeight": "16px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "h3": [
+                              "20px",
+                              {
+                                      "lineHeight": "28px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "body-md": [
+                              "14px",
+                              {
+                                      "lineHeight": "20px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "headline-md": [
+                              "24px",
+                              {
+                                      "lineHeight": "32px",
+                                      "letterSpacing": "-0.01em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "mono-sm": [
+                              "12px",
+                              {
+                                      "lineHeight": "16px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "body-lg": [
+                              "16px",
+                              {
+                                      "lineHeight": "24px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "label-md": [
+                              "14px",
+                              {
+                                      "lineHeight": "20px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "h1-mobile": [
+                              "24px",
+                              {
+                                      "lineHeight": "32px",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "label-sm": [
+                              "12px",
+                              {
+                                      "lineHeight": "16px",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "headline-lg": [
+                              "32px",
+                              {
+                                      "lineHeight": "40px",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "headline-lg-mobile": [
+                              "24px",
+                              {
+                                      "lineHeight": "32px",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "headline-sm": [
+                              "20px",
+                              {
+                                      "lineHeight": "28px",
+                                      "fontWeight": "600"
+                              }
+                      ]
+              }
+      },
+          },
+        }
+    </script>
+<style>
+        .glass-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface font-body-md text-body-md flex min-h-screen">
+<!-- SideNavBar -->
+<aside class="hidden md:flex flex-col gap-base p-margin w-64 h-screen bg-surface-container-low dark:bg-surface-container-low border-r border-outline-variant fixed left-0 top-0 z-40">
+<div class="flex items-center gap-3 mb-8">
+<div class="w-10 h-10 rounded-lg overflow-hidden bg-surface-container-lowest">
+<img alt="Institution Logo" class="w-full h-full object-cover" data-alt="A clean, modern geometric logo featuring overlapping abstract shapes in deep slate blue and crisp white. The design is sleek, academic, and highly professional, set against a completely plain, untextured light background." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCs9YoEeaRJmKQfnt4oVNOzVY9Ov90Lkxem4_owTvv2UH4AnZtX6ne9tPKW1aoXr71W8TCWQ5zFMtcTRid0hVF2snubDjz_NxRfuqEZR9WxWyt2b6_epBHrWeryOcFXTbkbWIWcCKCZ6JAsdzt-ga8UihBuLNRukgzCzJPOiKQOszW6q44oh1Yq8CDBmITbPpKPKZ-CXKVK0M53sschoRqXWO9yJqwUvUhnxIwBp2u1HJy74jJw6Fv2FQ"/>
+</div>
+<div>
+<h2 class="font-h3 text-h3 font-bold text-primary dark:text-primary-fixed">EduPortal CRM</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Student Access</p>
+</div>
+</div>
+<nav class="flex flex-col gap-2 flex-1">
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-surface-container-highest hover:bg-surface-container-high transition-colors duration-200 ease-in-out font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+                Dashboard
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 bg-secondary-container text-on-secondary-container rounded-lg font-label-md text-label-md transition-colors duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">calendar_month</span>
+                Book Sesi
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-surface-container-highest hover:bg-surface-container-high transition-colors duration-200 ease-in-out font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined">description</span>
+                Tracker Dokumen
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-surface-container-highest hover:bg-surface-container-high transition-colors duration-200 ease-in-out font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined">history</span>
+                Riwayat Sesi
+            </a>
+</nav>
+</aside>
+<!-- Main Content Area -->
+<main class="flex-1 md:ml-64 flex flex-col min-h-screen">
+<!-- TopNavBar -->
+<header class="flex justify-between items-center w-full px-margin py-4 sticky top-0 z-50 bg-surface-container-lowest dark:bg-surface-container-lowest border-b border-outline-variant dark:border-outline-variant">
+<div class="flex items-center md:hidden">
+<h1 class="text-h3 font-h3 font-bold text-primary dark:text-primary-fixed">EduPortal</h1>
+</div>
+<div class="hidden md:flex items-center flex-1 max-w-md ml-4">
+<div class="relative w-full">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
+<input class="w-full pl-10 pr-4 py-2 rounded-lg bg-surface-container-low border-none text-body-md font-body-md focus:ring-2 focus:ring-secondary focus:bg-surface-container-lowest transition-all" placeholder="Search..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-4 ml-auto">
+<button class="p-2 rounded-full hover:bg-surface-container-low transition-colors text-on-surface-variant cursor-pointer active:scale-95 transition-transform">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<div class="w-8 h-8 rounded-full overflow-hidden border border-outline-variant cursor-pointer active:scale-95 transition-transform">
+<img alt="Student profile picture" class="w-full h-full object-cover" data-alt="A professional headshot of a student, smiling gently. The lighting is soft and natural, emphasizing a bright and approachable mood. The background is a crisp, untextured light gray, fitting a modern corporate light-mode UI." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA28ZM3nZW8s4DPCh-K7Kgjabrdpx5nr8c2mW6mN7qTSZ7DPgjuOItEPvP5hFb8tdr4jNSzeFWu3o7rnlhjhnZvVOVwkJHuT5g4fxxX9M63EvI-syD-s4i_zt4SbS1FDp9L3_MaruiYcdu_AJAkXz603_k3jV1McDfJR-HCqB-4WRozgfr9X1cBCsE-Z4NsUgByrYjUwme2th1KqGhXCDdVlUoPHJ59zsdW-PTVdaDHceOyiTVul_9lFw"/>
+</div>
+</div>
+</header>
+<!-- Content Canvas -->
+<div class="p-margin flex-1 flex flex-col gap-section-gap">
+<!-- Page Header -->
+<div class="flex flex-col gap-2">
+<h1 class="font-headline-lg text-headline-lg-mobile md:font-headline-lg md:text-headline-lg text-primary">Booking Sesi Les &amp; Konsultasi</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-2xl">Pilih jenis sesi, tentukan jadwal dengan tutor atau konsultan pilihan Anda, dan persiapkan diri untuk diskusi produktif.</p>
+</div>
+<!-- Bento Grid Layout -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter">
+<!-- Step 1: Filter Panel (Left Column) -->
+<div class="lg:col-span-4 flex flex-col gap-4">
+<div class="bg-surface-container-lowest rounded-xl p-card-padding border border-outline-variant shadow-sm h-full flex flex-col gap-6">
+<div class="flex items-center gap-2 mb-2">
+<span class="flex items-center justify-center w-6 h-6 rounded-full bg-primary text-on-primary font-label-sm text-label-sm">1</span>
+<h3 class="font-h3 text-h3 text-primary">Detail Sesi</h3>
+</div>
+<div class="flex flex-col gap-4">
+<!-- Jenis Sesi -->
+<div class="flex flex-col gap-2">
+<label class="font-label-md text-label-md text-on-surface">Jenis Sesi</label>
+<div class="relative">
+<select class="w-full appearance-none bg-surface-container-lowest border border-outline rounded-lg px-4 py-3 pr-10 font-body-md text-body-md text-on-surface focus:outline-none focus:border-secondary focus:ring-1 focus:ring-secondary transition-all">
+<option disabled="" selected="" value="">Pilih Jenis Sesi</option>
+<option value="academic">Academic Tutoring</option>
+<option value="career">Career/University Consultation</option>
+</select>
+<span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-on-surface-variant pointer-events-none">expand_more</span>
+</div>
+</div>
+<!-- Pilih Tutor -->
+<div class="flex flex-col gap-2">
+<label class="font-label-md text-label-md text-on-surface">Pilih Tutor/Konsultan</label>
+<div class="relative">
+<select class="w-full appearance-none bg-surface-container-lowest border border-outline rounded-lg px-4 py-3 pr-10 font-body-md text-body-md text-on-surface focus:outline-none focus:border-secondary focus:ring-1 focus:ring-secondary transition-all">
+<option disabled="" selected="" value="">Pilih Tutor</option>
+<option value="t1">Dr. Sarah Johnson (Physics)</option>
+<option value="t2">Mark Thompson (Career Counselor)</option>
+<option value="t3">Emily Chen (Mathematics)</option>
+</select>
+<span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-on-surface-variant pointer-events-none">expand_more</span>
+</div>
+</div>
+<!-- Topik Diskusi Input -->
+<div class="flex flex-col gap-2">
+<label class="font-label-md text-label-md text-on-surface">Topik / Subject</label>
+<input class="w-full bg-surface-container-lowest border border-outline rounded-lg px-4 py-3 font-body-md text-body-md text-on-surface focus:outline-none focus:border-secondary focus:ring-1 focus:ring-secondary transition-all" placeholder="Misal: Persiapan ujian Kalkulus..." type="text"/>
+</div>
+</div>
+</div>
+</div>
+<!-- Step 2: Interactive Calendar (Right Column) -->
+<div class="lg:col-span-8 flex flex-col gap-4">
+<div class="bg-surface-container-lowest rounded-xl p-card-padding border border-outline-variant shadow-sm h-full flex flex-col gap-6">
+<div class="flex items-center gap-2 mb-2">
+<span class="flex items-center justify-center w-6 h-6 rounded-full bg-primary text-on-primary font-label-sm text-label-sm">2</span>
+<h3 class="font-h3 text-h3 text-primary">Jadwal Sesi</h3>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+<!-- Calendar View -->
+<div class="flex flex-col gap-4">
+<div class="flex justify-between items-center">
+<h4 class="font-label-md text-label-md text-on-surface">October 2023</h4>
+<div class="flex gap-2">
+<button class="p-1 rounded hover:bg-surface-container-low transition-colors"><span class="material-symbols-outlined text-on-surface-variant">chevron_left</span></button>
+<button class="p-1 rounded hover:bg-surface-container-low transition-colors"><span class="material-symbols-outlined text-on-surface-variant">chevron_right</span></button>
+</div>
+</div>
+<div class="grid grid-cols-7 gap-1 text-center font-label-sm text-label-sm text-on-surface-variant mb-2">
+<div>Su</div><div>Mo</div><div>Tu</div><div>We</div><div>Th</div><div>Fr</div><div>Sa</div>
+</div>
+<div class="grid grid-cols-7 gap-1 text-center font-body-sm text-body-sm">
+<div class="p-2 text-outline-variant">29</div>
+<div class="p-2 text-outline-variant">30</div>
+<div class="p-2">1</div>
+<div class="p-2">2</div>
+<div class="p-2">3</div>
+<div class="p-2">4</div>
+<div class="p-2">5</div>
+<div class="p-2">6</div>
+<div class="p-2">7</div>
+<div class="p-2">8</div>
+<div class="p-2">9</div>
+<div class="p-2">10</div>
+<div class="p-2">11</div>
+<div class="p-2">12</div>
+<div class="p-2">13</div>
+<div class="p-2">14</div>
+<div class="p-2 bg-secondary-container text-on-secondary-container rounded-full font-bold cursor-pointer">15</div>
+<div class="p-2">16</div>
+<div class="p-2">17</div>
+<div class="p-2">18</div>
+<div class="p-2">19</div>
+</div>
+</div>
+<!-- Time Slots -->
+<div class="flex flex-col gap-4">
+<h4 class="font-label-md text-label-md text-on-surface">Waktu Tersedia (15 Okt)</h4>
+<div class="grid grid-cols-2 lg:grid-cols-3 gap-3">
+<!-- Booked -->
+<div class="px-3 py-2 rounded-lg bg-surface-dim text-on-surface-variant border border-outline-variant opacity-60 text-center font-body-sm text-body-sm flex flex-col items-center justify-center cursor-not-allowed">
+<span>09:00</span>
+<span class="text-[10px]">Booked</span>
+</div>
+<!-- Available -->
+<div class="px-3 py-2 rounded-lg bg-surface-container-lowest text-on-surface border border-success hover:bg-success/5 transition-colors text-center font-body-sm text-body-sm flex flex-col items-center justify-center cursor-pointer">
+<span>10:30</span>
+<span class="text-success text-[10px]">Available</span>
+</div>
+<!-- Selected -->
+<div class="px-3 py-2 rounded-lg bg-secondary text-on-secondary border border-secondary shadow-md text-center font-body-sm text-body-sm flex flex-col items-center justify-center cursor-pointer transform scale-105 transition-transform">
+<span>13:00</span>
+<span class="text-[10px] text-secondary-fixed">Selected</span>
+</div>
+<!-- Available -->
+<div class="px-3 py-2 rounded-lg bg-surface-container-lowest text-on-surface border border-success hover:bg-success/5 transition-colors text-center font-body-sm text-body-sm flex flex-col items-center justify-center cursor-pointer">
+<span>15:00</span>
+<span class="text-success text-[10px]">Available</span>
+</div>
+</div>
+<div class="mt-auto pt-6 flex justify-end">
+<button class="bg-primary text-on-primary px-6 py-2 rounded-lg font-label-md text-label-md hover:bg-primary/90 transition-colors">
+                                        Lanjutkan Booking
+                                    </button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- History Section -->
+<div class="mt-8 flex flex-col gap-6">
+<div class="flex border-b border-outline-variant">
+<button class="px-6 py-3 font-label-md text-label-md text-secondary border-b-2 border-secondary">Jadwal Saya</button>
+<button class="px-6 py-3 font-label-md text-label-md text-on-surface-variant hover:text-on-surface transition-colors">History</button>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<!-- Schedule Card -->
+<div class="bg-surface-container-lowest rounded-xl p-card-padding border border-outline-variant flex flex-col gap-4">
+<div class="flex justify-between items-start">
+<div class="flex gap-3 items-center">
+<div class="w-12 h-12 rounded-full bg-secondary-container text-on-secondary-container flex items-center justify-center font-h3 text-h3">
+                                    M
+                                </div>
+<div>
+<h4 class="font-h3 text-h3 text-on-surface">Mark Thompson</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Career Consultation</p>
+</div>
+</div>
+<span class="px-2 py-1 rounded-md bg-warning/20 text-warning font-label-sm text-label-sm">Upcoming</span>
+</div>
+<div class="flex flex-col gap-2 mt-2">
+<div class="flex items-center gap-2 text-on-surface-variant font-body-sm text-body-sm">
+<span class="material-symbols-outlined text-[18px]">calendar_today</span>
+<span>Kamis, 19 Okt 2023</span>
+</div>
+<div class="flex items-center gap-2 text-on-surface-variant font-body-sm text-body-sm">
+<span class="material-symbols-outlined text-[18px]">schedule</span>
+<span>14:00 - 15:00 WIB</span>
+</div>
+</div>
+<div class="mt-4 pt-4 border-t border-outline-variant flex justify-between items-center">
+<div class="flex items-center gap-1 text-warning font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-[16px]">info</span>
+<span>Maksimal H-1 / 24 jam sebelum sesi</span>
+</div>
+<button class="text-secondary font-label-md text-label-md hover:underline">Pengajuan Reschedule</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- BottomNavBar (Mobile) -->
+<nav class="md:hidden fixed bottom-0 w-full z-50 flex justify-around items-center px-4 py-2 bg-surface-container-lowest dark:bg-surface-container-lowest border-t border-outline-variant shadow-sm rounded-t-xl transition-all duration-200">
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-container-highest px-4 py-1 rounded-full transition-colors" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-label-sm text-label-sm mt-1">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-secondary-container text-on-secondary-container rounded-full px-4 py-1" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">calendar_month</span>
+<span class="font-label-sm text-label-sm mt-1">Book</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-container-highest px-4 py-1 rounded-full transition-colors" href="#">
+<span class="material-symbols-outlined">description</span>
+<span class="font-label-sm text-label-sm mt-1">Tracker</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-container-highest px-4 py-1 rounded-full transition-colors" href="#">
+<span class="material-symbols-outlined">history</span>
+<span class="font-label-sm text-label-sm mt-1">History</span>
+</a>
+</nav>
+<!-- Confirmation Modal Overlay (Hidden by default, shown for demonstration purposes as an absolute positioned card over the main content) -->
+<!-- In a real app, this would be toggled via JS. Wrapping in pointer-events-none for preview. -->
+<div class="fixed inset-0 z-[60] bg-primary/40 backdrop-blur-sm hidden flex items-center justify-center p-4 pointer-events-auto" id="confirmation-modal">
+<div class="bg-surface-container-lowest rounded-xl shadow-lg border border-outline-variant w-full max-w-lg overflow-hidden flex flex-col">
+<div class="p-6 border-b border-outline-variant flex justify-between items-center">
+<h3 class="font-h3 text-h3 text-primary">Konfirmasi Booking</h3>
+<button class="text-on-surface-variant hover:text-on-surface" onclick="document.getElementById('confirmation-modal').classList.add('hidden')">
+<span class="material-symbols-outlined">close</span>
+</button>
+</div>
+<div class="p-6 flex flex-col gap-6">
+<!-- Summary -->
+<div class="bg-surface-container-low rounded-lg p-4 flex flex-col gap-3">
+<div class="grid grid-cols-3 gap-2 font-body-sm text-body-sm">
+<span class="text-on-surface-variant">Tipe Sesi</span>
+<span class="col-span-2 font-label-md text-label-md text-on-surface">Academic Tutoring</span>
+<span class="text-on-surface-variant">Tutor</span>
+<span class="col-span-2 font-label-md text-label-md text-on-surface">Dr. Sarah Johnson</span>
+<span class="text-on-surface-variant">Jadwal</span>
+<span class="col-span-2 font-label-md text-label-md text-on-surface">15 Okt 2023, 13:00 WIB</span>
+</div>
+</div>
+<!-- Input Area -->
+<div class="flex flex-col gap-2">
+<label class="font-label-md text-label-md text-on-surface">Catatan / Topik Diskusi</label>
+<textarea class="w-full bg-surface-container-lowest border border-outline rounded-lg px-4 py-3 font-body-md text-body-md text-on-surface focus:outline-none focus:border-secondary focus:ring-1 focus:ring-secondary transition-all resize-none" placeholder="Tulis catatan atau area spesifik yang ingin dibahas..." rows="3"></textarea>
+</div>
+<!-- Attachment -->
+<div>
+<button class="flex items-center gap-2 text-secondary font-label-md text-label-md hover:bg-secondary/10 px-3 py-2 rounded-lg transition-colors border border-dashed border-secondary">
+<span class="material-symbols-outlined text-[20px]">attach_file</span>
+                        Lampirkan Dokumen (Opsional)
+                    </button>
+</div>
+</div>
+<div class="p-6 border-t border-outline-variant bg-surface-container-low flex justify-end gap-3">
+<button class="px-4 py-2 font-label-md text-label-md text-on-surface border border-outline rounded-lg hover:bg-surface-container-highest transition-colors" onclick="document.getElementById('confirmation-modal').classList.add('hidden')">Batal</button>
+<button class="px-6 py-2 font-label-md text-label-md bg-secondary text-on-secondary rounded-lg hover:bg-secondary/90 transition-colors shadow-sm">Konfirmasi Booking</button>
+</div>
+</div>
+</div>
+</body></html>

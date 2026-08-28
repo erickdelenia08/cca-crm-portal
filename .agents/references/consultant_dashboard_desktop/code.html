@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Consultant Dashboard - EduCRM Pro</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Plus+Jakarta+Sans:wght@600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        "colors": {
+                "secondary": "#4b41e1",
+                "secondary-container": "#645efb",
+                "tertiary-fixed-dim": "#80d5cb",
+                "on-primary-container": "#8590a6",
+                "on-tertiary-fixed": "#00201d",
+                "on-secondary": "#ffffff",
+                "background": "#fbf8fa",
+                "secondary-fixed": "#e2dfff",
+                "surface-variant": "#e4e2e3",
+                "on-tertiary": "#ffffff",
+                "inverse-on-surface": "#f3f0f2",
+                "on-tertiary-fixed-variant": "#00504a",
+                "error": "#ef4444",
+                "surface-container-lowest": "#ffffff",
+                "outline": "#64748b",
+                "primary-container": "#1e293b",
+                "surface": "#f8fafc",
+                "outline-variant": "#c5c6cd",
+                "on-primary-fixed": "#111c2d",
+                "on-primary-fixed-variant": "#3c475a",
+                "inverse-surface": "#303032",
+                "tertiary-container": "#002f2b",
+                "on-error": "#ffffff",
+                "inverse-primary": "#bcc7de",
+                "tertiary": "#0f766e",
+                "on-surface-variant": "#45474c",
+                "secondary-fixed-dim": "#c3c0ff",
+                "on-tertiary-container": "#469e95",
+                "on-background": "#1b1b1d",
+                "info": "#0284c7",
+                "surface-dim": "#dcd9db",
+                "on-secondary-container": "#fffbff",
+                "error-container": "#ffdad6",
+                "on-secondary-fixed": "#0f0069",
+                "on-surface": "#1b1b1d",
+                "surface-container": "#f0edef",
+                "warning": "#f59e0b",
+                "primary-fixed": "#d8e3fb",
+                "surface-container-low": "#f5f3f4",
+                "surface-container-highest": "#e4e2e3",
+                "primary": "#091426",
+                "on-secondary-fixed-variant": "#3323cc",
+                "surface-container-high": "#eae7e9",
+                "success": "#10b981",
+                "surface-tint": "#545f73",
+                "tertiary-fixed": "#9cf2e8",
+                "surface-bright": "#fbf8fa",
+                "on-error-container": "#93000a",
+                "on-primary": "#ffffff",
+                "primary-fixed-dim": "#bcc7de"
+        },
+        "borderRadius": {
+                "DEFAULT": "0.25rem",
+                "lg": "0.5rem",
+                "xl": "0.75rem",
+                "full": "9999px"
+        },
+        "spacing": {
+                "base-unit": "4px",
+                "gutter": "16px",
+                "base": "4px",
+                "margin": "24px",
+                "section-gap": "28px",
+                "container-margin": "24px",
+                "card-padding": "20px"
+        },
+        "fontFamily": {
+                "label-md": [
+                        "Inter"
+                ],
+                "label-sm": [
+                        "Inter"
+                ],
+                "body-lg": [
+                        "Inter"
+                ],
+                "h3": [
+                        "Plus Jakarta Sans"
+                ],
+                "headline-lg": [
+                        "Plus Jakarta Sans"
+                ],
+                "body-sm": [
+                        "Inter"
+                ],
+                "h1-mobile": [
+                        "Plus Jakarta Sans"
+                ],
+                "h1": [
+                        "Plus Jakarta Sans"
+                ],
+                "headline-sm": [
+                        "Plus Jakarta Sans"
+                ],
+                "body-md": [
+                        "Inter"
+                ],
+                "mono-sm": [
+                        "\"JetBrains Mono, monospace\""
+                ],
+                "h2": [
+                        "Plus Jakarta Sans"
+                ],
+                "headline-md": [
+                        "Plus Jakarta Sans"
+                ],
+                "headline-lg-mobile": [
+                        "Plus Jakarta Sans"
+                ]
+        },
+        "fontSize": {
+                "label-md": [
+                        "14px",
+                        {
+                                "lineHeight": "20px",
+                                "fontWeight": "600"
+                        }
+                ],
+                "label-sm": [
+                        "12px",
+                        {
+                                "lineHeight": "16px",
+                                "fontWeight": "500"
+                        }
+                ],
+                "body-lg": [
+                        "16px",
+                        {
+                                "lineHeight": "24px",
+                                "fontWeight": "400"
+                        }
+                ],
+                "h3": [
+                        "20px",
+                        {
+                                "lineHeight": "28px",
+                                "fontWeight": "600"
+                        }
+                ],
+                "headline-lg": [
+                        "32px",
+                        {
+                                "lineHeight": "40px",
+                                "letterSpacing": "-0.02em",
+                                "fontWeight": "700"
+                        }
+                ],
+                "body-sm": [
+                        "12px",
+                        {
+                                "lineHeight": "16px",
+                                "fontWeight": "400"
+                        }
+                ],
+                "h1-mobile": [
+                        "24px",
+                        {
+                                "lineHeight": "32px",
+                                "fontWeight": "700"
+                        }
+                ],
+                "h1": [
+                        "32px",
+                        {
+                                "lineHeight": "40px",
+                                "letterSpacing": "-0.02em",
+                                "fontWeight": "700"
+                        }
+                ],
+                "headline-sm": [
+                        "20px",
+                        {
+                                "lineHeight": "28px",
+                                "fontWeight": "600"
+                        }
+                ],
+                "body-md": [
+                        "14px",
+                        {
+                                "lineHeight": "20px",
+                                "fontWeight": "400"
+                        }
+                ],
+                "mono-sm": [
+                        "12px",
+                        {
+                                "lineHeight": "16px",
+                                "fontWeight": "400"
+                        }
+                ],
+                "h2": [
+                        "24px",
+                        {
+                                "lineHeight": "32px",
+                                "letterSpacing": "-0.01em",
+                                "fontWeight": "700"
+                        }
+                ],
+                "headline-md": [
+                        "24px",
+                        {
+                                "lineHeight": "32px",
+                                "letterSpacing": "-0.01em",
+                                "fontWeight": "700"
+                        }
+                ],
+                "headline-lg-mobile": [
+                        "24px",
+                        {
+                                "lineHeight": "32px",
+                                "fontWeight": "700"
+                        }
+                ]
+        }
+},
+    },
+  }
+</script>
+<style>
+    body {
+        background-color: theme('colors.surface-container-low');
+        color: theme('colors.on-surface');
+    }
+</style>
+</head>
+<body class="flex h-screen overflow-hidden">
+<!-- SideNavBar Component -->
+<nav class="h-screen w-64 fixed left-0 top-0 bg-surface-container-low border-r border-outline-variant flex flex-col h-full p-gutter">
+<div class="flex items-center gap-3 mb-8 px-2">
+<img alt="Educational Institution Logo" class="w-10 h-10 rounded-lg object-cover" src="https://lh3.googleusercontent.com/aida/AEtjO1VAC1Re69-bp_Kml0iUpwG2gqKRIfwE7JzVu9p5PteIdrFUySsgCrunjJsN3rV6SrLs8PuMMwnIRzUquuCE1Fnf60Gn_CjovAWHT5c72yT-7SY5eb1GZAkNiCroCQ1I5MKBMx1rENf-HyQgveij-S62jB8X3GDDwU82ZYIQXWNJ_h5sR8Y76EhrCQhF0hZYuL7z4i8w2nRlSND9NePhKWJsH-dNoDNkL8YRHqncCF2CJknXBHmknjAvo_0"/>
+<div>
+<h1 class="font-h3 text-h3 font-bold text-primary">EduCRM Pro</h1>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Consultant Portal</p>
+</div>
+</div>
+<button class="w-full bg-primary text-on-primary font-label-md text-label-md py-2.5 rounded-lg mb-6 flex justify-center items-center gap-2 hover:bg-surface-tint transition-colors">
+<span class="material-symbols-outlined" style="font-size: 18px;">add</span>
+        New Session
+    </button>
+<div class="flex-1 space-y-1">
+<a class="flex items-center gap-3 px-3 py-2 bg-secondary-fixed text-on-secondary-fixed font-semibold rounded-lg" href="#">
+<span class="material-symbols-outlined" style="font-size: 20px;">dashboard</span>
+<span class="font-label-md text-label-md">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:bg-surface-container-highest transition-colors duration-200 rounded-lg" href="#">
+<span class="material-symbols-outlined" style="font-size: 20px;">group</span>
+<span class="font-label-md text-label-md">My Students</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:bg-surface-container-highest transition-colors duration-200 rounded-lg" href="#">
+<span class="material-symbols-outlined" style="font-size: 20px;">calendar_today</span>
+<span class="font-label-md text-label-md">Schedule</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:bg-surface-container-highest transition-colors duration-200 rounded-lg" href="#">
+<span class="material-symbols-outlined" style="font-size: 20px;">description</span>
+<span class="font-label-md text-label-md">Document Review</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:bg-surface-container-highest transition-colors duration-200 rounded-lg" href="#">
+<span class="material-symbols-outlined" style="font-size: 20px;">payments</span>
+<span class="font-label-md text-label-md">Payroll</span>
+</a>
+</div>
+<div class="mt-auto space-y-1 pt-4 border-t border-outline-variant">
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:bg-surface-container-highest transition-colors duration-200 rounded-lg" href="#">
+<span class="material-symbols-outlined" style="font-size: 20px;">settings</span>
+<span class="font-label-md text-label-md">Settings</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:bg-surface-container-highest transition-colors duration-200 rounded-lg" href="#">
+<span class="material-symbols-outlined" style="font-size: 20px;">help_outline</span>
+<span class="font-label-md text-label-md">Support</span>
+</a>
+</div>
+</nav>
+<!-- Main Content Area -->
+<div class="flex-1 ml-64 flex flex-col h-screen overflow-hidden">
+<!-- TopNavBar Component -->
+<header class="fixed top-0 right-0 w-[calc(100%-16rem)] h-16 bg-surface-container-lowest border-b border-outline-variant shadow-sm z-10 flex items-center justify-between px-margin">
+<div class="flex items-center w-96">
+<div class="relative w-full">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline" style="font-size: 20px;">search</span>
+<input class="w-full bg-surface-container-low border border-outline-variant rounded-lg pl-10 pr-4 py-2 font-body-md text-body-md focus:border-secondary focus:ring-1 focus:ring-secondary outline-none transition-all" placeholder="Search students, sessions..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<div class="flex items-center gap-2">
+<button class="p-2 text-on-surface-variant hover:bg-surface-container-highest rounded-full transition-colors cursor-pointer hover:opacity-80">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="p-2 text-on-surface-variant hover:bg-surface-container-highest rounded-full transition-colors cursor-pointer hover:opacity-80">
+<span class="material-symbols-outlined">chat_bubble</span>
+</button>
+<button class="p-2 text-on-surface-variant hover:bg-surface-container-highest rounded-full transition-colors cursor-pointer hover:opacity-80">
+<span class="material-symbols-outlined">help</span>
+</button>
+</div>
+<div class="h-8 w-px bg-outline-variant"></div>
+<button class="flex items-center gap-2 hover:bg-surface-container-highest p-1 pr-3 rounded-full transition-colors">
+<img class="w-8 h-8 rounded-full object-cover border border-outline-variant" data-alt="A professional headshot of a corporate educational consultant, smiling slightly, well-lit studio lighting, neutral background, high resolution, modern corporate aesthetic" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAH81LVOQpjCRLyxVU654dRz-VuQsrZpuzlswflJs-c-gbRBG41jsbKTygoK0y9axODW05YMcdmBIetYADIEo0ih2Oj_bevdEjW6S_hXMj3Mz2K8klzP3lmz4veLndiNi2YF4MJA2Wc1kEIptQLo5VOcfQSX9veHNAvT34Wd3ajXc_7KNwWW-05DBzhf5dxQ8XneW6orgS1KvZpHqgt7N5ASBfaJhW384nxWDziJHfI4Df67zR4ea9x8A"/>
+<span class="font-label-md text-label-md text-primary">Consultant Profile</span>
+<span class="material-symbols-outlined text-outline" style="font-size: 18px;">expand_more</span>
+</button>
+</div>
+</header>
+<!-- Scrollable Canvas -->
+<main class="flex-1 overflow-y-auto mt-16 p-margin bg-surface-container-low">
+<!-- Header KPI Cards -->
+<div class="grid grid-cols-3 gap-gutter mb-section-gap">
+<div class="bg-surface-container-lowest p-card-padding rounded-lg border border-outline-variant shadow-sm flex flex-col justify-between h-32">
+<div class="flex items-start justify-between">
+<div>
+<p class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Siswa Aktif Binaan</p>
+<h2 class="font-headline-lg text-headline-lg text-primary mt-1">24</h2>
+</div>
+<div class="w-10 h-10 rounded-full bg-secondary-fixed flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined">school</span>
+</div>
+</div>
+<div class="flex items-center gap-1 text-success font-label-sm text-label-sm">
+<span class="material-symbols-outlined" style="font-size: 16px;">trending_up</span>
+<span>+2 this month</span>
+</div>
+</div>
+<div class="bg-surface-container-lowest p-card-padding rounded-lg border border-outline-variant shadow-sm flex flex-col justify-between h-32">
+<div class="flex items-start justify-between">
+<div>
+<p class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Total Jam Sesi Minggu Ini</p>
+<h2 class="font-headline-lg text-headline-lg text-primary mt-1">18.5h</h2>
+</div>
+<div class="w-10 h-10 rounded-full bg-primary-fixed flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined">schedule</span>
+</div>
+</div>
+<div class="w-full bg-surface-variant rounded-full h-1.5 mt-2">
+<div class="bg-secondary h-1.5 rounded-full" style="width: 75%"></div>
+</div>
+</div>
+<div class="bg-surface-container-lowest p-card-padding rounded-lg border border-outline-variant shadow-sm flex flex-col justify-between h-32">
+<div class="flex items-start justify-between">
+<div>
+<p class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Pending Booking Requests</p>
+<h2 class="font-headline-lg text-headline-lg text-warning mt-1">5</h2>
+</div>
+<div class="w-10 h-10 rounded-full bg-error-container flex items-center justify-center text-error">
+<span class="material-symbols-outlined">pending_actions</span>
+</div>
+</div>
+<a class="font-label-sm text-label-sm text-secondary hover:underline flex items-center gap-1" href="#">
+                    Review requests <span class="material-symbols-outlined" style="font-size: 14px;">arrow_forward</span>
+</a>
+</div>
+</div>
+<!-- Main Dashboard Layout -->
+<div class="grid grid-cols-12 gap-gutter">
+<!-- Center Content (Agenda) -->
+<div class="col-span-8 space-y-section-gap">
+<!-- Work Agenda Grid -->
+<section class="bg-surface-container-lowest rounded-lg border border-outline-variant shadow-sm overflow-hidden">
+<div class="p-4 border-b border-outline-variant flex justify-between items-center bg-surface">
+<h3 class="font-h3 text-h3 text-primary">Work Agenda</h3>
+<div class="flex items-center gap-2">
+<button class="p-1 hover:bg-surface-container-high rounded text-on-surface-variant"><span class="material-symbols-outlined">chevron_left</span></button>
+<span class="font-label-md text-label-md">Oct 24 - Oct 30</span>
+<button class="p-1 hover:bg-surface-container-high rounded text-on-surface-variant"><span class="material-symbols-outlined">chevron_right</span></button>
+</div>
+</div>
+<div class="p-4">
+<div class="grid grid-cols-5 gap-2">
+<!-- Mon -->
+<div class="flex flex-col gap-2">
+<div class="text-center pb-2 border-b border-outline-variant">
+<p class="font-label-sm text-label-sm text-on-surface-variant">Mon</p>
+<p class="font-label-md text-label-md">24</p>
+</div>
+<div class="bg-info/10 border-l-4 border-info p-2 rounded-r text-left">
+<p class="font-label-sm text-label-sm text-info font-bold">10:00 - 11:30</p>
+<p class="font-body-sm text-body-sm text-primary truncate">Academic Advising</p>
+</div>
+</div>
+<!-- Tue -->
+<div class="flex flex-col gap-2">
+<div class="text-center pb-2 border-b border-outline-variant">
+<p class="font-label-sm text-label-sm text-on-surface-variant">Tue</p>
+<p class="font-label-md text-label-md">25</p>
+</div>
+<div class="bg-secondary/10 border-l-4 border-secondary p-2 rounded-r text-left">
+<p class="font-label-sm text-label-sm text-secondary font-bold">13:00 - 14:00</p>
+<p class="font-body-sm text-body-sm text-primary truncate">Career Counseling</p>
+</div>
+</div>
+<!-- Wed -->
+<div class="flex flex-col gap-2">
+<div class="text-center pb-2 border-b border-outline-variant">
+<p class="font-label-sm text-label-sm text-on-surface-variant">Wed</p>
+<p class="font-label-md text-label-md">26</p>
+</div>
+<div class="bg-info/10 border-l-4 border-info p-2 rounded-r text-left">
+<p class="font-label-sm text-label-sm text-info font-bold">09:00 - 10:30</p>
+<p class="font-body-sm text-body-sm text-primary truncate">Essay Review</p>
+</div>
+<div class="bg-tertiary/10 border-l-4 border-tertiary p-2 rounded-r text-left">
+<p class="font-label-sm text-label-sm text-tertiary font-bold">15:00 - 16:00</p>
+<p class="font-body-sm text-body-sm text-primary truncate">Parent Meeting</p>
+</div>
+</div>
+<!-- Thu -->
+<div class="flex flex-col gap-2">
+<div class="text-center pb-2 border-b border-outline-variant">
+<p class="font-label-sm text-label-sm text-on-surface-variant">Thu</p>
+<p class="font-label-md text-label-md bg-secondary text-on-secondary rounded-full w-6 h-6 flex items-center justify-center mx-auto mt-1">27</p>
+</div>
+<!-- Empty state for today to show layout -->
+<div class="border border-dashed border-outline-variant p-2 rounded flex items-center justify-center h-16 opacity-50">
+<span class="material-symbols-outlined text-outline">add</span>
+</div>
+</div>
+<!-- Fri -->
+<div class="flex flex-col gap-2">
+<div class="text-center pb-2 border-b border-outline-variant">
+<p class="font-label-sm text-label-sm text-on-surface-variant">Fri</p>
+<p class="font-label-md text-label-md">28</p>
+</div>
+<div class="bg-secondary/10 border-l-4 border-secondary p-2 rounded-r text-left">
+<p class="font-label-sm text-label-sm text-secondary font-bold">14:00 - 15:30</p>
+<p class="font-body-sm text-body-sm text-primary truncate">Mock Interview</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+</div>
+<!-- Right Sidebar Widgets -->
+<div class="col-span-4 space-y-section-gap">
+<!-- Attendance & Clock-In Widget -->
+<section class="bg-surface-container-lowest p-card-padding rounded-lg border border-outline-variant shadow-sm flex flex-col items-center text-center">
+<h3 class="font-headline-lg text-headline-lg text-primary tracking-tight tabular-nums">09:41</h3>
+<p class="font-label-md text-label-md text-on-surface-variant mb-6 flex items-center justify-center gap-2">
+<span class="w-2 h-2 rounded-full bg-error inline-block"></span>
+                        Status: Belum Clock-in
+                    </p>
+<button class="w-full bg-secondary hover:bg-secondary-container text-on-secondary font-label-md text-label-md py-3 rounded-lg shadow-sm transition-all active:scale-95 mb-4">
+                        Clock-In Sesi
+                    </button>
+<a class="font-label-sm text-label-sm text-outline hover:text-primary transition-colors underline decoration-outline-variant underline-offset-4" href="#">
+                        Pengajuan Cuti / Izin
+                    </a>
+</section>
+<!-- Actionable To-Do List -->
+<section class="bg-surface-container-lowest rounded-lg border border-outline-variant shadow-sm overflow-hidden">
+<div class="p-4 border-b border-outline-variant bg-surface">
+<h3 class="font-h3 text-h3 text-primary">Action Items</h3>
+</div>
+<div class="p-2">
+<label class="flex items-start gap-3 p-3 hover:bg-surface-container-low rounded-lg cursor-pointer transition-colors">
+<input class="mt-0.5 rounded border-outline-variant text-secondary focus:ring-secondary" type="checkbox"/>
+<div>
+<p class="font-label-md text-label-md text-primary">Review Transkrip Siswa A</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Due Today</p>
+</div>
+</label>
+<label class="flex items-start gap-3 p-3 hover:bg-surface-container-low rounded-lg cursor-pointer transition-colors">
+<input class="mt-0.5 rounded border-outline-variant text-secondary focus:ring-secondary" type="checkbox"/>
+<div>
+<p class="font-label-md text-label-md text-primary">Input Meeting Notes Sesi B</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Overdue</p>
+</div>
+</label>
+<label class="flex items-start gap-3 p-3 hover:bg-surface-container-low rounded-lg cursor-pointer transition-colors">
+<input class="mt-0.5 rounded border-outline-variant text-secondary focus:ring-secondary" type="checkbox"/>
+<div>
+<p class="font-label-md text-label-md text-primary">Confirm Booking Request</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">5 Pending</p>
+</div>
+</label>
+</div>
+</section>
+</div>
+</div>
+</main>
+</div>
+</body></html>

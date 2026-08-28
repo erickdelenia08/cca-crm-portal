@@ -1,0 +1,319 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client"
+  output   = "./generated"
+}
+
+datasource db {
+  provider = "mysql"
+}
+
+// ==========================================
+// 1. ENUMS (RBAC & STATUS)
+// ==========================================
+
+enum Role {
+  STUDENT
+  CONSULTANT
+  ADMIN_MANAGEMENT
+  DOCUMENT_PROCESSOR
+}
+
+enum SessionType {
+  ACADEMIC_TUTORING
+  CONSULTATION
+}
+
+enum BookingStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  CANCELLED
+  COMPLETED
+  RESCHEDULE_REQUESTED
+}
+
+enum DocumentStatus {
+  SUBMITTED
+  IN_VERIFICATION
+  PROCESSING_BY_ADMIN
+  NEEDS_REVISION
+  APPROVED
+  REJECTED
+}
+
+enum AttendanceStatus {
+  ON_TIME
+  LATE
+  ABSENT
+  LEAVE
+  SICK
+}
+
+enum LeaveType {
+  LEAVE
+  SICK
+  OVERTIME
+}
+
+enum ApprovalStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+// ==========================================
+// 2. USER & AUTHENTICATION (RBAC)
+// ==========================================
+
+model User {
+  id           String   @id @default(uuid())
+  email        String   @unique
+  passwordHash String
+  fullName     String
+  phone        String?
+  role         Role
+  avatarUrl    String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  // Multi-Role Relations
+  studentProfile    StudentProfile?
+  consultantProfile ConsultantProfile?
+  staffProfile      StaffProfile?
+
+  // Audit Logs for Notifications & System Actions
+  notifications Notification[]
+
+  @@map("users")
+}
+
+model StudentProfile {
+  id              String   @id @default(uuid())
+  userId          String   @unique
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  academicHistory String?  @db.Text
+  targetProgram   String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  // Relations
+  bookings     Booking[]
+  documents    Document[]
+  meetingNotes MeetingNote[]
+
+  @@map("student_profiles")
+}
+
+model ConsultantProfile {
+  id               String   @id @default(uuid())
+  userId           String   @unique
+  user             User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  specialization   String?
+  hourlyRate       Decimal  @default(0.00) @db.Decimal(12, 2)
+  sessionIncentive Decimal  @default(0.00) @db.Decimal(12, 2)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  // Relations
+  availabilitySlots AvailabilitySlot[]
+  bookings          Booking[]
+  meetingNotes      MeetingNote[]
+  attendances       Attendance[]
+  leaveRequests     LeaveRequest[]
+
+  @@map("consultant_profiles")
+}
+
+model StaffProfile {
+  id         String   @id @default(uuid())
+  userId     String   @unique
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  department String // e.g., "HR", "Document Processing", "Management"
+  baseSalary Decimal  @default(0.00) @db.Decimal(12, 2)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  // Relations
+  attendances        Attendance[]
+  leaveRequests      LeaveRequest[]
+  payslips           Payslip[]
+  processedDocuments Document[]     @relation("ProcessedByStaff")
+  approvedLeaves     LeaveRequest[] @relation("ApprovedByStaff")
+
+  @@map("staff_profiles")
+}
+
+// ==========================================
+// 3. SCHEDULING & BOOKING MODULE
+// ==========================================
+
+model AvailabilitySlot {
+  id           String            @id @default(uuid())
+  consultantId String
+  consultant   ConsultantProfile @relation(fields: [consultantId], references: [id], onDelete: Cascade)
+  dayOfWeek    Int // 0 = Sunday, 1 = Monday, etc.
+  startTime    String // HH:mm format, e.g., "09:00"
+  endTime      String // HH:mm format, e.g., "10:00"
+  isBooked     Boolean           @default(false)
+  createdAt    DateTime          @default(now())
+
+  @@map("availability_slots")
+}
+
+model Booking {
+  id             String            @id @default(uuid())
+  studentId      String
+  student        StudentProfile    @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  consultantId   String
+  consultant     ConsultantProfile @relation(fields: [consultantId], references: [id], onDelete: Cascade)
+  sessionType    SessionType
+  topic          String
+  startTime      DateTime
+  endTime        DateTime
+  status         BookingStatus     @default(PENDING)
+  cancelReason   String?
+  rescheduleTime DateTime?
+  createdAt      DateTime          @default(now())
+  updatedAt      DateTime          @updatedAt
+
+  // Relations
+  meetingNote MeetingNote?
+
+  @@map("bookings")
+}
+
+model MeetingNote {
+  id              String            @id @default(uuid())
+  bookingId       String            @unique
+  booking         Booking           @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  studentId       String
+  student         StudentProfile    @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  consultantId    String
+  consultant      ConsultantProfile @relation(fields: [consultantId], references: [id], onDelete: Cascade)
+  discussionPoint String            @db.Text
+  recommendations String            @db.Text
+  actionPlan      String            @db.Text
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+
+  @@map("meeting_notes")
+}
+
+// ==========================================
+// 4. DOCUMENT TRACKING MODULE
+// ==========================================
+
+model Document {
+  id             String         @id @default(uuid())
+  studentId      String
+  student        StudentProfile @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  processedById  String?
+  processedBy    StaffProfile?  @relation("ProcessedByStaff", fields: [processedById], references: [id])
+  title          String // e.g., "Passport", "Transcript"
+  fileUrl        String
+  outcomeFileUrl String? // Document uploaded by processor
+  status         DocumentStatus @default(SUBMITTED)
+  revisionNote   String?        @db.Text
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+
+  // Tracking History
+  history DocumentHistory[]
+
+  @@map("documents")
+}
+
+model DocumentHistory {
+  id         String         @id @default(uuid())
+  documentId String
+  document   Document       @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  status     DocumentStatus
+  note       String?
+  updatedBy  String // User ID / Name
+  createdAt  DateTime       @default(now())
+
+  @@map("document_histories")
+}
+
+// ==========================================
+// 5. ATTENDANCE & PAYROLL MODULE
+// ==========================================
+
+model Attendance {
+  id           String             @id @default(uuid())
+  staffId      String?
+  staff        StaffProfile?      @relation(fields: [staffId], references: [id], onDelete: Cascade)
+  consultantId String?
+  consultant   ConsultantProfile? @relation(fields: [consultantId], references: [id], onDelete: Cascade)
+  date         DateTime           @db.Date
+  clockIn      DateTime?
+  clockOut     DateTime?
+  status       AttendanceStatus   @default(ON_TIME)
+  workHours    Decimal            @default(0.00) @db.Decimal(5, 2)
+  createdAt    DateTime           @default(now())
+  updatedAt    DateTime           @updatedAt
+
+  @@map("attendances")
+}
+
+model LeaveRequest {
+  id           String             @id @default(uuid())
+  staffId      String?
+  staff        StaffProfile?      @relation(fields: [staffId], references: [id], onDelete: Cascade)
+  consultantId String?
+  consultant   ConsultantProfile? @relation(fields: [consultantId], references: [id], onDelete: Cascade)
+  approvedById String?
+  approvedBy   StaffProfile?      @relation("ApprovedByStaff", fields: [approvedById], references: [id])
+  type         LeaveType
+  startDate    DateTime           @db.Date
+  endDate      DateTime           @db.Date
+  reason       String             @db.Text
+  proofFileUrl String?
+  status       ApprovalStatus     @default(PENDING)
+  createdAt    DateTime           @default(now())
+  updatedAt    DateTime           @updatedAt
+
+  @@map("leave_requests")
+}
+
+model Payslip {
+  id               String       @id @default(uuid())
+  staffId          String
+  staff            StaffProfile @relation(fields: [staffId], references: [id], onDelete: Cascade)
+  periodMonth      Int // 1 - 12
+  periodYear       Int // e.g., 2026
+  baseSalary       Decimal      @db.Decimal(12, 2)
+  allowances       Decimal      @default(0.00) @db.Decimal(12, 2)
+  sessionIncentive Decimal      @default(0.00) @db.Decimal(12, 2)
+  deductions       Decimal      @default(0.00) @db.Decimal(12, 2)
+  netSalary        Decimal      @db.Decimal(12, 2)
+  pdfUrl           String // Encrypted PDF storage URL
+  isDistributed    Boolean      @default(false)
+  createdAt        DateTime     @default(now())
+  updatedAt        DateTime     @updatedAt
+
+  @@unique([staffId, periodMonth, periodYear])
+  @@map("payslips")
+}
+
+// ==========================================
+// 6. NOTIFICATIONS & SYSTEM LOGS
+// ==========================================
+
+model Notification {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title     String
+  message   String   @db.Text
+  isRead    Boolean  @default(false)
+  channel   String // e.g., "EMAIL", "WHATSAPP", "IN_APP"
+  createdAt DateTime @default(now())
+
+  @@map("notifications")
+}

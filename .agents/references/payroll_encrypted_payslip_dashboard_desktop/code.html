@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>EduPayroll Pro - Sistem Payroll &amp; Slip Gaji</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400&amp;family=Plus+Jakarta+Sans:wght@600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "inverse-primary": "#bcc7de",
+                        "on-error": "#ffffff",
+                        "secondary": "#4b41e1",
+                        "error-container": "#ffdad6",
+                        "surface": "#f8fafc",
+                        "on-surface-variant": "#45474c",
+                        "on-secondary-container": "#fffbff",
+                        "on-secondary-fixed-variant": "#3323cc",
+                        "inverse-on-surface": "#f3f0f2",
+                        "info": "#0284c7",
+                        "on-background": "#1b1b1d",
+                        "warning": "#f59e0b",
+                        "surface-container-low": "#f5f3f4",
+                        "tertiary": "#0f766e",
+                        "on-primary-fixed-variant": "#3c475a",
+                        "primary-fixed": "#d8e3fb",
+                        "on-surface": "#1b1b1d",
+                        "error": "#ef4444",
+                        "on-secondary": "#ffffff",
+                        "surface-container-highest": "#e4e2e3",
+                        "on-tertiary-fixed": "#00201d",
+                        "on-secondary-fixed": "#0f0069",
+                        "secondary-fixed-dim": "#c3c0ff",
+                        "inverse-surface": "#303032",
+                        "outline-variant": "#c5c6cd",
+                        "surface-container": "#f0edef",
+                        "on-primary-container": "#8590a6",
+                        "secondary-fixed": "#e2dfff",
+                        "on-tertiary-container": "#469e95",
+                        "outline": "#64748b",
+                        "on-error-container": "#93000a",
+                        "primary": "#091426",
+                        "on-tertiary-fixed-variant": "#00504a",
+                        "secondary-container": "#645efb",
+                        "on-tertiary": "#ffffff",
+                        "surface-dim": "#dcd9db",
+                        "surface-tint": "#545f73",
+                        "on-primary": "#ffffff",
+                        "on-primary-fixed": "#111c2d",
+                        "surface-bright": "#fbf8fa",
+                        "tertiary-fixed": "#9cf2e8",
+                        "surface-container-lowest": "#ffffff",
+                        "background": "#fbf8fa",
+                        "surface-container-high": "#eae7e9",
+                        "tertiary-container": "#002f2b",
+                        "surface-variant": "#e4e2e3",
+                        "success": "#10b981",
+                        "tertiary-fixed-dim": "#80d5cb",
+                        "primary-fixed-dim": "#bcc7de",
+                        "primary-container": "#1e293b"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "container-margin": "24px",
+                        "base": "4px",
+                        "gutter": "16px",
+                        "section-gap": "28px",
+                        "margin": "24px",
+                        "base-unit": "4px",
+                        "card-padding": "20px"
+                    },
+                    "fontFamily": {
+                        "h1-mobile": ["Plus Jakarta Sans"],
+                        "headline-lg-mobile": ["Plus Jakarta Sans"],
+                        "label-sm": ["Inter"],
+                        "h1": ["Plus Jakarta Sans"],
+                        "headline-md": ["Plus Jakarta Sans"],
+                        "h3": ["Plus Jakarta Sans"],
+                        "headline-sm": ["Plus Jakarta Sans"],
+                        "h2": ["Plus Jakarta Sans"],
+                        "body-sm": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "mono-sm": ["\"JetBrains Mono\", monospace"],
+                        "label-md": ["Inter"],
+                        "body-md": ["Inter"],
+                        "headline-lg": ["Plus Jakarta Sans"]
+                    },
+                    "fontSize": {
+                        "h1-mobile": ["24px", { "lineHeight": "32px", "fontWeight": "700" }],
+                        "headline-lg-mobile": ["24px", { "lineHeight": "32px", "fontWeight": "700" }],
+                        "label-sm": ["12px", { "lineHeight": "16px", "fontWeight": "500" }],
+                        "h1": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+                        "h3": ["20px", { "lineHeight": "28px", "fontWeight": "600" }],
+                        "headline-sm": ["20px", { "lineHeight": "28px", "fontWeight": "600" }],
+                        "h2": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+                        "body-sm": ["12px", { "lineHeight": "16px", "fontWeight": "400" }],
+                        "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "mono-sm": ["12px", { "lineHeight": "16px", "fontWeight": "400" }],
+                        "label-md": ["14px", { "lineHeight": "20px", "fontWeight": "600" }],
+                        "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700" }]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .material-symbols-outlined[data-weight="fill"] {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+<body class="bg-surface font-body-md text-on-surface h-screen flex overflow-hidden">
+<!-- SideNavBar -->
+<aside class="hidden md:flex bg-surface-container-low dark:bg-primary text-primary dark:text-primary-fixed flex-col h-screen py-6 px-4 gap-4 docked left-0 h-full w-64 flat no shadows z-10 border-r border-outline-variant">
+<!-- Header -->
+<div class="flex items-center gap-3 px-2 mb-4">
+<div class="w-10 h-10 rounded-full bg-primary-container flex items-center justify-center shrink-0">
+<img alt="Institution Logo" class="w-full h-full object-cover rounded-full" src="https://lh3.googleusercontent.com/aida/AEtjO1XRpWqB_phRNo5783MaEdSuCP8D67feQz5Ky3brYATld36iL0E3ABQ-4-X7RColNOGhNodCisDuMIB1ExXmZB5xLQIqafYSDOGT9XIDV7DscpOFkq6outUvyAwEQUzIAMfwSWlsmRwPDJJLTwAeBpznWdGCmHuZ7pSPXQGNBpcwvVfyTwP-NZHtwizpAbGzG3AMEX9-f8BOi1pzPW8iQV3RhThWIVm2rIFzWntIbHGh-VPjDv7naDr3eCU"/>
+</div>
+<div>
+<h2 class="font-headline-sm text-headline-sm font-bold text-primary">Main Campus</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Payroll Dept.</p>
+</div>
+</div>
+<!-- Navigation Tabs -->
+<nav class="flex-1 flex flex-col gap-1">
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant dark:text-on-primary-container hover:bg-outline-variant dark:hover:bg-primary-container transition-colors rounded-lg font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="payments">payments</span>
+<span>Payroll Summary</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 bg-secondary-container text-on-secondary-container rounded-lg font-label-md text-label-md transition-transform scale-[0.98]" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="groups">groups</span>
+<span>Payroll</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant dark:text-on-primary-container hover:bg-outline-variant dark:hover:bg-primary-container transition-colors rounded-lg font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="verified">verified</span>
+<span>Tax Compliance</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant dark:text-on-primary-container hover:bg-outline-variant dark:hover:bg-primary-container transition-colors rounded-lg font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="lock">lock</span>
+<span>Encrypted Vault</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant dark:text-on-primary-container hover:bg-outline-variant dark:hover:bg-primary-container transition-colors rounded-lg font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="history">history</span>
+<span>Audit Logs</span>
+</a>
+</nav>
+<!-- CTA & Footer -->
+<div class="mt-auto flex flex-col gap-2">
+<button class="w-full bg-primary text-on-primary font-label-md text-label-md py-2 px-4 rounded-lg hover:opacity-90 transition-opacity">
+                Download Reports
+            </button>
+<div class="h-px bg-outline-variant my-2"></div>
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:bg-outline-variant transition-colors rounded-lg font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="contact_support">contact_support</span>
+<span>Support</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:bg-outline-variant transition-colors rounded-lg font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="logout">logout</span>
+<span>Sign Out</span>
+</a>
+</div>
+</aside>
+<!-- Main Content Wrapper -->
+<div class="flex-1 flex flex-col min-w-0">
+<!-- TopAppBar -->
+<header class="bg-surface-container-lowest text-primary flex justify-between items-center w-full px-container-margin h-16 docked full-width top-0 border-b border-outline-variant z-10 shrink-0">
+<div class="flex items-center gap-6 flex-1">
+<h1 class="font-headline-md text-headline-md font-bold text-primary md:hidden">EduPayroll Pro</h1>
+<!-- Navigation Links (Hidden on Mobile) -->
+<nav class="hidden md:flex gap-6 h-full items-center">
+<a class="h-full flex items-center font-label-md text-label-md text-on-surface-variant hover:text-secondary transition-colors" href="#">Dashboard</a>
+<a class="h-full flex items-center font-label-md text-label-md text-on-surface-variant hover:text-secondary transition-colors" href="#">Staff</a>
+<a class="h-full flex items-center font-label-md text-label-md text-secondary border-b-2 border-secondary pb-1 opacity-80 transition-opacity duration-150" href="#">Payroll</a>
+<a class="h-full flex items-center font-label-md text-label-md text-on-surface-variant hover:text-secondary transition-colors" href="#">Reports</a>
+<a class="h-full flex items-center font-label-md text-label-md text-on-surface-variant hover:text-secondary transition-colors" href="#">Settings</a>
+</nav>
+</div>
+<div class="flex items-center gap-4">
+<!-- Search -->
+<div class="relative hidden sm:block">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-[20px]">search</span>
+<input class="pl-10 pr-4 py-1.5 bg-surface-container-low border border-outline-variant rounded-full font-body-sm text-body-sm focus:outline-none focus:border-secondary focus:ring-1 focus:ring-secondary w-64 text-on-surface" placeholder="Search..." type="text"/>
+</div>
+<!-- Actions -->
+<div class="flex items-center gap-2 border-r border-outline-variant pr-4 mr-2">
+<button class="hidden lg:block bg-surface-container-lowest border border-outline-variant text-on-surface font-label-sm text-label-sm px-3 py-1.5 rounded hover:bg-surface-container-low transition-colors">Auto-Calculate</button>
+<button class="bg-primary text-on-primary font-label-sm text-label-sm px-3 py-1.5 rounded hover:opacity-90 transition-opacity">Distribute Payslips</button>
+</div>
+<!-- Icons -->
+<div class="flex items-center gap-2 text-on-surface-variant">
+<button class="p-1.5 hover:bg-surface-container-low rounded-full transition-colors relative">
+<span class="material-symbols-outlined text-[20px]" data-icon="notifications">notifications</span>
+<span class="absolute top-1 right-1 w-2 h-2 bg-error rounded-full"></span>
+</button>
+<button class="p-1.5 hover:bg-surface-container-low rounded-full transition-colors hidden sm:block">
+<span class="material-symbols-outlined text-[20px]" data-icon="help_outline">help_outline</span>
+</button>
+</div>
+<!-- Profile -->
+<button class="w-8 h-8 rounded-full overflow-hidden shrink-0 border border-outline-variant">
+<img alt="Administrator Profile" class="w-full h-full object-cover" data-alt="Professional headshot of an administrative professional in modern light-mode setting. Neutral slate background. Bright lighting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCRCvNzUeYkGg48HG9EZy1mz5Yh2fqQOwwUzBCBVC2mWHNzWz6sc3j898RPkEEyHat-oU5oM10UaXuOmhGBSB6AWcEjzmFmKfXmj5YFZxP4CtaaOc7Nr9ugAl29gKWjG_LeIR7YJ2lChGuLn0UkJgqaSAK93vR0NKLf7jJ_xVVS3ic9Lvm6fpUG7UVfI60VYXh95u16X6ASOATS0yAZSAMMrnaT0zupkVDJRyV9aueIcjFzOWAltVz38g"/>
+</button>
+</div>
+</header>
+<!-- Main Content Area -->
+<main class="flex-1 overflow-y-auto bg-surface p-margin">
+<div class="max-w-[1440px] mx-auto flex flex-col gap-section-gap">
+<!-- Summary Header -->
+<div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
+<div>
+<h2 class="font-h1 text-h1 text-on-surface mb-2">Sistem Payroll &amp; Slip Gaji</h2>
+<div class="relative inline-block">
+<select class="appearance-none bg-surface-container-lowest border border-outline-variant text-on-surface font-label-md text-label-md py-2 pl-4 pr-10 rounded-lg focus:outline-none focus:border-secondary focus:ring-1 focus:ring-secondary">
+<option>Oktober 2024</option>
+<option>September 2024</option>
+<option>Agustus 2024</option>
+</select>
+<span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-on-surface-variant">expand_more</span>
+</div>
+</div>
+<div class="flex gap-4 w-full md:w-auto">
+<!-- KPI Card 1 -->
+<div class="bg-surface-container-lowest border border-outline-variant p-4 rounded-xl flex-1 md:w-48">
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-1">Total Payroll</p>
+<p class="font-mono-sm text-mono-sm font-bold text-on-surface text-lg">Rp 450.250.000</p>
+</div>
+<!-- KPI Card 2 -->
+<div class="bg-surface-container-lowest border border-outline-variant p-4 rounded-xl flex-1 md:w-48 flex flex-col justify-center items-start">
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-1">Status</p>
+<div class="inline-flex items-center gap-1.5 bg-[#d1fae5] text-[#065f46] px-2.5 py-1 rounded-full font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-[14px]" data-icon="check_circle" data-weight="fill">check_circle</span>
+                                 Terkalkulasi
+                             </div>
+</div>
+</div>
+</div>
+<!-- Toolbar -->
+<div class="bg-surface-container-lowest border border-outline-variant p-2 rounded-lg flex flex-wrap gap-2 items-center">
+<button class="bg-primary text-on-primary font-label-md text-label-md px-4 py-2 rounded-lg hover:opacity-90 transition-opacity flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">calculate</span>
+                        Kalkulasi Otomatis Gaji
+                    </button>
+<button class="bg-secondary-container text-on-secondary-container font-label-md text-label-md px-4 py-2 rounded-lg hover:opacity-90 transition-opacity flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">picture_as_pdf</span>
+                        Generate Slip PDF Massal
+                    </button>
+<button class="bg-transparent border border-outline text-on-surface font-label-md text-label-md px-4 py-2 rounded-lg hover:bg-surface-container-low transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">send</span>
+                        Distribusi Privat
+                    </button>
+<div class="ml-auto relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-[18px]">filter_list</span>
+<input class="pl-9 pr-4 py-2 bg-surface border border-outline-variant rounded-lg font-body-sm text-body-sm focus:outline-none focus:border-secondary w-48 text-on-surface" placeholder="Filter employees..." type="text"/>
+</div>
+</div>
+<!-- Master Table (Bento/Card style wrapper) -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl overflow-hidden shadow-sm">
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-container-low border-b border-outline-variant font-label-sm text-label-sm text-on-surface-variant">
+<th class="px-4 py-3 font-medium">Employee</th>
+<th class="px-4 py-3 font-medium">Role</th>
+<th class="px-4 py-3 font-medium text-right">Base Salary</th>
+<th class="px-4 py-3 font-medium text-right">Allowances</th>
+<th class="px-4 py-3 font-medium text-center">Sessions</th>
+<th class="px-4 py-3 font-medium text-right">Incentives</th>
+<th class="px-4 py-3 font-medium text-right">Deductions</th>
+<th class="px-4 py-3 font-medium text-right">Net Salary</th>
+<th class="px-4 py-3 font-medium text-center">Status</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant">
+<!-- Row 1 -->
+<tr class="hover:bg-surface transition-colors cursor-pointer" onclick="document.getElementById('pdf-modal').classList.remove('hidden');">
+<td class="px-4 py-3">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full overflow-hidden bg-surface-container-highest">
+<img class="w-full h-full object-cover" data-alt="Professional portrait of a male teacher in his 30s. Smiling gently. Light slate background. Clear studio lighting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCc4WyGfaqIbWqs2CnKveU9WOynGYzGlpI8Dv-QM4PM8RSJuWXMkb_qRvNNp8NsT85Cv6v5zegOz5bYjbl-EB412UgSSbXZ4AssEvLOy8ABUp1vNXrVuyZ0P4EWIqmNtAFXKhtKpBeLoEaPzUiHoIZvJUD64pBn7uCxDe9S9hi4R54xlKmIpd7MPJL1Darp70G7PB29zgzvGrV_Yjq6gPpOji1J12VkBjCnaUqtjMvd8sk-2DK7EMZK6Q"/>
+</div>
+<span class="font-body-md text-body-md font-semibold">Andi Pratama</span>
+</div>
+</td>
+<td class="px-4 py-3 font-body-sm text-body-sm text-on-surface-variant">Senior Teacher</td>
+<td class="px-4 py-3 font-mono-sm text-mono-sm text-right">Rp 8.000.000</td>
+<td class="px-4 py-3 font-mono-sm text-mono-sm text-right">Rp 1.500.000</td>
+<td class="px-4 py-3 font-mono-sm text-mono-sm text-center">24</td>
+<td class="px-4 py-3 font-mono-sm text-mono-sm text-right">Rp 1.200.000</td>
+<td class="px-4 py-3 font-mono-sm text-mono-sm text-right text-error">- Rp 250.000</td>
+<td class="px-4 py-3 font-mono-sm text-mono-sm font-bold text-right">Rp 10.450.000</td>
+<td class="px-4 py-3 text-center">
+<span class="material-symbols-outlined text-info text-[18px]" data-icon="lock" title="Encrypted">lock</span>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="hover:bg-surface transition-colors">
+<td class="px-4 py-3">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full overflow-hidden bg-surface-container-highest">
+<img class="w-full h-full object-cover" data-alt="Professional portrait of a female administrator in her 40s. Friendly expression. Light slate background. Soft lighting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBx8zaQd6e1JAUZObnzhFQxTyQXVl9eFaX6s29P-MnqgznbkqNmj3gX-zg2ZTOXY8xKmEELdXXt1jlZokVZIv1Ewg8a3ID3Rr7PZGh9JYuAFgccTxURb6spA31ppM4cNhYRWqeGXdmDZp0UBs8_J4xDZ60QtimOLU8EwUhBVeZXDthZGsAcpx5E5DwOuWXnesgZ2JUwQ5rOBDZvXhRYWzE_V1IiTaVL83je7jRrEeSWRtxNUl0dx4hPkQ"/>
+</div>
+<span class="font-body-md text-body-md font-semibold">Budi Santoso</span>
+</div>
+</td>
+<td class="px-4 py-3 font-body-sm text-body-sm text-on-surface-variant">Admin Staff</td>
+<td class="px-4 py-3 font-mono-sm text-mono-sm text-right">Rp 5.500.000</td>
+<td class="px-4 py-3 font-mono-sm text-mono-sm text-right">Rp 800.000</td>
+<td class="px-4 py-3 font-mono-sm text-mono-sm text-center">0</td>
+<td class="px-4 py-3 font-mono-sm text-mono-sm text-right">Rp 0</td>
+<td class="px-4 py-3 font-mono-sm text-mono-sm text-right text-error">- Rp 100.000</td>
+<td class="px-4 py-3 font-mono-sm text-mono-sm font-bold text-right">Rp 6.200.000</td>
+<td class="px-4 py-3 text-center">
+<span class="material-symbols-outlined text-info text-[18px]" data-icon="lock" title="Encrypted">lock</span>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="hover:bg-surface transition-colors">
+<td class="px-4 py-3">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full overflow-hidden bg-surface-container-highest flex items-center justify-center text-on-surface-variant font-bold text-sm">
+                                                CD
+                                            </div>
+<span class="font-body-md text-body-md font-semibold">Citra Dewi</span>
+</div>
+</td>
+<td class="px-4 py-3 font-body-sm text-body-sm text-on-surface-variant">Part-time Tutor</td>
+<td class="px-4 py-3 font-mono-sm text-mono-sm text-right">Rp 0</td>
+<td class="px-4 py-3 font-mono-sm text-mono-sm text-right">Rp 200.000</td>
+<td class="px-4 py-3 font-mono-sm text-mono-sm text-center">15</td>
+<td class="px-4 py-3 font-mono-sm text-mono-sm text-right">Rp 3.000.000</td>
+<td class="px-4 py-3 font-mono-sm text-mono-sm text-right text-error">- Rp 50.000</td>
+<td class="px-4 py-3 font-mono-sm text-mono-sm font-bold text-right">Rp 3.150.000</td>
+<td class="px-4 py-3 text-center">
+<span class="material-symbols-outlined text-info text-[18px]" data-icon="lock" title="Encrypted">lock</span>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</main>
+</div>
+<!-- PDF Payslip Preview Modal Overlay -->
+<div class="hidden fixed inset-0 z-50 flex items-center justify-center p-4" id="pdf-modal">
+<!-- Backdrop -->
+<div class="absolute inset-0 bg-primary/40 backdrop-blur-sm" onclick="document.getElementById('pdf-modal').classList.add('hidden');"></div>
+<!-- Modal Content (PDF Preview) -->
+<div class="relative bg-surface-container-lowest w-full max-w-3xl max-h-[90vh] overflow-y-auto rounded-xl shadow-2xl flex flex-col">
+<!-- Modal Header Toolbar -->
+<div class="sticky top-0 bg-surface-container-low border-b border-outline-variant px-4 py-3 flex justify-between items-center z-10">
+<div class="flex items-center gap-2 text-on-surface">
+<span class="material-symbols-outlined" data-icon="picture_as_pdf">picture_as_pdf</span>
+<span class="font-label-md text-label-md">Slip_Gaji_Andi_Pratama_Okt2024.pdf</span>
+</div>
+<div class="flex items-center gap-2">
+<button class="p-1.5 hover:bg-surface-variant rounded-full text-on-surface-variant transition-colors" title="Download">
+<span class="material-symbols-outlined" data-icon="download">download</span>
+</button>
+<button class="p-1.5 hover:bg-surface-variant rounded-full text-on-surface-variant transition-colors" title="Print">
+<span class="material-symbols-outlined" data-icon="print">print</span>
+</button>
+<div class="w-px h-6 bg-outline-variant mx-1"></div>
+<button class="p-1.5 hover:bg-surface-variant rounded-full text-on-surface-variant transition-colors" onclick="document.getElementById('pdf-modal').classList.add('hidden');">
+<span class="material-symbols-outlined" data-icon="close">close</span>
+</button>
+</div>
+</div>
+<!-- PDF Page Canvas -->
+<div class="p-8 bg-surface-container-lowest m-4 border border-outline-variant shadow-sm flex flex-col gap-6 font-body-sm text-body-sm text-on-surface">
+<!-- Document Header -->
+<div class="flex justify-between items-start border-b-2 border-primary pb-6">
+<div class="flex gap-4 items-center">
+<img alt="EduPayroll Logo" class="w-16 h-16 object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1XRpWqB_phRNo5783MaEdSuCP8D67feQz5Ky3brYATld36iL0E3ABQ-4-X7RColNOGhNodCisDuMIB1ExXmZB5xLQIqafYSDOGT9XIDV7DscpOFkq6outUvyAwEQUzIAMfwSWlsmRwPDJJLTwAeBpznWdGCmHuZ7pSPXQGNBpcwvVfyTwP-NZHtwizpAbGzG3AMEX9-f8BOi1pzPW8iQV3RhThWIVm2rIFzWntIbHGh-VPjDv7naDr3eCU"/>
+<div>
+<h1 class="font-headline-md text-headline-md font-bold text-primary">SLIP GAJI KARYAWAN</h1>
+<p class="text-on-surface-variant">Periode: Oktober 2024</p>
+</div>
+</div>
+<div class="text-right">
+<p class="font-bold">EduPayroll Pro Institute</p>
+<p class="text-on-surface-variant">Jl. Pendidikan No. 123</p>
+<p class="text-on-surface-variant">Jakarta, Indonesia</p>
+</div>
+</div>
+<!-- Employee Info -->
+<div class="grid grid-cols-2 gap-4">
+<div>
+<table class="w-full">
+<tbody><tr><td class="py-1 w-32 text-on-surface-variant">Nama</td><td class="py-1 font-semibold">: Andi Pratama</td></tr>
+<tr><td class="py-1 w-32 text-on-surface-variant">ID Pegawai</td><td class="py-1">: EMP-2021-045</td></tr>
+<tr><td class="py-1 w-32 text-on-surface-variant">Jabatan</td><td class="py-1">: Senior Teacher</td></tr>
+</tbody></table>
+</div>
+<div>
+<table class="w-full">
+<tbody><tr><td class="py-1 w-32 text-on-surface-variant">Departemen</td><td class="py-1">: Akademik</td></tr>
+<tr><td class="py-1 w-32 text-on-surface-variant">Status</td><td class="py-1">: Tetap</td></tr>
+</tbody></table>
+</div>
+</div>
+<!-- Itemized Table -->
+<div class="border border-outline-variant rounded">
+<table class="w-full text-left">
+<thead class="bg-surface-container-low border-b border-outline-variant font-label-sm text-label-sm">
+<tr>
+<th class="px-4 py-2 w-1/2">Keterangan</th>
+<th class="px-4 py-2 text-right">Penerimaan</th>
+<th class="px-4 py-2 text-right">Potongan</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant font-mono-sm text-mono-sm">
+<tr>
+<td class="px-4 py-2 font-body-sm">Gaji Pokok</td>
+<td class="px-4 py-2 text-right">Rp 8.000.000</td>
+<td class="px-4 py-2 text-right">-</td>
+</tr>
+<tr>
+<td class="px-4 py-2 font-body-sm">Tunjangan Jabatan</td>
+<td class="px-4 py-2 text-right">Rp 1.000.000</td>
+<td class="px-4 py-2 text-right">-</td>
+</tr>
+<tr>
+<td class="px-4 py-2 font-body-sm">Tunjangan Transport</td>
+<td class="px-4 py-2 text-right">Rp 500.000</td>
+<td class="px-4 py-2 text-right">-</td>
+</tr>
+<tr>
+<td class="px-4 py-2 font-body-sm">Insentif Sesi Mengajar (24 x 50rb)</td>
+<td class="px-4 py-2 text-right">Rp 1.200.000</td>
+<td class="px-4 py-2 text-right">-</td>
+</tr>
+<tr>
+<td class="px-4 py-2 font-body-sm">Potongan BPJS Kesehatan</td>
+<td class="px-4 py-2 text-right">-</td>
+<td class="px-4 py-2 text-right">Rp 150.000</td>
+</tr>
+<tr>
+<td class="px-4 py-2 font-body-sm">Potongan BPJS Ketenagakerjaan</td>
+<td class="px-4 py-2 text-right">-</td>
+<td class="px-4 py-2 text-right">Rp 100.000</td>
+</tr>
+<tr class="font-bold bg-surface-container-low border-t-2 border-outline">
+<td class="px-4 py-2 font-body-sm text-right">Total</td>
+<td class="px-4 py-2 text-right">Rp 10.700.000</td>
+<td class="px-4 py-2 text-right">Rp 250.000</td>
+</tr>
+<tr class="font-bold bg-secondary/10 text-secondary border-t border-outline-variant text-base">
+<td class="px-4 py-3 font-body-sm text-right" colspan="2">TAKE HOME PAY</td>
+<td class="px-4 py-3 text-right">Rp 10.450.000</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Signature Section -->
+<div class="mt-8 flex justify-end">
+<div class="text-center">
+<p class="mb-12">Jakarta, 25 Oktober 2024<br/>Finance Dept.</p>
+<div class="w-40 border-b border-outline-variant mx-auto mb-2"></div>
+<p class="font-semibold">Budi Finance, SE.</p>
+</div>
+</div>
+<!-- Footer Note -->
+<div class="mt-12 pt-4 border-t border-outline-variant text-center flex items-center justify-center gap-2 text-on-surface-variant">
+<span class="material-symbols-outlined text-[16px]" data-icon="lock">lock</span>
+<span>Dokumen ini dilindungi sandi (Encrypted)</span>
+</div>
+</div>
+</div>
+</div>
+</body></html>
