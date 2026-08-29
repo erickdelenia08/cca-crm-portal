@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Student Profile &amp; Meeting Notes - EduConsult CRM</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Plus+Jakarta+Sans:wght@600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "surface-container-lowest": "#ffffff",
+                      "surface-container-low": "#f5f3f4",
+                      "on-primary": "#ffffff",
+                      "error": "#ef4444",
+                      "primary-fixed": "#d8e3fb",
+                      "background": "#fbf8fa",
+                      "success": "#10b981",
+                      "surface": "#f8fafc",
+                      "on-secondary-fixed-variant": "#3323cc",
+                      "on-surface-variant": "#45474c",
+                      "outline-variant": "#c5c6cd",
+                      "on-primary-fixed": "#111c2d",
+                      "primary-fixed-dim": "#bcc7de",
+                      "inverse-primary": "#bcc7de",
+                      "surface-dim": "#dcd9db",
+                      "on-primary-fixed-variant": "#3c475a",
+                      "on-secondary": "#ffffff",
+                      "on-tertiary-container": "#469e95",
+                      "on-tertiary-fixed-variant": "#00504a",
+                      "secondary-container": "#645efb",
+                      "surface-bright": "#fbf8fa",
+                      "on-tertiary-fixed": "#00201d",
+                      "secondary-fixed": "#e2dfff",
+                      "primary-container": "#1e293b",
+                      "secondary-fixed-dim": "#c3c0ff",
+                      "outline": "#64748b",
+                      "tertiary-fixed-dim": "#80d5cb",
+                      "secondary": "#4b41e1",
+                      "error-container": "#ffdad6",
+                      "on-primary-container": "#8590a6",
+                      "on-error-container": "#93000a",
+                      "on-tertiary": "#ffffff",
+                      "surface-container-high": "#eae7e9",
+                      "on-secondary-fixed": "#0f0069",
+                      "tertiary": "#0f766e",
+                      "tertiary-fixed": "#9cf2e8",
+                      "tertiary-container": "#002f2b",
+                      "info": "#0284c7",
+                      "on-background": "#1b1b1d",
+                      "inverse-on-surface": "#f3f0f2",
+                      "on-surface": "#1b1b1d",
+                      "primary": "#091426",
+                      "warning": "#f59e0b",
+                      "on-secondary-container": "#fffbff",
+                      "on-error": "#ffffff",
+                      "inverse-surface": "#303032",
+                      "surface-tint": "#545f73",
+                      "surface-variant": "#e4e2e3",
+                      "surface-container": "#f0edef",
+                      "surface-container-highest": "#e4e2e3"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "margin": "24px",
+                      "base": "4px",
+                      "section-gap": "28px",
+                      "gutter": "16px",
+                      "base-unit": "4px",
+                      "container-margin": "24px",
+                      "card-padding": "20px"
+              },
+              "fontFamily": {
+                      "h3": ["Plus Jakarta Sans"],
+                      "h1": ["Plus Jakarta Sans"],
+                      "body-md": ["Inter"],
+                      "label-md": ["Inter"],
+                      "label-sm": ["Inter"],
+                      "headline-lg": ["Plus Jakarta Sans"],
+                      "headline-md": ["Plus Jakarta Sans"],
+                      "h2": ["Plus Jakarta Sans"],
+                      "headline-lg-mobile": ["Plus Jakarta Sans"],
+                      "headline-sm": ["Plus Jakarta Sans"],
+                      "body-sm": ["Inter"],
+                      "body-lg": ["Inter"],
+                      "mono-sm": ["\"JetBrains Mono, monospace\""],
+                      "h1-mobile": ["Plus Jakarta Sans"]
+              },
+              "fontSize": {
+                      "h3": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                      "h1": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                      "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                      "label-md": ["14px", {"lineHeight": "20px", "fontWeight": "600"}],
+                      "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "500"}],
+                      "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                      "headline-md": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                      "h2": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                      "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "700"}],
+                      "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                      "body-sm": ["12px", {"lineHeight": "16px", "fontWeight": "400"}],
+                      "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                      "mono-sm": ["12px", {"lineHeight": "16px", "fontWeight": "400"}],
+                      "h1-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "700"}]
+              }
+      },
+          },
+        }
+    </script>
+</head>
+<body class="bg-surface-container-low text-on-surface font-body-md text-body-md h-screen overflow-hidden flex">
+<!-- SideNavBar -->
+<nav class="hidden lg:flex flex-col h-full border-r border-outline-variant dark:border-outline bg-surface-container-low dark:bg-primary-container docked left-0 h-screen w-64 flex-shrink-0 z-40">
+<div class="px-margin py-6 border-b border-outline-variant">
+<div class="flex items-center gap-3 mb-2">
+<div class="w-10 h-10 rounded-full bg-secondary text-on-secondary flex items-center justify-center font-h3 text-h3">
+                    C
+                </div>
+<div>
+<h1 class="font-h3 text-h3 font-bold text-primary dark:text-primary-fixed">Consultant Portal</h1>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Academic Management</p>
+</div>
+</div>
+</div>
+<div class="flex-1 overflow-y-auto py-4 px-2 space-y-1">
+<a class="group flex items-center gap-3 px-4 py-3 cursor-pointer transition-all text-on-surface-variant dark:text-on-primary-container hover:bg-surface-container-high dark:hover:bg-surface-variant rounded-lg" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-label-md text-label-md">Dashboard</span>
+</a>
+<a class="group flex items-center gap-3 px-4 py-3 cursor-pointer transition-all bg-secondary-container dark:bg-secondary text-on-secondary-container dark:text-on-secondary rounded-lg" href="#">
+<span class="material-symbols-outlined">group</span>
+<span class="font-label-md text-label-md">My Students</span>
+</a>
+<a class="group flex items-center gap-3 px-4 py-3 cursor-pointer transition-all text-on-surface-variant dark:text-on-primary-container hover:bg-surface-container-high dark:hover:bg-surface-variant rounded-lg" href="#">
+<span class="material-symbols-outlined">calendar_today</span>
+<span class="font-label-md text-label-md">Schedule</span>
+</a>
+<a class="group flex items-center gap-3 px-4 py-3 cursor-pointer transition-all text-on-surface-variant dark:text-on-primary-container hover:bg-surface-container-high dark:hover:bg-surface-variant rounded-lg" href="#">
+<span class="material-symbols-outlined">description</span>
+<span class="font-label-md text-label-md">Document Review</span>
+</a>
+<a class="group flex items-center gap-3 px-4 py-3 cursor-pointer transition-all text-on-surface-variant dark:text-on-primary-container hover:bg-surface-container-high dark:hover:bg-surface-variant rounded-lg" href="#">
+<span class="material-symbols-outlined">payments</span>
+<span class="font-label-md text-label-md">Payroll</span>
+</a>
+</div>
+<div class="px-2 py-4 border-t border-outline-variant space-y-1">
+<a class="group flex items-center gap-3 px-4 py-3 cursor-pointer transition-all text-on-surface-variant dark:text-on-primary-container hover:bg-surface-container-high dark:hover:bg-surface-variant rounded-lg" href="#">
+<span class="material-symbols-outlined">contact_support</span>
+<span class="font-label-md text-label-md">Support</span>
+</a>
+<a class="group flex items-center gap-3 px-4 py-3 cursor-pointer transition-all text-error hover:bg-error-container rounded-lg" href="#">
+<span class="material-symbols-outlined">logout</span>
+<span class="font-label-md text-label-md">Logout</span>
+</a>
+</div>
+</nav>
+<!-- Main Content Wrapper -->
+<div class="flex-1 flex flex-col h-full overflow-hidden">
+<!-- TopNavBar -->
+<header class="sticky top-0 z-50 flex justify-between items-center w-full px-margin h-16 bg-surface-container-lowest dark:bg-primary-container border-b border-outline-variant dark:border-outline">
+<div class="flex items-center gap-4">
+<button class="lg:hidden text-on-surface-variant cursor-pointer active:opacity-80 transition-opacity p-2 rounded-full hover:bg-surface-container-low">
+<span class="material-symbols-outlined">menu</span>
+</button>
+<div class="font-h2 text-h2 font-bold text-primary dark:text-primary-fixed lg:hidden">EduConsult CRM</div>
+<!-- Search on left -->
+<div class="hidden md:flex relative items-center ml-4">
+<span class="material-symbols-outlined absolute left-3 text-on-surface-variant">search</span>
+<input class="pl-10 pr-4 py-2 bg-surface-container-low border border-outline-variant rounded-lg focus:outline-none focus:border-secondary focus:ring-1 focus:ring-secondary text-body-md w-64 transition-all" placeholder="Search..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<button class="p-2 text-on-surface-variant hover:bg-surface-container-low rounded-full transition-colors cursor-pointer active:opacity-80">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="p-2 text-on-surface-variant hover:bg-surface-container-low rounded-full transition-colors cursor-pointer active:opacity-80">
+<span class="material-symbols-outlined">settings</span>
+</button>
+<button class="p-2 text-on-surface-variant hover:bg-surface-container-low rounded-full transition-colors cursor-pointer active:opacity-80">
+<span class="material-symbols-outlined">help</span>
+</button>
+<div class="ml-4 w-8 h-8 rounded-full overflow-hidden cursor-pointer border border-outline-variant">
+<img alt="User profile" class="w-full h-full object-cover" data-alt="A professional headshot of an academic consultant in a modern, well-lit office setting. The consultant is wearing smart casual business attire, smiling warmly. Soft, natural lighting highlights the face, creating a welcoming and trustworthy corporate aesthetic suitable for an educational CRM platform." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCeXN7L5RBhBpyweR5SC-O3XY3lm1FakE1K4qg3snYgjElg0ELsQICC0hfR8bvPbFLK9SYTgFX_PUWdyGbNZBTf2wZhNbr7svuDFPjhPH-WLDEJg5JtDseMvOMq5UXpPv530epBBDC7YuaBpIk07BSmJfyMyjgozhi177BWQHUzVOs-cQfZyybZEI6VgEqJsib0S5YY2FyNBmRtnY7RMZ0fuPJ9uSU9XDaGd_dtPPiezyaWWmU3EYzscA"/>
+</div>
+</div>
+</header>
+<!-- Canvas -->
+<main class="flex-1 overflow-y-auto p-margin md:p-8 bg-surface">
+<div class="max-w-7xl mx-auto space-y-section-gap">
+<!-- Breadcrumb -->
+<div class="flex items-center text-body-sm font-body-sm text-on-surface-variant gap-2">
+<a class="hover:text-secondary transition-colors" href="#">My Students</a>
+<span class="material-symbols-outlined text-[16px]">chevron_right</span>
+<span class="text-primary font-medium">Budi Santoso</span>
+</div>
+<!-- Student Profile Banner -->
+<section class="bg-surface-container-lowest rounded-xl p-card-padding border border-outline-variant flex flex-col md:flex-row gap-6 items-start md:items-center relative overflow-hidden">
+<!-- Subtle background pattern/gradient -->
+<div class="absolute top-0 right-0 w-64 h-64 bg-secondary/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/4 pointer-events-none"></div>
+<div class="w-24 h-24 rounded-full overflow-hidden border-4 border-surface flex-shrink-0 shadow-sm relative z-10">
+<img alt="Budi Santoso" class="w-full h-full object-cover" data-alt="A bright, high-quality portrait of a cheerful Indonesian university student in a casual campus setting. The student is wearing a clean polo shirt. The lighting is sunny and optimistic, reflecting a modern light-mode educational UI aesthetic. Deep blues and bright whites dominate the background to match a corporate yet approachable educational brand." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDSz1Vfk8kI5jVeaKJURM1sWgoLYD-FJcRxQJrgixmy1kly7iOvN5QjyR9CA1EvLQ0WLEbLUML_R2Y1RYgQe0RLg-xQOEhUIxmylKZrwLKiE4IxXLR4vEac34cT_z52JfhyVuS4OLUeubtly5MErtsgL27cbgCi9Yu7q9r8OYVRDmDAx-AZUO4i2Zn12mZoR9WL3laDlfjxaBEIYudweHHkjIt7wc70mCx_aje0uX8SN5oS1k8vBzGA-w"/>
+</div>
+<div class="flex-1 z-10 space-y-2">
+<div class="flex flex-col sm:flex-row sm:items-center gap-3 justify-between">
+<div>
+<h1 class="font-h1 text-h1 text-primary">Budi Santoso</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant mt-1 flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">school</span>
+                                    Target: University of Indonesia - Computer Science
+                                </p>
+</div>
+<div class="flex-shrink-0">
+<span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-success/10 text-success border border-success/20 font-label-md text-label-md">
+<span class="material-symbols-outlined text-[16px]">verified</span>
+                                    Document Status: Verified
+                                </span>
+</div>
+</div>
+<div class="flex flex-wrap gap-4 pt-2 border-t border-outline-variant/50">
+<a class="flex items-center gap-2 font-body-sm text-body-sm text-on-surface-variant hover:text-secondary transition-colors" href="mailto:budi.santoso@example.com">
+<span class="material-symbols-outlined text-[16px]">mail</span>
+                                budi.santoso@example.com
+                            </a>
+<a class="flex items-center gap-2 font-body-sm text-body-sm text-on-surface-variant hover:text-secondary transition-colors" href="tel:+6281234567890">
+<span class="material-symbols-outlined text-[16px]">call</span>
+                                +62 812-3456-7890
+                            </a>
+<span class="flex items-center gap-2 font-body-sm text-body-sm text-on-surface-variant">
+<span class="material-symbols-outlined text-[16px]">schedule</span>
+                                Last Session: Oct 12, 2023
+                            </span>
+</div>
+</div>
+</section>
+<!-- Split Layout: Form & Timeline -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter items-start">
+<!-- Left Column: Meeting Notes Form -->
+<div class="lg:col-span-7 space-y-4">
+<h2 class="font-headline-sm text-headline-sm text-primary flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary">edit_document</span>
+                            New Meeting Note
+                        </h2>
+<form class="bg-surface-container-lowest rounded-xl p-card-padding border border-outline-variant space-y-5">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<div class="space-y-1.5">
+<label class="font-label-sm text-label-sm text-on-surface-variant block">Date</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant">calendar_month</span>
+<input class="w-full pl-10 pr-3 py-2 bg-surface-container-lowest border border-outline-variant rounded-lg focus:ring-2 focus:ring-secondary/20 focus:border-secondary transition-all font-body-md text-body-md text-primary" type="date"/>
+</div>
+</div>
+<div class="space-y-1.5">
+<label class="font-label-sm text-label-sm text-on-surface-variant block">Session Category</label>
+<div class="relative">
+<select class="w-full pl-3 pr-10 py-2 bg-surface-container-lowest border border-outline-variant rounded-lg focus:ring-2 focus:ring-secondary/20 focus:border-secondary transition-all font-body-md text-body-md text-primary appearance-none">
+<option>Academic Tutoring</option>
+<option>Career Consultation</option>
+<option>Document Review</option>
+<option>General Check-in</option>
+</select>
+<span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-on-surface-variant pointer-events-none">expand_more</span>
+</div>
+</div>
+</div>
+<div class="space-y-1.5">
+<label class="font-label-sm text-label-sm text-on-surface-variant block">Poin Utama Diskusi (Main Discussion Points)</label>
+<textarea class="w-full p-3 bg-surface-container-lowest border border-outline-variant rounded-lg focus:ring-2 focus:ring-secondary/20 focus:border-secondary transition-all font-body-md text-body-md text-primary resize-y" placeholder="Detail the main topics discussed during this session..." rows="4"></textarea>
+</div>
+<div class="space-y-1.5">
+<label class="font-label-sm text-label-sm text-on-surface-variant block">Rekomendasi &amp; Action Plan Siswa (Recommendations)</label>
+<textarea class="w-full p-3 bg-surface-container-lowest border border-outline-variant rounded-lg focus:ring-2 focus:ring-secondary/20 focus:border-secondary transition-all font-body-md text-body-md text-primary resize-y" placeholder="What are the next steps for the student?" rows="3"></textarea>
+</div>
+<div class="pt-2 flex items-center justify-between border-t border-outline-variant/50 mt-4 pt-4">
+<button class="flex items-center gap-2 px-4 py-2 border border-outline-variant rounded-lg font-label-md text-label-md text-on-surface-variant hover:bg-surface-container-low transition-colors" type="button">
+<span class="material-symbols-outlined text-[20px]">attach_file</span>
+                                    Attach Files
+                                </button>
+<button class="flex items-center gap-2 px-6 py-2 bg-primary text-on-primary rounded-lg font-label-md text-label-md hover:bg-primary/90 transition-colors shadow-sm" type="submit">
+<span class="material-symbols-outlined text-[20px]">save</span>
+                                    Simpan Catatan Sesi
+                                </button>
+</div>
+</form>
+</div>
+<!-- Right Column: Interaction Timeline -->
+<div class="lg:col-span-5 space-y-4">
+<h2 class="font-headline-sm text-headline-sm text-primary flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary">history</span>
+                            Log Interaksi (History)
+                        </h2>
+<div class="bg-surface-container-lowest rounded-xl p-card-padding border border-outline-variant h-[600px] overflow-y-auto relative">
+<!-- Timeline Line -->
+<div class="absolute left-[39px] top-6 bottom-6 w-px bg-outline-variant/50"></div>
+<div class="space-y-6 relative">
+<!-- Timeline Item 1 -->
+<div class="relative pl-14 group">
+<div class="absolute left-0 top-1 w-8 h-8 rounded-full bg-secondary-container text-secondary flex items-center justify-center border-4 border-surface-container-lowest z-10 group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-[16px]">school</span>
+</div>
+<div class="bg-surface-container-low rounded-lg p-4 border border-outline-variant/50 group-hover:border-secondary/30 transition-colors">
+<div class="flex justify-between items-start mb-2">
+<span class="font-label-sm text-label-sm px-2 py-0.5 rounded bg-surface-container-lowest border border-outline-variant text-on-surface-variant">Academic Tutoring</span>
+<span class="font-mono-sm text-mono-sm text-on-surface-variant">Oct 12, 2023 • 14:00</span>
+</div>
+<p class="font-body-sm text-body-sm text-primary mb-3">Reviewed draft for personal statement. Suggested stronger opening paragraph focusing on early exposure to coding.</p>
+<button class="text-secondary font-label-sm text-label-sm flex items-center gap-1 hover:underline">
+<span class="material-symbols-outlined text-[14px]">description</span>
+                                            View Files (1)
+                                        </button>
+</div>
+</div>
+<!-- Timeline Item 2 -->
+<div class="relative pl-14 group">
+<div class="absolute left-0 top-1 w-8 h-8 rounded-full bg-tertiary-fixed text-on-tertiary-fixed flex items-center justify-center border-4 border-surface-container-lowest z-10 group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-[16px]">work</span>
+</div>
+<div class="bg-surface-container-low rounded-lg p-4 border border-outline-variant/50 group-hover:border-tertiary/30 transition-colors">
+<div class="flex justify-between items-start mb-2">
+<span class="font-label-sm text-label-sm px-2 py-0.5 rounded bg-surface-container-lowest border border-outline-variant text-on-surface-variant">Career Consultation</span>
+<span class="font-mono-sm text-mono-sm text-on-surface-variant">Sep 28, 2023 • 10:30</span>
+</div>
+<p class="font-body-sm text-body-sm text-primary">Discussed potential internships for Summer 2024. Student is leaning towards local tech startups rather than large enterprises.</p>
+</div>
+</div>
+<!-- Timeline Item 3 -->
+<div class="relative pl-14 group">
+<div class="absolute left-0 top-1 w-8 h-8 rounded-full bg-surface-variant text-on-surface-variant flex items-center justify-center border-4 border-surface-container-lowest z-10 group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-[16px]">forum</span>
+</div>
+<div class="bg-surface-container-low rounded-lg p-4 border border-outline-variant/50 group-hover:border-outline-variant transition-colors">
+<div class="flex justify-between items-start mb-2">
+<span class="font-label-sm text-label-sm px-2 py-0.5 rounded bg-surface-container-lowest border border-outline-variant text-on-surface-variant">General Check-in</span>
+<span class="font-mono-sm text-mono-sm text-on-surface-variant">Sep 10, 2023 • 09:15</span>
+</div>
+<p class="font-body-sm text-body-sm text-primary">Initial onboarding session. Established communication preferences and mapped out key deadlines for the semester.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+</body></html>

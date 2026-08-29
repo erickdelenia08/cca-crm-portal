@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>EduDoc Admin - Document Processing Panel</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400&amp;family=Plus+Jakarta+Sans:wght@600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "tertiary": "#0f766e",
+                        "secondary-fixed": "#e2dfff",
+                        "on-primary-container": "#8590a6",
+                        "on-error-container": "#93000a",
+                        "on-primary-fixed": "#111c2d",
+                        "surface-tint": "#545f73",
+                        "inverse-on-surface": "#f3f0f2",
+                        "surface-dim": "#dcd9db",
+                        "inverse-primary": "#bcc7de",
+                        "outline": "#64748b",
+                        "secondary-container": "#645efb",
+                        "primary-fixed": "#d8e3fb",
+                        "on-background": "#1b1b1d",
+                        "on-tertiary": "#ffffff",
+                        "error": "#ef4444",
+                        "warning": "#f59e0b",
+                        "surface-bright": "#fbf8fa",
+                        "secondary-fixed-dim": "#c3c0ff",
+                        "surface-variant": "#e4e2e3",
+                        "primary": "#091426",
+                        "on-surface": "#1b1b1d",
+                        "surface-container-lowest": "#ffffff",
+                        "primary-fixed-dim": "#bcc7de",
+                        "on-error": "#ffffff",
+                        "on-primary": "#ffffff",
+                        "inverse-surface": "#303032",
+                        "background": "#fbf8fa",
+                        "on-surface-variant": "#45474c",
+                        "tertiary-container": "#002f2b",
+                        "tertiary-fixed-dim": "#80d5cb",
+                        "on-tertiary-fixed-variant": "#00504a",
+                        "on-tertiary-fixed": "#00201d",
+                        "surface": "#f8fafc",
+                        "on-primary-fixed-variant": "#3c475a",
+                        "info": "#0284c7",
+                        "on-secondary-fixed": "#0f0069",
+                        "surface-container-highest": "#e4e2e3",
+                        "on-secondary-fixed-variant": "#3323cc",
+                        "on-secondary": "#ffffff",
+                        "primary-container": "#1e293b",
+                        "secondary": "#4b41e1",
+                        "outline-variant": "#c5c6cd",
+                        "on-tertiary-container": "#469e95",
+                        "error-container": "#ffdad6",
+                        "success": "#10b981",
+                        "surface-container": "#f0edef",
+                        "surface-container-low": "#f5f3f4",
+                        "on-secondary-container": "#fffbff",
+                        "tertiary-fixed": "#9cf2e8",
+                        "surface-container-high": "#eae7e9"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "margin": "24px",
+                        "gutter": "16px",
+                        "base-unit": "4px",
+                        "base": "4px",
+                        "container-margin": "24px",
+                        "section-gap": "28px",
+                        "card-padding": "20px"
+                    },
+                    "fontFamily": {
+                        "h1": ["Plus Jakarta Sans"],
+                        "headline-sm": ["Plus Jakarta Sans"],
+                        "body-md": ["Inter"],
+                        "headline-lg": ["Plus Jakarta Sans"],
+                        "headline-lg-mobile": ["Plus Jakarta Sans"],
+                        "headline-md": ["Plus Jakarta Sans"],
+                        "h3": ["Plus Jakarta Sans"],
+                        "body-lg": ["Inter"],
+                        "mono-sm": ["\"JetBrains Mono\", monospace"],
+                        "label-md": ["Inter"],
+                        "label-sm": ["Inter"],
+                        "h2": ["Plus Jakarta Sans"],
+                        "h1-mobile": ["Plus Jakarta Sans"],
+                        "body-sm": ["Inter"]
+                    },
+                    "fontSize": {
+                        "h1": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "headline-sm": ["20px", { "lineHeight": "28px", "fontWeight": "600" }],
+                        "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "headline-lg-mobile": ["24px", { "lineHeight": "32px", "fontWeight": "700" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+                        "h3": ["20px", { "lineHeight": "28px", "fontWeight": "600" }],
+                        "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "mono-sm": ["12px", { "lineHeight": "16px", "fontWeight": "400" }],
+                        "label-md": ["14px", { "lineHeight": "20px", "fontWeight": "600" }],
+                        "label-sm": ["12px", { "lineHeight": "16px", "fontWeight": "500" }],
+                        "h2": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+                        "h1-mobile": ["24px", { "lineHeight": "32px", "fontWeight": "700" }],
+                        "body-sm": ["12px", { "lineHeight": "16px", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background-color: #c5c6cd; border-radius: 20px; }
+    </style>
+</head>
+<body class="bg-surface text-on-surface font-body-md h-screen w-full flex overflow-hidden selection:bg-secondary-container selection:text-on-secondary-container">
+<!-- SideNavBar Component -->
+<aside class="fixed left-0 top-0 h-full w-64 flex flex-col border-r border-outline-variant dark:border-outline bg-surface-container-low dark:bg-primary-container z-40">
+<!-- Header -->
+<div class="p-margin flex items-center gap-3 border-b border-outline-variant">
+<img class="w-10 h-10 rounded-lg object-cover bg-surface-container-highest" data-alt="A small, professional circular logo for a university admissions department. The logo features a minimalist shield icon in deep indigo (secondary) and slate gray (primary) on a crisp white background. High resolution, flat vector style, suitable for a modern digital dashboard UI." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCdClLKoR1AW5Uvdf5SoUruDftyOApp3iNbbXi8KV3DlpnR8ygbGMvPPUsRkwYZMDEeVM6Ghx4h33iOKbANEuwqSjVtmVDXwwiLEx3stCe_n7UZad2QJgxVztSh1DXnq9g8owv5tP94Vly7xHRLbyr3Vu6EfwtFY5kfP_jcknxLfM2hKsDE7UgHj122-VnKs7nYf9UvjjZm6btMuY9UjLqOT6JQHCbB5wDfxmVmYVU5cn5r9_rTOiYD4Q"/>
+<div>
+<h2 class="font-h3 text-h3 text-on-surface dark:text-on-primary-fixed">Admissions</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Central Processing</p>
+</div>
+</div>
+<!-- Navigation Tabs -->
+<nav class="flex-1 py-4 flex flex-col gap-1 overflow-y-auto custom-scrollbar">
+<!-- Active Tab: Queue (Intent matches Kanban Pipeline Board) -->
+<a class="flex items-center gap-gutter px-4 py-3 my-1 mx-2 bg-secondary-container dark:bg-secondary text-on-secondary-container dark:text-on-secondary rounded-lg font-label-md text-label-md transition-all cursor-pointer" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">view_kanban</span>
+<span>Queue</span>
+</a>
+<!-- Inactive Tabs -->
+<a class="flex items-center gap-gutter px-4 py-3 my-1 mx-2 text-on-surface-variant dark:text-on-primary-container hover:bg-surface-variant dark:hover:bg-on-primary-fixed-variant rounded-lg font-label-md text-label-md transition-all cursor-pointer" href="#">
+<span class="material-symbols-outlined">groups</span>
+<span>Teams</span>
+</a>
+<a class="flex items-center gap-gutter px-4 py-3 my-1 mx-2 text-on-surface-variant dark:text-on-primary-container hover:bg-surface-variant dark:hover:bg-on-primary-fixed-variant rounded-lg font-label-md text-label-md transition-all cursor-pointer" href="#">
+<span class="material-symbols-outlined">description</span>
+<span>Templates</span>
+</a>
+<a class="flex items-center gap-gutter px-4 py-3 my-1 mx-2 text-on-surface-variant dark:text-on-primary-container hover:bg-surface-variant dark:hover:bg-on-primary-fixed-variant rounded-lg font-label-md text-label-md transition-all cursor-pointer" href="#">
+<span class="material-symbols-outlined">history</span>
+<span>Audit Log</span>
+</a>
+<a class="flex items-center gap-gutter px-4 py-3 my-1 mx-2 text-on-surface-variant dark:text-on-primary-container hover:bg-surface-variant dark:hover:bg-on-primary-fixed-variant rounded-lg font-label-md text-label-md transition-all cursor-pointer" href="#">
+<span class="material-symbols-outlined">tune</span>
+<span>Settings</span>
+</a>
+</nav>
+<!-- User Profile Minimal Footer -->
+<div class="p-4 border-t border-outline-variant flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-tertiary flex items-center justify-center text-on-tertiary font-label-md">AD</div>
+<div class="flex-1 min-w-0">
+<p class="font-label-sm text-on-surface truncate">Admin User</p>
+<p class="font-body-sm text-on-surface-variant truncate">admin@edudoc.edu</p>
+</div>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="flex-1 ml-64 flex flex-col h-screen relative bg-surface-container-low">
+<!-- TopNavBar Component -->
+<header class="flex justify-between items-center w-full px-margin py-2 sticky top-0 z-30 bg-surface-container-lowest dark:bg-primary border-b border-outline-variant dark:border-outline">
+<!-- Left: Brand / Logo Area -->
+<div class="flex items-center gap-4">
+<h1 class="font-h2 text-h2 text-primary dark:text-primary-fixed tracking-tight">EduDoc Admin</h1>
+</div>
+<!-- Middle: Navigation Links -->
+<nav class="hidden md:flex items-center gap-6">
+<!-- Inactive -->
+<a class="font-headline-sm text-headline-sm text-on-surface-variant dark:text-on-primary-container hover:text-secondary dark:hover:text-secondary-fixed-dim transition-colors cursor-pointer active:opacity-80 py-4" href="#">Dashboard</a>
+<!-- Active: Workflows (matches operational processing panel) -->
+<a class="font-headline-sm text-headline-sm text-secondary dark:text-secondary-fixed border-b-2 border-secondary pb-[14px] hover:text-secondary dark:hover:text-secondary-fixed-dim transition-colors cursor-pointer active:opacity-80 mt-[2px]" href="#">Workflows</a>
+<!-- Inactive -->
+<a class="font-headline-sm text-headline-sm text-on-surface-variant dark:text-on-primary-container hover:text-secondary dark:hover:text-secondary-fixed-dim transition-colors cursor-pointer active:opacity-80 py-4" href="#">Reports</a>
+<a class="font-headline-sm text-headline-sm text-on-surface-variant dark:text-on-primary-container hover:text-secondary dark:hover:text-secondary-fixed-dim transition-colors cursor-pointer active:opacity-80 py-4" href="#">Archives</a>
+</nav>
+<!-- Right: Actions & Profile -->
+<div class="flex items-center gap-4">
+<button class="p-2 text-on-surface-variant hover:bg-surface-variant rounded-full transition-colors cursor-pointer active:opacity-80 flex items-center justify-center">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="p-2 text-on-surface-variant hover:bg-surface-variant rounded-full transition-colors cursor-pointer active:opacity-80 flex items-center justify-center">
+<span class="material-symbols-outlined">settings</span>
+</button>
+<img alt="Administrator profile" class="w-9 h-9 rounded-full object-cover border border-outline-variant ml-2" data-alt="A professional headshot of an administrative staff member, facing forward with a warm smile. The background is a soft, blurred office environment with cool slate and subtle blue lighting to match a modern corporate dashboard aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuB1mIHaWfp1ssrHPFEAyrT47L38vbsXuchH2ACr8Te4L5tFXC5abebHTFB6FaQFSnKjEC4tM6hPkOO3yI8WDA2CcfAL6OBodvzhWUFzJ9yJZDvvis6HRMclgCwyx73ohQZn1Epqs9OCFKVC7wtP0G6GTsUTkv5uElvsv3Jj6HGSG28BWN00Prryx5XwhHVqHw6UWfaxEOQMPwxs-5F6wDDqRZkUvCkVv-LMzmW_uLGA-Sw_UR_tPqqpmg"/>
+</div>
+</header>
+<!-- Board Content Area -->
+<div class="flex-1 flex flex-col p-margin overflow-hidden gap-section-gap">
+<!-- Board Header & Filters -->
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-surface-container-lowest p-5 rounded-xl border border-outline-variant shadow-sm">
+<div>
+<h2 class="font-h2 text-h2 text-on-surface mb-1">Operational Processing</h2>
+<p class="font-body-sm text-on-surface-variant">Manage and verify incoming student documentation requests.</p>
+</div>
+<div class="flex flex-wrap items-center gap-3">
+<!-- Search Filter -->
+<div class="relative w-64">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-[18px]">search</span>
+<input class="w-full pl-9 pr-3 py-2 bg-surface-container-low border border-outline-variant rounded-lg font-body-sm text-on-surface focus:outline-none focus:border-secondary focus:ring-1 focus:ring-secondary transition-all" placeholder="Search student name or ID..." type="text"/>
+</div>
+<!-- Document Type Filter -->
+<select class="py-2 pl-3 pr-8 bg-surface-container-low border border-outline-variant rounded-lg font-body-sm text-on-surface focus:outline-none focus:border-secondary focus:ring-1 focus:ring-secondary appearance-none transition-all">
+<option value="">All Document Types</option>
+<option value="passport">Passport</option>
+<option value="visa">Visa Application</option>
+<option value="transcript">Transcript</option>
+</select>
+<!-- Priority Filter -->
+<select class="py-2 pl-3 pr-8 bg-surface-container-low border border-outline-variant rounded-lg font-body-sm text-on-surface focus:outline-none focus:border-secondary focus:ring-1 focus:ring-secondary appearance-none transition-all">
+<option value="">Any Priority</option>
+<option value="high">High Priority</option>
+<option value="standard">Standard</option>
+</select>
+<button class="bg-primary text-on-primary px-4 py-2 rounded-lg font-label-md flex items-center gap-2 hover:bg-primary/90 transition-colors">
+<span class="material-symbols-outlined text-[18px]">add</span>
+                        New Request
+                    </button>
+</div>
+</div>
+<!-- Kanban Board -->
+<div class="flex-1 flex gap-gutter overflow-x-auto overflow-y-hidden custom-scrollbar pb-2">
+<!-- Column 1: Pending -->
+<div class="flex-1 min-w-[320px] max-w-[400px] flex flex-col gap-4 bg-surface-container/50 rounded-xl p-4 border border-outline-variant/50">
+<div class="flex items-center justify-between px-1">
+<h3 class="font-label-md text-on-surface flex items-center gap-2">
+<div class="w-2 h-2 rounded-full bg-warning"></div>
+                            Antrean Verifikasi
+                        </h3>
+<span class="bg-surface-variant text-on-surface-variant px-2 py-0.5 rounded-full font-mono-sm text-xs">2</span>
+</div>
+<div class="flex flex-col gap-3 overflow-y-auto custom-scrollbar pr-1 h-full pb-10">
+<!-- Card 1 -->
+<div class="bg-surface-container-lowest rounded-lg p-card-padding border border-outline-variant shadow-sm hover:border-secondary hover:shadow-md transition-all cursor-pointer group">
+<div class="flex justify-between items-start mb-3">
+<span class="bg-warning/10 text-warning border border-warning/20 px-2 py-0.5 rounded text-[10px] font-label-sm uppercase tracking-wider">Pending</span>
+<span class="font-mono-sm text-on-surface-variant text-[11px]">ID: DOC-2023-001</span>
+</div>
+<div class="flex items-center gap-3 mb-4">
+<img class="w-10 h-10 rounded-full object-cover bg-surface-container-highest" data-alt="A small circular avatar of a male international university student with short dark hair, wearing a casual grey hoodie. The lighting is bright and neutral, typical of an ID photo, set against a clean white background." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDhtTQrHr7sxQreIMAsd97Y79fRaEBiwckJ3FZPZNIq0CnrYa1qjLI5DwcbxbfGapThym4e7Q25j089LcMUwuCUZSCUIJhBIf5NjddEubETCQNKlQuwn6oGHLsG55kX0nqgQDDEoFcnOoy93f542chje4pnpU_dMslrcHdjBiTt4O1J1l-xtU-9QAV7MW1UhVnb9JOauBV6zPcYI1I6lfCGft3BcvpmZV1uRdSw3oP1n_vfk3JMoDQwNg"/>
+<div>
+<h4 class="font-label-md text-on-surface">Budi Santoso</h4>
+<p class="font-body-sm text-on-surface-variant">Passport Copy</p>
+</div>
+</div>
+<div class="flex justify-between items-end border-t border-outline-variant/40 pt-3 mt-1">
+<div class="text-[11px] text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">upload_file</span> Oct 24, 2023
+                                </div>
+<div class="flex -space-x-2">
+<div class="w-7 h-7 rounded-full border-2 border-surface-container-lowest bg-surface-variant flex items-center justify-center text-[10px] text-on-surface-variant border-dashed">
+<span class="material-symbols-outlined text-[14px]">person_add</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Column 2: In Processing -->
+<div class="flex-1 min-w-[320px] max-w-[400px] flex flex-col gap-4 bg-surface-container/50 rounded-xl p-4 border border-outline-variant/50">
+<div class="flex items-center justify-between px-1">
+<h3 class="font-label-md text-on-surface flex items-center gap-2">
+<div class="w-2 h-2 rounded-full bg-info"></div>
+                            Sedang Diproses
+                        </h3>
+<span class="bg-surface-variant text-on-surface-variant px-2 py-0.5 rounded-full font-mono-sm text-xs">1</span>
+</div>
+<div class="flex flex-col gap-3 overflow-y-auto custom-scrollbar pr-1 h-full pb-10">
+<!-- Card 2 (Active/Clicked state example) -->
+<div class="bg-secondary-container/10 rounded-lg p-card-padding border border-secondary shadow-md transition-all cursor-pointer relative overflow-hidden">
+<!-- Subtle highlight bar for active state -->
+<div class="absolute left-0 top-0 bottom-0 w-1 bg-secondary"></div>
+<div class="flex justify-between items-start mb-3 pl-2">
+<span class="bg-info/10 text-info border border-info/20 px-2 py-0.5 rounded text-[10px] font-label-sm uppercase tracking-wider">Processing</span>
+<span class="font-mono-sm text-on-surface-variant text-[11px]">ID: DOC-2023-042</span>
+</div>
+<div class="flex items-center gap-3 mb-4 pl-2">
+<div class="w-10 h-10 rounded-full bg-tertiary-container text-on-tertiary-container flex items-center justify-center font-label-md">SA</div>
+<div>
+<h4 class="font-label-md text-on-surface">Siti Aminah</h4>
+<p class="font-body-sm text-on-surface-variant">Visa Application Form</p>
+</div>
+</div>
+<div class="flex justify-between items-end border-t border-outline-variant/40 pt-3 mt-1 pl-2">
+<div class="text-[11px] text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">schedule</span> Due Oct 26
+                                </div>
+<div class="flex items-center gap-2">
+<span class="text-[10px] font-label-sm text-on-surface-variant">Handler:</span>
+<img class="w-6 h-6 rounded-full border border-surface-container-lowest object-cover" data-alt="A tiny circular profile picture of an administrative worker, female, wearing glasses and a smart casual blue blouse. Bright, professional office lighting setting, conveying trust and efficiency." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDHehJROFVJmOaAskV5eaigxY4VWg6MxGtUtCEtrm3lEXE39KUpqxo8ZdHroncDJ8YpRc3iwqdIuB9C33mwCd51nkWoG9RwCIxV4oZuqCdegXtSrdrRMh0T4z4FXCmHqt0YPKdPwZ1X8524or7Dn4i335Qgp1yQ2Ut3vCqfvp2AvlAz85ctSF6esA-Niw7n5dkAO59EGj9-U5LnpkGxRvDWY5cUGR2dQx4qWACbrXDfrLE_fdtB-YMSEg"/>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Column 3: Revision Requested -->
+<div class="flex-1 min-w-[320px] max-w-[400px] flex flex-col gap-4 bg-surface-container/50 rounded-xl p-4 border border-outline-variant/50">
+<div class="flex items-center justify-between px-1">
+<h3 class="font-label-md text-on-surface flex items-center gap-2">
+<div class="w-2 h-2 rounded-full bg-error"></div>
+                            Butuh Revisi
+                        </h3>
+<span class="bg-surface-variant text-on-surface-variant px-2 py-0.5 rounded-full font-mono-sm text-xs">1</span>
+</div>
+<div class="flex flex-col gap-3 overflow-y-auto custom-scrollbar pr-1 h-full pb-10">
+<!-- Card 3 -->
+<div class="bg-surface-container-lowest rounded-lg p-card-padding border border-error/30 shadow-sm hover:border-error transition-all cursor-pointer">
+<div class="flex justify-between items-start mb-3">
+<span class="bg-error/10 text-error border border-error/20 px-2 py-0.5 rounded text-[10px] font-label-sm uppercase tracking-wider">Revision</span>
+<span class="font-mono-sm text-on-surface-variant text-[11px]">ID: DOC-2023-088</span>
+</div>
+<div class="flex items-center gap-3 mb-4">
+<img class="w-10 h-10 rounded-full object-cover bg-surface-container-highest" data-alt="A small circular avatar of a male international student with curly hair, wearing a casual t-shirt. The portrait is brightly lit, modern, and has a neutral slate background appropriate for an educational dashboard." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAaC8W8UfzsN_DgePX_aEi0tNV28l8KrHDVKzihXRa99Hh3jwgRGod1hrGLEMjnfm7mxhd-mdv86HJDgWSECzBSTsMhLj41XRCr0armpBoQmCNsT5WD0GCN0Qkpezj0dzVFLWhKyEorWsI-W1w-YBWs1E-PF9INsI5xaeo3gI00DKncQv5BGb6rP5cLD3-i-nEatAkVuJt8uD6cowSLUzHv397JCYDHy_ka3J7wMm13d73OwUVLxLMv5g"/>
+<div>
+<h4 class="font-label-md text-on-surface">John Doe</h4>
+<p class="font-body-sm text-on-surface-variant">Official Transcript</p>
+</div>
+</div>
+<div class="bg-error/5 border border-error/10 p-2 rounded text-[11px] text-on-surface mb-3 flex items-start gap-1.5">
+<span class="material-symbols-outlined text-[14px] text-error mt-0.5">error</span>
+<span class="line-clamp-2">Document edge cut off. Please re-scan ensuring all 4 corners are visible.</span>
+</div>
+<div class="flex justify-between items-end border-t border-outline-variant/40 pt-3 mt-1">
+<div class="text-[11px] text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">update</span> Sent Oct 22
+                                </div>
+<div class="flex items-center gap-2">
+<img class="w-6 h-6 rounded-full border border-surface-container-lowest object-cover" data-alt="A tiny circular profile picture of a male administrative worker, wearing a neat collared shirt. Bright, professional office lighting setting, conveying trust and efficiency." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDy0vpl6Dp3bj6TrrSAkw6dBvhPCirf0tZ2bsDdsTz12UtEWUIeNSvFiBh2vvr807fPbL2x8RewFTypPk1XAc30LlDZjjHnDeqBW8Xq76k8Xg7u1aikrLEHfbWTedjy8vmMkQKqrRl2lbHgVkox4deO1c2LjwX-UQhUFgKCBYJRy3BjWag_PjyudC7OwkzEu9VSPeFixkVDh9744QFP_l1o1EU8NyChmosxdow6RAcATWpSDFHcPzjl_w"/>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Column 4: Approved -->
+<div class="flex-1 min-w-[320px] max-w-[400px] flex flex-col gap-4 bg-surface-container/50 rounded-xl p-4 border border-outline-variant/50">
+<div class="flex items-center justify-between px-1">
+<h3 class="font-label-md text-on-surface flex items-center gap-2">
+<div class="w-2 h-2 rounded-full bg-success"></div>
+                            Selesai
+                        </h3>
+<span class="bg-surface-variant text-on-surface-variant px-2 py-0.5 rounded-full font-mono-sm text-xs">0</span>
+</div>
+<div class="flex flex-col gap-3 overflow-y-auto custom-scrollbar pr-1 h-full pb-10">
+<!-- Empty State for column -->
+<div class="flex flex-col items-center justify-center h-32 border-2 border-dashed border-outline-variant/40 rounded-lg text-on-surface-variant/60">
+<span class="material-symbols-outlined text-[32px] mb-2 opacity-50">task_alt</span>
+<p class="font-body-sm">No approved documents today</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Overlay & Detail Action Drawer (Side Sheet) -->
+<!-- Note: Currently rendered in an 'open' state as requested by the prompt -->
+<div class="fixed inset-0 z-[100] flex justify-end bg-primary/30 backdrop-blur-sm transition-opacity duration-300">
+<!-- Drawer Container -->
+<aside class="w-[85vw] max-w-[1300px] h-full bg-surface-container-lowest shadow-2xl flex flex-col md:flex-row transform transition-transform duration-300 translate-x-0">
+<!-- Left Side: Document Preview (Bento/Glassmorphism style container) -->
+<div class="flex-1 bg-surface-container-low border-r border-outline-variant p-6 flex flex-col overflow-hidden">
+<!-- Preview Header -->
+<div class="flex items-center justify-between mb-4">
+<div class="flex items-center gap-3">
+<div class="p-2 bg-primary/5 rounded-lg text-primary">
+<span class="material-symbols-outlined">description</span>
+</div>
+<div>
+<h3 class="font-h3 text-on-surface">Visa Application Form</h3>
+<p class="font-mono-sm text-on-surface-variant">DOC-2023-042 • Uploaded: Oct 24, 2023</p>
+</div>
+</div>
+<div class="flex gap-2">
+<button class="p-2 border border-outline-variant rounded-lg hover:bg-surface-variant transition-colors text-on-surface-variant" title="Zoom In">
+<span class="material-symbols-outlined text-[20px]">zoom_in</span>
+</button>
+<button class="p-2 border border-outline-variant rounded-lg hover:bg-surface-variant transition-colors text-on-surface-variant" title="Download">
+<span class="material-symbols-outlined text-[20px]">download</span>
+</button>
+</div>
+</div>
+<!-- PDF Preview Placeholder (Faux Glassmorphism card) -->
+<div class="flex-1 bg-surface-container-lowest rounded-xl border border-outline-variant/50 shadow-inner overflow-hidden relative group">
+<!-- Top bar of the 'PDF viewer' -->
+<div class="h-10 bg-surface-container-highest border-b border-outline-variant flex items-center px-4 justify-between">
+<span class="font-mono-sm text-xs text-on-surface-variant">page_1_visa_app.pdf</span>
+<span class="font-mono-sm text-xs text-on-surface-variant">Page 1 of 2</span>
+</div>
+<!-- The actual document image placeholder -->
+<div class="w-full h-[calc(100%-40px)] overflow-auto bg-[#e5e7eb] flex items-start justify-center p-8 custom-scrollbar">
+<img class="max-w-[800px] w-full bg-white shadow-md border border-gray-300" data-alt="A high-resolution mockup of a standard international visa application document. The document features official crests, structured form fields filled with dummy text, and a placeholder photo box. It is presented on a stark white 'paper' background with subtle drop shadows, simulating a scanned PDF viewed within a digital interface." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDJjNj7nPNjzCYL3zY_8QWQN1laIu3W_rt40l9BQuUKZ8FOYUb5PN00yoybzD0Q7AjUvxZ51_0RwIJ5vpufXNtG5CQDH8bU539kj_xMk2mcif3tT0zkpM9o_aWbPDUpXqk9kyLJvq10ic-DFga5X-McVyyqNrZSlo0gxmUewo-SdTn_KGD-IKR1kqp6a1tVeJ7HUv5DMbtOzQT7q2akBVW1zHlBWrbgzdHSnZk4IYDuShOK7dR_K705hg"/>
+</div>
+</div>
+</div>
+<!-- Right Side: Operational Controls -->
+<div class="w-full md:w-[450px] flex-shrink-0 bg-surface-container-lowest flex flex-col h-full overflow-y-auto custom-scrollbar">
+<!-- Drawer Header -->
+<div class="px-6 py-5 border-b border-outline-variant flex justify-between items-center sticky top-0 bg-surface-container-lowest z-10">
+<h2 class="font-h2 text-h2 text-on-surface">Action Panel</h2>
+<button class="p-2 rounded-full hover:bg-surface-variant text-on-surface-variant transition-colors flex items-center justify-center">
+<span class="material-symbols-outlined">close</span>
+</button>
+</div>
+<!-- Controls Body -->
+<div class="p-6 flex flex-col gap-section-gap">
+<!-- Student Info Summary Bento Card -->
+<div class="p-4 rounded-xl border border-outline-variant bg-surface-container-low flex items-start gap-4">
+<div class="w-12 h-12 rounded-full bg-tertiary-container text-on-tertiary-container flex items-center justify-center font-headline-sm flex-shrink-0">SA</div>
+<div>
+<h4 class="font-label-md text-on-surface text-base">Siti Aminah</h4>
+<p class="font-body-sm text-on-surface-variant mb-2">Student ID: 2023-CS-094</p>
+<div class="flex flex-wrap gap-2 mt-1">
+<span class="px-2 py-0.5 rounded text-[10px] font-label-sm border border-outline-variant text-on-surface-variant">Computer Science</span>
+<span class="px-2 py-0.5 rounded text-[10px] font-label-sm border border-outline-variant text-on-surface-variant">Intl. Student</span>
+</div>
+</div>
+</div>
+<!-- Action Form -->
+<form class="flex flex-col gap-5">
+<!-- Status Dropdown -->
+<div class="flex flex-col gap-1.5">
+<label class="font-label-md text-on-surface">Update Pipeline Status</label>
+<div class="relative">
+<select class="w-full appearance-none bg-surface-container-lowest border border-outline-variant rounded-lg px-4 py-2.5 font-body-md text-on-surface focus:outline-none focus:border-secondary focus:ring-2 focus:ring-secondary/20 transition-all cursor-pointer">
+<option value="pending">Antrean Verifikasi (Pending)</option>
+<option selected="" value="processing">Sedang Diproses (In Processing)</option>
+<option value="revision">Butuh Revisi (Revision Requested)</option>
+<option value="approved">Selesai (Approved)</option>
+</select>
+<span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-on-surface-variant pointer-events-none">expand_more</span>
+</div>
+</div>
+<!-- Revision Feedback -->
+<div class="flex flex-col gap-1.5">
+<div class="flex justify-between items-end">
+<label class="font-label-md text-on-surface">Feedback / Internal Notes</label>
+<span class="text-[10px] text-on-surface-variant">Required if requesting revision</span>
+</div>
+<textarea class="w-full bg-surface-container-lowest border border-outline-variant rounded-lg px-4 py-3 font-body-md text-on-surface focus:outline-none focus:border-secondary focus:ring-2 focus:ring-secondary/20 transition-all resize-y" placeholder="Detail any issues with the document or leave internal processing notes here..." rows="4"></textarea>
+</div>
+<!-- Outcome File Upload -->
+<div class="flex flex-col gap-1.5 mt-2">
+<label class="font-label-md text-on-surface">Attach Outcome Document (Optional)</label>
+<p class="font-body-sm text-on-surface-variant text-[11px] mb-1">Upload verified stamp, official letter, or finalized scan.</p>
+<div class="border-2 border-dashed border-outline-variant hover:border-secondary hover:bg-secondary/5 rounded-xl p-6 flex flex-col items-center justify-center text-center transition-colors cursor-pointer group">
+<div class="w-10 h-10 rounded-full bg-surface-variant group-hover:bg-secondary-container flex items-center justify-center mb-3 transition-colors">
+<span class="material-symbols-outlined text-on-surface-variant group-hover:text-secondary">cloud_upload</span>
+</div>
+<p class="font-label-md text-on-surface mb-1">Click to upload or drag and drop</p>
+<p class="font-body-sm text-on-surface-variant text-xs">PDF, JPG, or PNG (max. 10MB)</p>
+</div>
+</div>
+</form>
+</div>
+<!-- Footer Actions -->
+<div class="p-6 border-t border-outline-variant mt-auto bg-surface-container-lowest sticky bottom-0">
+<div class="flex gap-3">
+<button class="flex-1 py-2.5 px-4 rounded-lg font-label-md border border-outline-variant text-on-surface hover:bg-surface-variant transition-colors">
+                            Cancel
+                        </button>
+<button class="flex-[2] py-2.5 px-4 rounded-lg font-label-md bg-secondary text-on-secondary shadow-sm hover:bg-secondary/90 hover:shadow transition-all flex justify-center items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">check_circle</span>
+                            Update Status Document
+                        </button>
+</div>
+</div>
+</div>
+</aside>
+</div>
+</body></html>

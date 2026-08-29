@@ -31,6 +31,7 @@ export type StudentProfileMinAggregateOutputType = {
   targetProgram: string | null
   createdAt: Date | null
   updatedAt: Date | null
+  assignedConsultantId: string | null
 }
 
 export type StudentProfileMaxAggregateOutputType = {
@@ -40,6 +41,7 @@ export type StudentProfileMaxAggregateOutputType = {
   targetProgram: string | null
   createdAt: Date | null
   updatedAt: Date | null
+  assignedConsultantId: string | null
 }
 
 export type StudentProfileCountAggregateOutputType = {
@@ -49,6 +51,7 @@ export type StudentProfileCountAggregateOutputType = {
   targetProgram: number
   createdAt: number
   updatedAt: number
+  assignedConsultantId: number
   _all: number
 }
 
@@ -60,6 +63,7 @@ export type StudentProfileMinAggregateInputType = {
   targetProgram?: true
   createdAt?: true
   updatedAt?: true
+  assignedConsultantId?: true
 }
 
 export type StudentProfileMaxAggregateInputType = {
@@ -69,6 +73,7 @@ export type StudentProfileMaxAggregateInputType = {
   targetProgram?: true
   createdAt?: true
   updatedAt?: true
+  assignedConsultantId?: true
 }
 
 export type StudentProfileCountAggregateInputType = {
@@ -78,6 +83,7 @@ export type StudentProfileCountAggregateInputType = {
   targetProgram?: true
   createdAt?: true
   updatedAt?: true
+  assignedConsultantId?: true
   _all?: true
 }
 
@@ -160,6 +166,7 @@ export type StudentProfileGroupByOutputType = {
   targetProgram: string | null
   createdAt: Date
   updatedAt: Date
+  assignedConsultantId: string | null
   _count: StudentProfileCountAggregateOutputType | null
   _min: StudentProfileMinAggregateOutputType | null
   _max: StudentProfileMaxAggregateOutputType | null
@@ -190,7 +197,9 @@ export type StudentProfileWhereInput = {
   targetProgram?: Prisma.StringNullableFilter<"StudentProfile"> | string | null
   createdAt?: Prisma.DateTimeFilter<"StudentProfile"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"StudentProfile"> | Date | string
+  assignedConsultantId?: Prisma.StringNullableFilter<"StudentProfile"> | string | null
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
+  assignedConsultant?: Prisma.XOR<Prisma.ConsultantProfileNullableScalarRelationFilter, Prisma.ConsultantProfileWhereInput> | null
   bookings?: Prisma.BookingListRelationFilter
   documents?: Prisma.DocumentListRelationFilter
   meetingNotes?: Prisma.MeetingNoteListRelationFilter
@@ -203,7 +212,9 @@ export type StudentProfileOrderByWithRelationInput = {
   targetProgram?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  assignedConsultantId?: Prisma.SortOrderInput | Prisma.SortOrder
   user?: Prisma.UserOrderByWithRelationInput
+  assignedConsultant?: Prisma.ConsultantProfileOrderByWithRelationInput
   bookings?: Prisma.BookingOrderByRelationAggregateInput
   documents?: Prisma.DocumentOrderByRelationAggregateInput
   meetingNotes?: Prisma.MeetingNoteOrderByRelationAggregateInput
@@ -220,7 +231,9 @@ export type StudentProfileWhereUniqueInput = Prisma.AtLeast<{
   targetProgram?: Prisma.StringNullableFilter<"StudentProfile"> | string | null
   createdAt?: Prisma.DateTimeFilter<"StudentProfile"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"StudentProfile"> | Date | string
+  assignedConsultantId?: Prisma.StringNullableFilter<"StudentProfile"> | string | null
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
+  assignedConsultant?: Prisma.XOR<Prisma.ConsultantProfileNullableScalarRelationFilter, Prisma.ConsultantProfileWhereInput> | null
   bookings?: Prisma.BookingListRelationFilter
   documents?: Prisma.DocumentListRelationFilter
   meetingNotes?: Prisma.MeetingNoteListRelationFilter
@@ -233,6 +246,7 @@ export type StudentProfileOrderByWithAggregationInput = {
   targetProgram?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  assignedConsultantId?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.StudentProfileCountOrderByAggregateInput
   _max?: Prisma.StudentProfileMaxOrderByAggregateInput
   _min?: Prisma.StudentProfileMinOrderByAggregateInput
@@ -248,6 +262,7 @@ export type StudentProfileScalarWhereWithAggregatesInput = {
   targetProgram?: Prisma.StringNullableWithAggregatesFilter<"StudentProfile"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"StudentProfile"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"StudentProfile"> | Date | string
+  assignedConsultantId?: Prisma.StringNullableWithAggregatesFilter<"StudentProfile"> | string | null
 }
 
 export type StudentProfileCreateInput = {
@@ -257,6 +272,7 @@ export type StudentProfileCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutStudentProfileInput
+  assignedConsultant?: Prisma.ConsultantProfileCreateNestedOneWithoutAssignedStudentsInput
   bookings?: Prisma.BookingCreateNestedManyWithoutStudentInput
   documents?: Prisma.DocumentCreateNestedManyWithoutStudentInput
   meetingNotes?: Prisma.MeetingNoteCreateNestedManyWithoutStudentInput
@@ -269,6 +285,7 @@ export type StudentProfileUncheckedCreateInput = {
   targetProgram?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  assignedConsultantId?: string | null
   bookings?: Prisma.BookingUncheckedCreateNestedManyWithoutStudentInput
   documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutStudentInput
   meetingNotes?: Prisma.MeetingNoteUncheckedCreateNestedManyWithoutStudentInput
@@ -281,6 +298,7 @@ export type StudentProfileUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutStudentProfileNestedInput
+  assignedConsultant?: Prisma.ConsultantProfileUpdateOneWithoutAssignedStudentsNestedInput
   bookings?: Prisma.BookingUpdateManyWithoutStudentNestedInput
   documents?: Prisma.DocumentUpdateManyWithoutStudentNestedInput
   meetingNotes?: Prisma.MeetingNoteUpdateManyWithoutStudentNestedInput
@@ -293,6 +311,7 @@ export type StudentProfileUncheckedUpdateInput = {
   targetProgram?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  assignedConsultantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bookings?: Prisma.BookingUncheckedUpdateManyWithoutStudentNestedInput
   documents?: Prisma.DocumentUncheckedUpdateManyWithoutStudentNestedInput
   meetingNotes?: Prisma.MeetingNoteUncheckedUpdateManyWithoutStudentNestedInput
@@ -305,6 +324,7 @@ export type StudentProfileCreateManyInput = {
   targetProgram?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  assignedConsultantId?: string | null
 }
 
 export type StudentProfileUpdateManyMutationInput = {
@@ -322,6 +342,7 @@ export type StudentProfileUncheckedUpdateManyInput = {
   targetProgram?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  assignedConsultantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type StudentProfileNullableScalarRelationFilter = {
@@ -342,6 +363,7 @@ export type StudentProfileCountOrderByAggregateInput = {
   targetProgram?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  assignedConsultantId?: Prisma.SortOrder
 }
 
 export type StudentProfileMaxOrderByAggregateInput = {
@@ -351,6 +373,7 @@ export type StudentProfileMaxOrderByAggregateInput = {
   targetProgram?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  assignedConsultantId?: Prisma.SortOrder
 }
 
 export type StudentProfileMinOrderByAggregateInput = {
@@ -360,6 +383,17 @@ export type StudentProfileMinOrderByAggregateInput = {
   targetProgram?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  assignedConsultantId?: Prisma.SortOrder
+}
+
+export type StudentProfileListRelationFilter = {
+  every?: Prisma.StudentProfileWhereInput
+  some?: Prisma.StudentProfileWhereInput
+  none?: Prisma.StudentProfileWhereInput
+}
+
+export type StudentProfileOrderByRelationAggregateInput = {
+  _count?: Prisma.SortOrder
 }
 
 export type StudentProfileScalarRelationFilter = {
@@ -397,6 +431,48 @@ export type StudentProfileUncheckedUpdateOneWithoutUserNestedInput = {
   delete?: Prisma.StudentProfileWhereInput | boolean
   connect?: Prisma.StudentProfileWhereUniqueInput
   update?: Prisma.XOR<Prisma.XOR<Prisma.StudentProfileUpdateToOneWithWhereWithoutUserInput, Prisma.StudentProfileUpdateWithoutUserInput>, Prisma.StudentProfileUncheckedUpdateWithoutUserInput>
+}
+
+export type StudentProfileCreateNestedManyWithoutAssignedConsultantInput = {
+  create?: Prisma.XOR<Prisma.StudentProfileCreateWithoutAssignedConsultantInput, Prisma.StudentProfileUncheckedCreateWithoutAssignedConsultantInput> | Prisma.StudentProfileCreateWithoutAssignedConsultantInput[] | Prisma.StudentProfileUncheckedCreateWithoutAssignedConsultantInput[]
+  connectOrCreate?: Prisma.StudentProfileCreateOrConnectWithoutAssignedConsultantInput | Prisma.StudentProfileCreateOrConnectWithoutAssignedConsultantInput[]
+  createMany?: Prisma.StudentProfileCreateManyAssignedConsultantInputEnvelope
+  connect?: Prisma.StudentProfileWhereUniqueInput | Prisma.StudentProfileWhereUniqueInput[]
+}
+
+export type StudentProfileUncheckedCreateNestedManyWithoutAssignedConsultantInput = {
+  create?: Prisma.XOR<Prisma.StudentProfileCreateWithoutAssignedConsultantInput, Prisma.StudentProfileUncheckedCreateWithoutAssignedConsultantInput> | Prisma.StudentProfileCreateWithoutAssignedConsultantInput[] | Prisma.StudentProfileUncheckedCreateWithoutAssignedConsultantInput[]
+  connectOrCreate?: Prisma.StudentProfileCreateOrConnectWithoutAssignedConsultantInput | Prisma.StudentProfileCreateOrConnectWithoutAssignedConsultantInput[]
+  createMany?: Prisma.StudentProfileCreateManyAssignedConsultantInputEnvelope
+  connect?: Prisma.StudentProfileWhereUniqueInput | Prisma.StudentProfileWhereUniqueInput[]
+}
+
+export type StudentProfileUpdateManyWithoutAssignedConsultantNestedInput = {
+  create?: Prisma.XOR<Prisma.StudentProfileCreateWithoutAssignedConsultantInput, Prisma.StudentProfileUncheckedCreateWithoutAssignedConsultantInput> | Prisma.StudentProfileCreateWithoutAssignedConsultantInput[] | Prisma.StudentProfileUncheckedCreateWithoutAssignedConsultantInput[]
+  connectOrCreate?: Prisma.StudentProfileCreateOrConnectWithoutAssignedConsultantInput | Prisma.StudentProfileCreateOrConnectWithoutAssignedConsultantInput[]
+  upsert?: Prisma.StudentProfileUpsertWithWhereUniqueWithoutAssignedConsultantInput | Prisma.StudentProfileUpsertWithWhereUniqueWithoutAssignedConsultantInput[]
+  createMany?: Prisma.StudentProfileCreateManyAssignedConsultantInputEnvelope
+  set?: Prisma.StudentProfileWhereUniqueInput | Prisma.StudentProfileWhereUniqueInput[]
+  disconnect?: Prisma.StudentProfileWhereUniqueInput | Prisma.StudentProfileWhereUniqueInput[]
+  delete?: Prisma.StudentProfileWhereUniqueInput | Prisma.StudentProfileWhereUniqueInput[]
+  connect?: Prisma.StudentProfileWhereUniqueInput | Prisma.StudentProfileWhereUniqueInput[]
+  update?: Prisma.StudentProfileUpdateWithWhereUniqueWithoutAssignedConsultantInput | Prisma.StudentProfileUpdateWithWhereUniqueWithoutAssignedConsultantInput[]
+  updateMany?: Prisma.StudentProfileUpdateManyWithWhereWithoutAssignedConsultantInput | Prisma.StudentProfileUpdateManyWithWhereWithoutAssignedConsultantInput[]
+  deleteMany?: Prisma.StudentProfileScalarWhereInput | Prisma.StudentProfileScalarWhereInput[]
+}
+
+export type StudentProfileUncheckedUpdateManyWithoutAssignedConsultantNestedInput = {
+  create?: Prisma.XOR<Prisma.StudentProfileCreateWithoutAssignedConsultantInput, Prisma.StudentProfileUncheckedCreateWithoutAssignedConsultantInput> | Prisma.StudentProfileCreateWithoutAssignedConsultantInput[] | Prisma.StudentProfileUncheckedCreateWithoutAssignedConsultantInput[]
+  connectOrCreate?: Prisma.StudentProfileCreateOrConnectWithoutAssignedConsultantInput | Prisma.StudentProfileCreateOrConnectWithoutAssignedConsultantInput[]
+  upsert?: Prisma.StudentProfileUpsertWithWhereUniqueWithoutAssignedConsultantInput | Prisma.StudentProfileUpsertWithWhereUniqueWithoutAssignedConsultantInput[]
+  createMany?: Prisma.StudentProfileCreateManyAssignedConsultantInputEnvelope
+  set?: Prisma.StudentProfileWhereUniqueInput | Prisma.StudentProfileWhereUniqueInput[]
+  disconnect?: Prisma.StudentProfileWhereUniqueInput | Prisma.StudentProfileWhereUniqueInput[]
+  delete?: Prisma.StudentProfileWhereUniqueInput | Prisma.StudentProfileWhereUniqueInput[]
+  connect?: Prisma.StudentProfileWhereUniqueInput | Prisma.StudentProfileWhereUniqueInput[]
+  update?: Prisma.StudentProfileUpdateWithWhereUniqueWithoutAssignedConsultantInput | Prisma.StudentProfileUpdateWithWhereUniqueWithoutAssignedConsultantInput[]
+  updateMany?: Prisma.StudentProfileUpdateManyWithWhereWithoutAssignedConsultantInput | Prisma.StudentProfileUpdateManyWithWhereWithoutAssignedConsultantInput[]
+  deleteMany?: Prisma.StudentProfileScalarWhereInput | Prisma.StudentProfileScalarWhereInput[]
 }
 
 export type StudentProfileCreateNestedOneWithoutBookingsInput = {
@@ -447,6 +523,7 @@ export type StudentProfileCreateWithoutUserInput = {
   targetProgram?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  assignedConsultant?: Prisma.ConsultantProfileCreateNestedOneWithoutAssignedStudentsInput
   bookings?: Prisma.BookingCreateNestedManyWithoutStudentInput
   documents?: Prisma.DocumentCreateNestedManyWithoutStudentInput
   meetingNotes?: Prisma.MeetingNoteCreateNestedManyWithoutStudentInput
@@ -458,6 +535,7 @@ export type StudentProfileUncheckedCreateWithoutUserInput = {
   targetProgram?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  assignedConsultantId?: string | null
   bookings?: Prisma.BookingUncheckedCreateNestedManyWithoutStudentInput
   documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutStudentInput
   meetingNotes?: Prisma.MeetingNoteUncheckedCreateNestedManyWithoutStudentInput
@@ -485,6 +563,7 @@ export type StudentProfileUpdateWithoutUserInput = {
   targetProgram?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  assignedConsultant?: Prisma.ConsultantProfileUpdateOneWithoutAssignedStudentsNestedInput
   bookings?: Prisma.BookingUpdateManyWithoutStudentNestedInput
   documents?: Prisma.DocumentUpdateManyWithoutStudentNestedInput
   meetingNotes?: Prisma.MeetingNoteUpdateManyWithoutStudentNestedInput
@@ -496,9 +575,73 @@ export type StudentProfileUncheckedUpdateWithoutUserInput = {
   targetProgram?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  assignedConsultantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bookings?: Prisma.BookingUncheckedUpdateManyWithoutStudentNestedInput
   documents?: Prisma.DocumentUncheckedUpdateManyWithoutStudentNestedInput
   meetingNotes?: Prisma.MeetingNoteUncheckedUpdateManyWithoutStudentNestedInput
+}
+
+export type StudentProfileCreateWithoutAssignedConsultantInput = {
+  id?: string
+  academicHistory?: string | null
+  targetProgram?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  user: Prisma.UserCreateNestedOneWithoutStudentProfileInput
+  bookings?: Prisma.BookingCreateNestedManyWithoutStudentInput
+  documents?: Prisma.DocumentCreateNestedManyWithoutStudentInput
+  meetingNotes?: Prisma.MeetingNoteCreateNestedManyWithoutStudentInput
+}
+
+export type StudentProfileUncheckedCreateWithoutAssignedConsultantInput = {
+  id?: string
+  userId: string
+  academicHistory?: string | null
+  targetProgram?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  bookings?: Prisma.BookingUncheckedCreateNestedManyWithoutStudentInput
+  documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutStudentInput
+  meetingNotes?: Prisma.MeetingNoteUncheckedCreateNestedManyWithoutStudentInput
+}
+
+export type StudentProfileCreateOrConnectWithoutAssignedConsultantInput = {
+  where: Prisma.StudentProfileWhereUniqueInput
+  create: Prisma.XOR<Prisma.StudentProfileCreateWithoutAssignedConsultantInput, Prisma.StudentProfileUncheckedCreateWithoutAssignedConsultantInput>
+}
+
+export type StudentProfileCreateManyAssignedConsultantInputEnvelope = {
+  data: Prisma.StudentProfileCreateManyAssignedConsultantInput | Prisma.StudentProfileCreateManyAssignedConsultantInput[]
+  skipDuplicates?: boolean
+}
+
+export type StudentProfileUpsertWithWhereUniqueWithoutAssignedConsultantInput = {
+  where: Prisma.StudentProfileWhereUniqueInput
+  update: Prisma.XOR<Prisma.StudentProfileUpdateWithoutAssignedConsultantInput, Prisma.StudentProfileUncheckedUpdateWithoutAssignedConsultantInput>
+  create: Prisma.XOR<Prisma.StudentProfileCreateWithoutAssignedConsultantInput, Prisma.StudentProfileUncheckedCreateWithoutAssignedConsultantInput>
+}
+
+export type StudentProfileUpdateWithWhereUniqueWithoutAssignedConsultantInput = {
+  where: Prisma.StudentProfileWhereUniqueInput
+  data: Prisma.XOR<Prisma.StudentProfileUpdateWithoutAssignedConsultantInput, Prisma.StudentProfileUncheckedUpdateWithoutAssignedConsultantInput>
+}
+
+export type StudentProfileUpdateManyWithWhereWithoutAssignedConsultantInput = {
+  where: Prisma.StudentProfileScalarWhereInput
+  data: Prisma.XOR<Prisma.StudentProfileUpdateManyMutationInput, Prisma.StudentProfileUncheckedUpdateManyWithoutAssignedConsultantInput>
+}
+
+export type StudentProfileScalarWhereInput = {
+  AND?: Prisma.StudentProfileScalarWhereInput | Prisma.StudentProfileScalarWhereInput[]
+  OR?: Prisma.StudentProfileScalarWhereInput[]
+  NOT?: Prisma.StudentProfileScalarWhereInput | Prisma.StudentProfileScalarWhereInput[]
+  id?: Prisma.StringFilter<"StudentProfile"> | string
+  userId?: Prisma.StringFilter<"StudentProfile"> | string
+  academicHistory?: Prisma.StringNullableFilter<"StudentProfile"> | string | null
+  targetProgram?: Prisma.StringNullableFilter<"StudentProfile"> | string | null
+  createdAt?: Prisma.DateTimeFilter<"StudentProfile"> | Date | string
+  updatedAt?: Prisma.DateTimeFilter<"StudentProfile"> | Date | string
+  assignedConsultantId?: Prisma.StringNullableFilter<"StudentProfile"> | string | null
 }
 
 export type StudentProfileCreateWithoutBookingsInput = {
@@ -508,6 +651,7 @@ export type StudentProfileCreateWithoutBookingsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutStudentProfileInput
+  assignedConsultant?: Prisma.ConsultantProfileCreateNestedOneWithoutAssignedStudentsInput
   documents?: Prisma.DocumentCreateNestedManyWithoutStudentInput
   meetingNotes?: Prisma.MeetingNoteCreateNestedManyWithoutStudentInput
 }
@@ -519,6 +663,7 @@ export type StudentProfileUncheckedCreateWithoutBookingsInput = {
   targetProgram?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  assignedConsultantId?: string | null
   documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutStudentInput
   meetingNotes?: Prisma.MeetingNoteUncheckedCreateNestedManyWithoutStudentInput
 }
@@ -546,6 +691,7 @@ export type StudentProfileUpdateWithoutBookingsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutStudentProfileNestedInput
+  assignedConsultant?: Prisma.ConsultantProfileUpdateOneWithoutAssignedStudentsNestedInput
   documents?: Prisma.DocumentUpdateManyWithoutStudentNestedInput
   meetingNotes?: Prisma.MeetingNoteUpdateManyWithoutStudentNestedInput
 }
@@ -557,6 +703,7 @@ export type StudentProfileUncheckedUpdateWithoutBookingsInput = {
   targetProgram?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  assignedConsultantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documents?: Prisma.DocumentUncheckedUpdateManyWithoutStudentNestedInput
   meetingNotes?: Prisma.MeetingNoteUncheckedUpdateManyWithoutStudentNestedInput
 }
@@ -568,6 +715,7 @@ export type StudentProfileCreateWithoutMeetingNotesInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutStudentProfileInput
+  assignedConsultant?: Prisma.ConsultantProfileCreateNestedOneWithoutAssignedStudentsInput
   bookings?: Prisma.BookingCreateNestedManyWithoutStudentInput
   documents?: Prisma.DocumentCreateNestedManyWithoutStudentInput
 }
@@ -579,6 +727,7 @@ export type StudentProfileUncheckedCreateWithoutMeetingNotesInput = {
   targetProgram?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  assignedConsultantId?: string | null
   bookings?: Prisma.BookingUncheckedCreateNestedManyWithoutStudentInput
   documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutStudentInput
 }
@@ -606,6 +755,7 @@ export type StudentProfileUpdateWithoutMeetingNotesInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutStudentProfileNestedInput
+  assignedConsultant?: Prisma.ConsultantProfileUpdateOneWithoutAssignedStudentsNestedInput
   bookings?: Prisma.BookingUpdateManyWithoutStudentNestedInput
   documents?: Prisma.DocumentUpdateManyWithoutStudentNestedInput
 }
@@ -617,6 +767,7 @@ export type StudentProfileUncheckedUpdateWithoutMeetingNotesInput = {
   targetProgram?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  assignedConsultantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bookings?: Prisma.BookingUncheckedUpdateManyWithoutStudentNestedInput
   documents?: Prisma.DocumentUncheckedUpdateManyWithoutStudentNestedInput
 }
@@ -628,6 +779,7 @@ export type StudentProfileCreateWithoutDocumentsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutStudentProfileInput
+  assignedConsultant?: Prisma.ConsultantProfileCreateNestedOneWithoutAssignedStudentsInput
   bookings?: Prisma.BookingCreateNestedManyWithoutStudentInput
   meetingNotes?: Prisma.MeetingNoteCreateNestedManyWithoutStudentInput
 }
@@ -639,6 +791,7 @@ export type StudentProfileUncheckedCreateWithoutDocumentsInput = {
   targetProgram?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  assignedConsultantId?: string | null
   bookings?: Prisma.BookingUncheckedCreateNestedManyWithoutStudentInput
   meetingNotes?: Prisma.MeetingNoteUncheckedCreateNestedManyWithoutStudentInput
 }
@@ -666,6 +819,7 @@ export type StudentProfileUpdateWithoutDocumentsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutStudentProfileNestedInput
+  assignedConsultant?: Prisma.ConsultantProfileUpdateOneWithoutAssignedStudentsNestedInput
   bookings?: Prisma.BookingUpdateManyWithoutStudentNestedInput
   meetingNotes?: Prisma.MeetingNoteUpdateManyWithoutStudentNestedInput
 }
@@ -677,8 +831,51 @@ export type StudentProfileUncheckedUpdateWithoutDocumentsInput = {
   targetProgram?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  assignedConsultantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bookings?: Prisma.BookingUncheckedUpdateManyWithoutStudentNestedInput
   meetingNotes?: Prisma.MeetingNoteUncheckedUpdateManyWithoutStudentNestedInput
+}
+
+export type StudentProfileCreateManyAssignedConsultantInput = {
+  id?: string
+  userId: string
+  academicHistory?: string | null
+  targetProgram?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type StudentProfileUpdateWithoutAssignedConsultantInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  academicHistory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  targetProgram?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  user?: Prisma.UserUpdateOneRequiredWithoutStudentProfileNestedInput
+  bookings?: Prisma.BookingUpdateManyWithoutStudentNestedInput
+  documents?: Prisma.DocumentUpdateManyWithoutStudentNestedInput
+  meetingNotes?: Prisma.MeetingNoteUpdateManyWithoutStudentNestedInput
+}
+
+export type StudentProfileUncheckedUpdateWithoutAssignedConsultantInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  academicHistory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  targetProgram?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  bookings?: Prisma.BookingUncheckedUpdateManyWithoutStudentNestedInput
+  documents?: Prisma.DocumentUncheckedUpdateManyWithoutStudentNestedInput
+  meetingNotes?: Prisma.MeetingNoteUncheckedUpdateManyWithoutStudentNestedInput
+}
+
+export type StudentProfileUncheckedUpdateManyWithoutAssignedConsultantInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  academicHistory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  targetProgram?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 
@@ -737,7 +934,9 @@ export type StudentProfileSelect<ExtArgs extends runtime.Types.Extensions.Intern
   targetProgram?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  assignedConsultantId?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  assignedConsultant?: boolean | Prisma.StudentProfile$assignedConsultantArgs<ExtArgs>
   bookings?: boolean | Prisma.StudentProfile$bookingsArgs<ExtArgs>
   documents?: boolean | Prisma.StudentProfile$documentsArgs<ExtArgs>
   meetingNotes?: boolean | Prisma.StudentProfile$meetingNotesArgs<ExtArgs>
@@ -753,11 +952,13 @@ export type StudentProfileSelectScalar = {
   targetProgram?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  assignedConsultantId?: boolean
 }
 
-export type StudentProfileOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "academicHistory" | "targetProgram" | "createdAt" | "updatedAt", ExtArgs["result"]["studentProfile"]>
+export type StudentProfileOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "academicHistory" | "targetProgram" | "createdAt" | "updatedAt" | "assignedConsultantId", ExtArgs["result"]["studentProfile"]>
 export type StudentProfileInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  assignedConsultant?: boolean | Prisma.StudentProfile$assignedConsultantArgs<ExtArgs>
   bookings?: boolean | Prisma.StudentProfile$bookingsArgs<ExtArgs>
   documents?: boolean | Prisma.StudentProfile$documentsArgs<ExtArgs>
   meetingNotes?: boolean | Prisma.StudentProfile$meetingNotesArgs<ExtArgs>
@@ -768,6 +969,7 @@ export type $StudentProfilePayload<ExtArgs extends runtime.Types.Extensions.Inte
   name: "StudentProfile"
   objects: {
     user: Prisma.$UserPayload<ExtArgs>
+    assignedConsultant: Prisma.$ConsultantProfilePayload<ExtArgs> | null
     bookings: Prisma.$BookingPayload<ExtArgs>[]
     documents: Prisma.$DocumentPayload<ExtArgs>[]
     meetingNotes: Prisma.$MeetingNotePayload<ExtArgs>[]
@@ -779,6 +981,7 @@ export type $StudentProfilePayload<ExtArgs extends runtime.Types.Extensions.Inte
     targetProgram: string | null
     createdAt: Date
     updatedAt: Date
+    assignedConsultantId: string | null
   }, ExtArgs["result"]["studentProfile"]>
   composites: {}
 }
@@ -1120,6 +1323,7 @@ readonly fields: StudentProfileFieldRefs;
 export interface Prisma__StudentProfileClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   user<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  assignedConsultant<T extends Prisma.StudentProfile$assignedConsultantArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.StudentProfile$assignedConsultantArgs<ExtArgs>>): Prisma.Prisma__ConsultantProfileClient<runtime.Types.Result.GetResult<Prisma.$ConsultantProfilePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   bookings<T extends Prisma.StudentProfile$bookingsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.StudentProfile$bookingsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$BookingPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   documents<T extends Prisma.StudentProfile$documentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.StudentProfile$documentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$DocumentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   meetingNotes<T extends Prisma.StudentProfile$meetingNotesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.StudentProfile$meetingNotesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$MeetingNotePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -1158,6 +1362,7 @@ export interface StudentProfileFieldRefs {
   readonly targetProgram: Prisma.FieldRef<"StudentProfile", 'String'>
   readonly createdAt: Prisma.FieldRef<"StudentProfile", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"StudentProfile", 'DateTime'>
+  readonly assignedConsultantId: Prisma.FieldRef<"StudentProfile", 'String'>
 }
     
 
@@ -1503,6 +1708,25 @@ export type StudentProfileDeleteManyArgs<ExtArgs extends runtime.Types.Extension
    * Limit how many StudentProfiles to delete.
    */
   limit?: number
+}
+
+/**
+ * StudentProfile.assignedConsultant
+ */
+export type StudentProfile$assignedConsultantArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ConsultantProfile
+   */
+  select?: Prisma.ConsultantProfileSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ConsultantProfile
+   */
+  omit?: Prisma.ConsultantProfileOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ConsultantProfileInclude<ExtArgs> | null
+  where?: Prisma.ConsultantProfileWhereInput
 }
 
 /**

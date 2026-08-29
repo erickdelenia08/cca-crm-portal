@@ -52,10 +52,13 @@ export const AnyNull = runtime.AnyNull
 
 export const ModelName = {
   User: 'User',
+  Account: 'Account',
+  Session: 'Session',
+  VerificationToken: 'VerificationToken',
   StudentProfile: 'StudentProfile',
   ConsultantProfile: 'ConsultantProfile',
   StaffProfile: 'StaffProfile',
-  AvailabilitySlot: 'AvailabilitySlot',
+  AvailabilityTemplate: 'AvailabilityTemplate',
   Booking: 'Booking',
   MeetingNote: 'MeetingNote',
   Document: 'Document',
@@ -63,6 +66,7 @@ export const ModelName = {
   Attendance: 'Attendance',
   LeaveRequest: 'LeaveRequest',
   Payslip: 'Payslip',
+  Announcement: 'Announcement',
   Notification: 'Notification'
 } as const
 
@@ -85,16 +89,54 @@ export type TransactionIsolationLevel = (typeof TransactionIsolationLevel)[keyof
 export const UserScalarFieldEnum = {
   id: 'id',
   email: 'email',
+  emailVerified: 'emailVerified',
   passwordHash: 'passwordHash',
-  fullName: 'fullName',
+  name: 'name',
   phone: 'phone',
   role: 'role',
-  avatarUrl: 'avatarUrl',
+  image: 'image',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
 
 export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
+
+
+export const AccountScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  type: 'type',
+  provider: 'provider',
+  providerAccountId: 'providerAccountId',
+  refresh_token: 'refresh_token',
+  access_token: 'access_token',
+  expires_at: 'expires_at',
+  token_type: 'token_type',
+  scope: 'scope',
+  id_token: 'id_token',
+  session_state: 'session_state'
+} as const
+
+export type AccountScalarFieldEnum = (typeof AccountScalarFieldEnum)[keyof typeof AccountScalarFieldEnum]
+
+
+export const SessionScalarFieldEnum = {
+  id: 'id',
+  sessionToken: 'sessionToken',
+  userId: 'userId',
+  expires: 'expires'
+} as const
+
+export type SessionScalarFieldEnum = (typeof SessionScalarFieldEnum)[keyof typeof SessionScalarFieldEnum]
+
+
+export const VerificationTokenScalarFieldEnum = {
+  identifier: 'identifier',
+  token: 'token',
+  expires: 'expires'
+} as const
+
+export type VerificationTokenScalarFieldEnum = (typeof VerificationTokenScalarFieldEnum)[keyof typeof VerificationTokenScalarFieldEnum]
 
 
 export const StudentProfileScalarFieldEnum = {
@@ -103,7 +145,8 @@ export const StudentProfileScalarFieldEnum = {
   academicHistory: 'academicHistory',
   targetProgram: 'targetProgram',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  assignedConsultantId: 'assignedConsultantId'
 } as const
 
 export type StudentProfileScalarFieldEnum = (typeof StudentProfileScalarFieldEnum)[keyof typeof StudentProfileScalarFieldEnum]
@@ -134,23 +177,24 @@ export const StaffProfileScalarFieldEnum = {
 export type StaffProfileScalarFieldEnum = (typeof StaffProfileScalarFieldEnum)[keyof typeof StaffProfileScalarFieldEnum]
 
 
-export const AvailabilitySlotScalarFieldEnum = {
+export const AvailabilityTemplateScalarFieldEnum = {
   id: 'id',
   consultantId: 'consultantId',
   dayOfWeek: 'dayOfWeek',
   startTime: 'startTime',
   endTime: 'endTime',
-  isBooked: 'isBooked',
+  isActive: 'isActive',
   createdAt: 'createdAt'
 } as const
 
-export type AvailabilitySlotScalarFieldEnum = (typeof AvailabilitySlotScalarFieldEnum)[keyof typeof AvailabilitySlotScalarFieldEnum]
+export type AvailabilityTemplateScalarFieldEnum = (typeof AvailabilityTemplateScalarFieldEnum)[keyof typeof AvailabilityTemplateScalarFieldEnum]
 
 
 export const BookingScalarFieldEnum = {
   id: 'id',
   studentId: 'studentId',
   consultantId: 'consultantId',
+  availabilityTemplateId: 'availabilityTemplateId',
   sessionType: 'sessionType',
   topic: 'topic',
   startTime: 'startTime',
@@ -261,9 +305,23 @@ export const PayslipScalarFieldEnum = {
 export type PayslipScalarFieldEnum = (typeof PayslipScalarFieldEnum)[keyof typeof PayslipScalarFieldEnum]
 
 
+export const AnnouncementScalarFieldEnum = {
+  id: 'id',
+  authorId: 'authorId',
+  title: 'title',
+  message: 'message',
+  targetRole: 'targetRole',
+  publishedAt: 'publishedAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type AnnouncementScalarFieldEnum = (typeof AnnouncementScalarFieldEnum)[keyof typeof AnnouncementScalarFieldEnum]
+
+
 export const NotificationScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
+  announcementId: 'announcementId',
   title: 'title',
   message: 'message',
   isRead: 'isRead',
@@ -294,19 +352,54 @@ export const UserOrderByRelevanceFieldEnum = {
   id: 'id',
   email: 'email',
   passwordHash: 'passwordHash',
-  fullName: 'fullName',
+  name: 'name',
   phone: 'phone',
-  avatarUrl: 'avatarUrl'
+  image: 'image'
 } as const
 
 export type UserOrderByRelevanceFieldEnum = (typeof UserOrderByRelevanceFieldEnum)[keyof typeof UserOrderByRelevanceFieldEnum]
+
+
+export const AccountOrderByRelevanceFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  type: 'type',
+  provider: 'provider',
+  providerAccountId: 'providerAccountId',
+  refresh_token: 'refresh_token',
+  access_token: 'access_token',
+  token_type: 'token_type',
+  scope: 'scope',
+  id_token: 'id_token',
+  session_state: 'session_state'
+} as const
+
+export type AccountOrderByRelevanceFieldEnum = (typeof AccountOrderByRelevanceFieldEnum)[keyof typeof AccountOrderByRelevanceFieldEnum]
+
+
+export const SessionOrderByRelevanceFieldEnum = {
+  id: 'id',
+  sessionToken: 'sessionToken',
+  userId: 'userId'
+} as const
+
+export type SessionOrderByRelevanceFieldEnum = (typeof SessionOrderByRelevanceFieldEnum)[keyof typeof SessionOrderByRelevanceFieldEnum]
+
+
+export const VerificationTokenOrderByRelevanceFieldEnum = {
+  identifier: 'identifier',
+  token: 'token'
+} as const
+
+export type VerificationTokenOrderByRelevanceFieldEnum = (typeof VerificationTokenOrderByRelevanceFieldEnum)[keyof typeof VerificationTokenOrderByRelevanceFieldEnum]
 
 
 export const StudentProfileOrderByRelevanceFieldEnum = {
   id: 'id',
   userId: 'userId',
   academicHistory: 'academicHistory',
-  targetProgram: 'targetProgram'
+  targetProgram: 'targetProgram',
+  assignedConsultantId: 'assignedConsultantId'
 } as const
 
 export type StudentProfileOrderByRelevanceFieldEnum = (typeof StudentProfileOrderByRelevanceFieldEnum)[keyof typeof StudentProfileOrderByRelevanceFieldEnum]
@@ -323,27 +416,27 @@ export type ConsultantProfileOrderByRelevanceFieldEnum = (typeof ConsultantProfi
 
 export const StaffProfileOrderByRelevanceFieldEnum = {
   id: 'id',
-  userId: 'userId',
-  department: 'department'
+  userId: 'userId'
 } as const
 
 export type StaffProfileOrderByRelevanceFieldEnum = (typeof StaffProfileOrderByRelevanceFieldEnum)[keyof typeof StaffProfileOrderByRelevanceFieldEnum]
 
 
-export const AvailabilitySlotOrderByRelevanceFieldEnum = {
+export const AvailabilityTemplateOrderByRelevanceFieldEnum = {
   id: 'id',
   consultantId: 'consultantId',
   startTime: 'startTime',
   endTime: 'endTime'
 } as const
 
-export type AvailabilitySlotOrderByRelevanceFieldEnum = (typeof AvailabilitySlotOrderByRelevanceFieldEnum)[keyof typeof AvailabilitySlotOrderByRelevanceFieldEnum]
+export type AvailabilityTemplateOrderByRelevanceFieldEnum = (typeof AvailabilityTemplateOrderByRelevanceFieldEnum)[keyof typeof AvailabilityTemplateOrderByRelevanceFieldEnum]
 
 
 export const BookingOrderByRelevanceFieldEnum = {
   id: 'id',
   studentId: 'studentId',
   consultantId: 'consultantId',
+  availabilityTemplateId: 'availabilityTemplateId',
   topic: 'topic',
   cancelReason: 'cancelReason'
 } as const
@@ -417,12 +510,22 @@ export const PayslipOrderByRelevanceFieldEnum = {
 export type PayslipOrderByRelevanceFieldEnum = (typeof PayslipOrderByRelevanceFieldEnum)[keyof typeof PayslipOrderByRelevanceFieldEnum]
 
 
+export const AnnouncementOrderByRelevanceFieldEnum = {
+  id: 'id',
+  authorId: 'authorId',
+  title: 'title',
+  message: 'message'
+} as const
+
+export type AnnouncementOrderByRelevanceFieldEnum = (typeof AnnouncementOrderByRelevanceFieldEnum)[keyof typeof AnnouncementOrderByRelevanceFieldEnum]
+
+
 export const NotificationOrderByRelevanceFieldEnum = {
   id: 'id',
   userId: 'userId',
+  announcementId: 'announcementId',
   title: 'title',
-  message: 'message',
-  channel: 'channel'
+  message: 'message'
 } as const
 
 export type NotificationOrderByRelevanceFieldEnum = (typeof NotificationOrderByRelevanceFieldEnum)[keyof typeof NotificationOrderByRelevanceFieldEnum]

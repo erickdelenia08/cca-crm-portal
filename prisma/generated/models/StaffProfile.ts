@@ -37,7 +37,7 @@ export type StaffProfileSumAggregateOutputType = {
 export type StaffProfileMinAggregateOutputType = {
   id: string | null
   userId: string | null
-  department: string | null
+  department: $Enums.Department | null
   baseSalary: runtime.Decimal | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -46,7 +46,7 @@ export type StaffProfileMinAggregateOutputType = {
 export type StaffProfileMaxAggregateOutputType = {
   id: string | null
   userId: string | null
-  department: string | null
+  department: $Enums.Department | null
   baseSalary: runtime.Decimal | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -188,7 +188,7 @@ export type StaffProfileGroupByArgs<ExtArgs extends runtime.Types.Extensions.Int
 export type StaffProfileGroupByOutputType = {
   id: string
   userId: string
-  department: string
+  department: $Enums.Department
   baseSalary: runtime.Decimal
   createdAt: Date
   updatedAt: Date
@@ -220,7 +220,7 @@ export type StaffProfileWhereInput = {
   NOT?: Prisma.StaffProfileWhereInput | Prisma.StaffProfileWhereInput[]
   id?: Prisma.StringFilter<"StaffProfile"> | string
   userId?: Prisma.StringFilter<"StaffProfile"> | string
-  department?: Prisma.StringFilter<"StaffProfile"> | string
+  department?: Prisma.EnumDepartmentFilter<"StaffProfile"> | $Enums.Department
   baseSalary?: Prisma.DecimalFilter<"StaffProfile"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Prisma.DateTimeFilter<"StaffProfile"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"StaffProfile"> | Date | string
@@ -254,7 +254,7 @@ export type StaffProfileWhereUniqueInput = Prisma.AtLeast<{
   AND?: Prisma.StaffProfileWhereInput | Prisma.StaffProfileWhereInput[]
   OR?: Prisma.StaffProfileWhereInput[]
   NOT?: Prisma.StaffProfileWhereInput | Prisma.StaffProfileWhereInput[]
-  department?: Prisma.StringFilter<"StaffProfile"> | string
+  department?: Prisma.EnumDepartmentFilter<"StaffProfile"> | $Enums.Department
   baseSalary?: Prisma.DecimalFilter<"StaffProfile"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Prisma.DateTimeFilter<"StaffProfile"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"StaffProfile"> | Date | string
@@ -286,7 +286,7 @@ export type StaffProfileScalarWhereWithAggregatesInput = {
   NOT?: Prisma.StaffProfileScalarWhereWithAggregatesInput | Prisma.StaffProfileScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"StaffProfile"> | string
   userId?: Prisma.StringWithAggregatesFilter<"StaffProfile"> | string
-  department?: Prisma.StringWithAggregatesFilter<"StaffProfile"> | string
+  department?: Prisma.EnumDepartmentWithAggregatesFilter<"StaffProfile"> | $Enums.Department
   baseSalary?: Prisma.DecimalWithAggregatesFilter<"StaffProfile"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"StaffProfile"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"StaffProfile"> | Date | string
@@ -294,7 +294,7 @@ export type StaffProfileScalarWhereWithAggregatesInput = {
 
 export type StaffProfileCreateInput = {
   id?: string
-  department: string
+  department: $Enums.Department
   baseSalary?: runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -309,7 +309,7 @@ export type StaffProfileCreateInput = {
 export type StaffProfileUncheckedCreateInput = {
   id?: string
   userId: string
-  department: string
+  department: $Enums.Department
   baseSalary?: runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -322,7 +322,7 @@ export type StaffProfileUncheckedCreateInput = {
 
 export type StaffProfileUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  department?: Prisma.StringFieldUpdateOperationsInput | string
+  department?: Prisma.EnumDepartmentFieldUpdateOperationsInput | $Enums.Department
   baseSalary?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -337,7 +337,7 @@ export type StaffProfileUpdateInput = {
 export type StaffProfileUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
-  department?: Prisma.StringFieldUpdateOperationsInput | string
+  department?: Prisma.EnumDepartmentFieldUpdateOperationsInput | $Enums.Department
   baseSalary?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -351,7 +351,7 @@ export type StaffProfileUncheckedUpdateInput = {
 export type StaffProfileCreateManyInput = {
   id?: string
   userId: string
-  department: string
+  department: $Enums.Department
   baseSalary?: runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -359,7 +359,7 @@ export type StaffProfileCreateManyInput = {
 
 export type StaffProfileUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  department?: Prisma.StringFieldUpdateOperationsInput | string
+  department?: Prisma.EnumDepartmentFieldUpdateOperationsInput | $Enums.Department
   baseSalary?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -368,7 +368,7 @@ export type StaffProfileUpdateManyMutationInput = {
 export type StaffProfileUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
-  department?: Prisma.StringFieldUpdateOperationsInput | string
+  department?: Prisma.EnumDepartmentFieldUpdateOperationsInput | $Enums.Department
   baseSalary?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -457,6 +457,10 @@ export type StaffProfileUncheckedUpdateOneWithoutUserNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.StaffProfileUpdateToOneWithWhereWithoutUserInput, Prisma.StaffProfileUpdateWithoutUserInput>, Prisma.StaffProfileUncheckedUpdateWithoutUserInput>
 }
 
+export type EnumDepartmentFieldUpdateOperationsInput = {
+  set?: $Enums.Department
+}
+
 export type StaffProfileCreateNestedOneWithoutProcessedDocumentsInput = {
   create?: Prisma.XOR<Prisma.StaffProfileCreateWithoutProcessedDocumentsInput, Prisma.StaffProfileUncheckedCreateWithoutProcessedDocumentsInput>
   connectOrCreate?: Prisma.StaffProfileCreateOrConnectWithoutProcessedDocumentsInput
@@ -537,7 +541,7 @@ export type StaffProfileUpdateOneRequiredWithoutPayslipsNestedInput = {
 
 export type StaffProfileCreateWithoutUserInput = {
   id?: string
-  department: string
+  department: $Enums.Department
   baseSalary?: runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -550,7 +554,7 @@ export type StaffProfileCreateWithoutUserInput = {
 
 export type StaffProfileUncheckedCreateWithoutUserInput = {
   id?: string
-  department: string
+  department: $Enums.Department
   baseSalary?: runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -579,7 +583,7 @@ export type StaffProfileUpdateToOneWithWhereWithoutUserInput = {
 
 export type StaffProfileUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  department?: Prisma.StringFieldUpdateOperationsInput | string
+  department?: Prisma.EnumDepartmentFieldUpdateOperationsInput | $Enums.Department
   baseSalary?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -592,7 +596,7 @@ export type StaffProfileUpdateWithoutUserInput = {
 
 export type StaffProfileUncheckedUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  department?: Prisma.StringFieldUpdateOperationsInput | string
+  department?: Prisma.EnumDepartmentFieldUpdateOperationsInput | $Enums.Department
   baseSalary?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -605,7 +609,7 @@ export type StaffProfileUncheckedUpdateWithoutUserInput = {
 
 export type StaffProfileCreateWithoutProcessedDocumentsInput = {
   id?: string
-  department: string
+  department: $Enums.Department
   baseSalary?: runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -619,7 +623,7 @@ export type StaffProfileCreateWithoutProcessedDocumentsInput = {
 export type StaffProfileUncheckedCreateWithoutProcessedDocumentsInput = {
   id?: string
   userId: string
-  department: string
+  department: $Enums.Department
   baseSalary?: runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -647,7 +651,7 @@ export type StaffProfileUpdateToOneWithWhereWithoutProcessedDocumentsInput = {
 
 export type StaffProfileUpdateWithoutProcessedDocumentsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  department?: Prisma.StringFieldUpdateOperationsInput | string
+  department?: Prisma.EnumDepartmentFieldUpdateOperationsInput | $Enums.Department
   baseSalary?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -661,7 +665,7 @@ export type StaffProfileUpdateWithoutProcessedDocumentsInput = {
 export type StaffProfileUncheckedUpdateWithoutProcessedDocumentsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
-  department?: Prisma.StringFieldUpdateOperationsInput | string
+  department?: Prisma.EnumDepartmentFieldUpdateOperationsInput | $Enums.Department
   baseSalary?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -673,7 +677,7 @@ export type StaffProfileUncheckedUpdateWithoutProcessedDocumentsInput = {
 
 export type StaffProfileCreateWithoutAttendancesInput = {
   id?: string
-  department: string
+  department: $Enums.Department
   baseSalary?: runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -687,7 +691,7 @@ export type StaffProfileCreateWithoutAttendancesInput = {
 export type StaffProfileUncheckedCreateWithoutAttendancesInput = {
   id?: string
   userId: string
-  department: string
+  department: $Enums.Department
   baseSalary?: runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -715,7 +719,7 @@ export type StaffProfileUpdateToOneWithWhereWithoutAttendancesInput = {
 
 export type StaffProfileUpdateWithoutAttendancesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  department?: Prisma.StringFieldUpdateOperationsInput | string
+  department?: Prisma.EnumDepartmentFieldUpdateOperationsInput | $Enums.Department
   baseSalary?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -729,7 +733,7 @@ export type StaffProfileUpdateWithoutAttendancesInput = {
 export type StaffProfileUncheckedUpdateWithoutAttendancesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
-  department?: Prisma.StringFieldUpdateOperationsInput | string
+  department?: Prisma.EnumDepartmentFieldUpdateOperationsInput | $Enums.Department
   baseSalary?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -741,7 +745,7 @@ export type StaffProfileUncheckedUpdateWithoutAttendancesInput = {
 
 export type StaffProfileCreateWithoutLeaveRequestsInput = {
   id?: string
-  department: string
+  department: $Enums.Department
   baseSalary?: runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -755,7 +759,7 @@ export type StaffProfileCreateWithoutLeaveRequestsInput = {
 export type StaffProfileUncheckedCreateWithoutLeaveRequestsInput = {
   id?: string
   userId: string
-  department: string
+  department: $Enums.Department
   baseSalary?: runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -772,7 +776,7 @@ export type StaffProfileCreateOrConnectWithoutLeaveRequestsInput = {
 
 export type StaffProfileCreateWithoutApprovedLeavesInput = {
   id?: string
-  department: string
+  department: $Enums.Department
   baseSalary?: runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -786,7 +790,7 @@ export type StaffProfileCreateWithoutApprovedLeavesInput = {
 export type StaffProfileUncheckedCreateWithoutApprovedLeavesInput = {
   id?: string
   userId: string
-  department: string
+  department: $Enums.Department
   baseSalary?: runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -814,7 +818,7 @@ export type StaffProfileUpdateToOneWithWhereWithoutLeaveRequestsInput = {
 
 export type StaffProfileUpdateWithoutLeaveRequestsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  department?: Prisma.StringFieldUpdateOperationsInput | string
+  department?: Prisma.EnumDepartmentFieldUpdateOperationsInput | $Enums.Department
   baseSalary?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -828,7 +832,7 @@ export type StaffProfileUpdateWithoutLeaveRequestsInput = {
 export type StaffProfileUncheckedUpdateWithoutLeaveRequestsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
-  department?: Prisma.StringFieldUpdateOperationsInput | string
+  department?: Prisma.EnumDepartmentFieldUpdateOperationsInput | $Enums.Department
   baseSalary?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -851,7 +855,7 @@ export type StaffProfileUpdateToOneWithWhereWithoutApprovedLeavesInput = {
 
 export type StaffProfileUpdateWithoutApprovedLeavesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  department?: Prisma.StringFieldUpdateOperationsInput | string
+  department?: Prisma.EnumDepartmentFieldUpdateOperationsInput | $Enums.Department
   baseSalary?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -865,7 +869,7 @@ export type StaffProfileUpdateWithoutApprovedLeavesInput = {
 export type StaffProfileUncheckedUpdateWithoutApprovedLeavesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
-  department?: Prisma.StringFieldUpdateOperationsInput | string
+  department?: Prisma.EnumDepartmentFieldUpdateOperationsInput | $Enums.Department
   baseSalary?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -877,7 +881,7 @@ export type StaffProfileUncheckedUpdateWithoutApprovedLeavesInput = {
 
 export type StaffProfileCreateWithoutPayslipsInput = {
   id?: string
-  department: string
+  department: $Enums.Department
   baseSalary?: runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -891,7 +895,7 @@ export type StaffProfileCreateWithoutPayslipsInput = {
 export type StaffProfileUncheckedCreateWithoutPayslipsInput = {
   id?: string
   userId: string
-  department: string
+  department: $Enums.Department
   baseSalary?: runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -919,7 +923,7 @@ export type StaffProfileUpdateToOneWithWhereWithoutPayslipsInput = {
 
 export type StaffProfileUpdateWithoutPayslipsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  department?: Prisma.StringFieldUpdateOperationsInput | string
+  department?: Prisma.EnumDepartmentFieldUpdateOperationsInput | $Enums.Department
   baseSalary?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -933,7 +937,7 @@ export type StaffProfileUpdateWithoutPayslipsInput = {
 export type StaffProfileUncheckedUpdateWithoutPayslipsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
-  department?: Prisma.StringFieldUpdateOperationsInput | string
+  department?: Prisma.EnumDepartmentFieldUpdateOperationsInput | $Enums.Department
   baseSalary?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1061,7 +1065,7 @@ export type $StaffProfilePayload<ExtArgs extends runtime.Types.Extensions.Intern
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     userId: string
-    department: string
+    department: $Enums.Department
     baseSalary: runtime.Decimal
     createdAt: Date
     updatedAt: Date
@@ -1442,7 +1446,7 @@ export interface Prisma__StaffProfileClient<T, Null = never, ExtArgs extends run
 export interface StaffProfileFieldRefs {
   readonly id: Prisma.FieldRef<"StaffProfile", 'String'>
   readonly userId: Prisma.FieldRef<"StaffProfile", 'String'>
-  readonly department: Prisma.FieldRef<"StaffProfile", 'String'>
+  readonly department: Prisma.FieldRef<"StaffProfile", 'Department'>
   readonly baseSalary: Prisma.FieldRef<"StaffProfile", 'Decimal'>
   readonly createdAt: Prisma.FieldRef<"StaffProfile", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"StaffProfile", 'DateTime'>

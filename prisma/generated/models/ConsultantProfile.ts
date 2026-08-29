@@ -237,7 +237,8 @@ export type ConsultantProfileWhereInput = {
   createdAt?: Prisma.DateTimeFilter<"ConsultantProfile"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"ConsultantProfile"> | Date | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
-  availabilitySlots?: Prisma.AvailabilitySlotListRelationFilter
+  assignedStudents?: Prisma.StudentProfileListRelationFilter
+  availabilityTemplates?: Prisma.AvailabilityTemplateListRelationFilter
   bookings?: Prisma.BookingListRelationFilter
   meetingNotes?: Prisma.MeetingNoteListRelationFilter
   attendances?: Prisma.AttendanceListRelationFilter
@@ -253,7 +254,8 @@ export type ConsultantProfileOrderByWithRelationInput = {
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   user?: Prisma.UserOrderByWithRelationInput
-  availabilitySlots?: Prisma.AvailabilitySlotOrderByRelationAggregateInput
+  assignedStudents?: Prisma.StudentProfileOrderByRelationAggregateInput
+  availabilityTemplates?: Prisma.AvailabilityTemplateOrderByRelationAggregateInput
   bookings?: Prisma.BookingOrderByRelationAggregateInput
   meetingNotes?: Prisma.MeetingNoteOrderByRelationAggregateInput
   attendances?: Prisma.AttendanceOrderByRelationAggregateInput
@@ -273,7 +275,8 @@ export type ConsultantProfileWhereUniqueInput = Prisma.AtLeast<{
   createdAt?: Prisma.DateTimeFilter<"ConsultantProfile"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"ConsultantProfile"> | Date | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
-  availabilitySlots?: Prisma.AvailabilitySlotListRelationFilter
+  assignedStudents?: Prisma.StudentProfileListRelationFilter
+  availabilityTemplates?: Prisma.AvailabilityTemplateListRelationFilter
   bookings?: Prisma.BookingListRelationFilter
   meetingNotes?: Prisma.MeetingNoteListRelationFilter
   attendances?: Prisma.AttendanceListRelationFilter
@@ -316,7 +319,8 @@ export type ConsultantProfileCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutConsultantProfileInput
-  availabilitySlots?: Prisma.AvailabilitySlotCreateNestedManyWithoutConsultantInput
+  assignedStudents?: Prisma.StudentProfileCreateNestedManyWithoutAssignedConsultantInput
+  availabilityTemplates?: Prisma.AvailabilityTemplateCreateNestedManyWithoutConsultantInput
   bookings?: Prisma.BookingCreateNestedManyWithoutConsultantInput
   meetingNotes?: Prisma.MeetingNoteCreateNestedManyWithoutConsultantInput
   attendances?: Prisma.AttendanceCreateNestedManyWithoutConsultantInput
@@ -331,7 +335,8 @@ export type ConsultantProfileUncheckedCreateInput = {
   sessionIncentive?: runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Date | string
   updatedAt?: Date | string
-  availabilitySlots?: Prisma.AvailabilitySlotUncheckedCreateNestedManyWithoutConsultantInput
+  assignedStudents?: Prisma.StudentProfileUncheckedCreateNestedManyWithoutAssignedConsultantInput
+  availabilityTemplates?: Prisma.AvailabilityTemplateUncheckedCreateNestedManyWithoutConsultantInput
   bookings?: Prisma.BookingUncheckedCreateNestedManyWithoutConsultantInput
   meetingNotes?: Prisma.MeetingNoteUncheckedCreateNestedManyWithoutConsultantInput
   attendances?: Prisma.AttendanceUncheckedCreateNestedManyWithoutConsultantInput
@@ -346,7 +351,8 @@ export type ConsultantProfileUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutConsultantProfileNestedInput
-  availabilitySlots?: Prisma.AvailabilitySlotUpdateManyWithoutConsultantNestedInput
+  assignedStudents?: Prisma.StudentProfileUpdateManyWithoutAssignedConsultantNestedInput
+  availabilityTemplates?: Prisma.AvailabilityTemplateUpdateManyWithoutConsultantNestedInput
   bookings?: Prisma.BookingUpdateManyWithoutConsultantNestedInput
   meetingNotes?: Prisma.MeetingNoteUpdateManyWithoutConsultantNestedInput
   attendances?: Prisma.AttendanceUpdateManyWithoutConsultantNestedInput
@@ -361,7 +367,8 @@ export type ConsultantProfileUncheckedUpdateInput = {
   sessionIncentive?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  availabilitySlots?: Prisma.AvailabilitySlotUncheckedUpdateManyWithoutConsultantNestedInput
+  assignedStudents?: Prisma.StudentProfileUncheckedUpdateManyWithoutAssignedConsultantNestedInput
+  availabilityTemplates?: Prisma.AvailabilityTemplateUncheckedUpdateManyWithoutConsultantNestedInput
   bookings?: Prisma.BookingUncheckedUpdateManyWithoutConsultantNestedInput
   meetingNotes?: Prisma.MeetingNoteUncheckedUpdateManyWithoutConsultantNestedInput
   attendances?: Prisma.AttendanceUncheckedUpdateManyWithoutConsultantNestedInput
@@ -485,6 +492,22 @@ export type ConsultantProfileUncheckedUpdateOneWithoutUserNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.ConsultantProfileUpdateToOneWithWhereWithoutUserInput, Prisma.ConsultantProfileUpdateWithoutUserInput>, Prisma.ConsultantProfileUncheckedUpdateWithoutUserInput>
 }
 
+export type ConsultantProfileCreateNestedOneWithoutAssignedStudentsInput = {
+  create?: Prisma.XOR<Prisma.ConsultantProfileCreateWithoutAssignedStudentsInput, Prisma.ConsultantProfileUncheckedCreateWithoutAssignedStudentsInput>
+  connectOrCreate?: Prisma.ConsultantProfileCreateOrConnectWithoutAssignedStudentsInput
+  connect?: Prisma.ConsultantProfileWhereUniqueInput
+}
+
+export type ConsultantProfileUpdateOneWithoutAssignedStudentsNestedInput = {
+  create?: Prisma.XOR<Prisma.ConsultantProfileCreateWithoutAssignedStudentsInput, Prisma.ConsultantProfileUncheckedCreateWithoutAssignedStudentsInput>
+  connectOrCreate?: Prisma.ConsultantProfileCreateOrConnectWithoutAssignedStudentsInput
+  upsert?: Prisma.ConsultantProfileUpsertWithoutAssignedStudentsInput
+  disconnect?: Prisma.ConsultantProfileWhereInput | boolean
+  delete?: Prisma.ConsultantProfileWhereInput | boolean
+  connect?: Prisma.ConsultantProfileWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ConsultantProfileUpdateToOneWithWhereWithoutAssignedStudentsInput, Prisma.ConsultantProfileUpdateWithoutAssignedStudentsInput>, Prisma.ConsultantProfileUncheckedUpdateWithoutAssignedStudentsInput>
+}
+
 export type DecimalFieldUpdateOperationsInput = {
   set?: runtime.Decimal | runtime.DecimalJsLike | number | string
   increment?: runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -493,18 +516,18 @@ export type DecimalFieldUpdateOperationsInput = {
   divide?: runtime.Decimal | runtime.DecimalJsLike | number | string
 }
 
-export type ConsultantProfileCreateNestedOneWithoutAvailabilitySlotsInput = {
-  create?: Prisma.XOR<Prisma.ConsultantProfileCreateWithoutAvailabilitySlotsInput, Prisma.ConsultantProfileUncheckedCreateWithoutAvailabilitySlotsInput>
-  connectOrCreate?: Prisma.ConsultantProfileCreateOrConnectWithoutAvailabilitySlotsInput
+export type ConsultantProfileCreateNestedOneWithoutAvailabilityTemplatesInput = {
+  create?: Prisma.XOR<Prisma.ConsultantProfileCreateWithoutAvailabilityTemplatesInput, Prisma.ConsultantProfileUncheckedCreateWithoutAvailabilityTemplatesInput>
+  connectOrCreate?: Prisma.ConsultantProfileCreateOrConnectWithoutAvailabilityTemplatesInput
   connect?: Prisma.ConsultantProfileWhereUniqueInput
 }
 
-export type ConsultantProfileUpdateOneRequiredWithoutAvailabilitySlotsNestedInput = {
-  create?: Prisma.XOR<Prisma.ConsultantProfileCreateWithoutAvailabilitySlotsInput, Prisma.ConsultantProfileUncheckedCreateWithoutAvailabilitySlotsInput>
-  connectOrCreate?: Prisma.ConsultantProfileCreateOrConnectWithoutAvailabilitySlotsInput
-  upsert?: Prisma.ConsultantProfileUpsertWithoutAvailabilitySlotsInput
+export type ConsultantProfileUpdateOneRequiredWithoutAvailabilityTemplatesNestedInput = {
+  create?: Prisma.XOR<Prisma.ConsultantProfileCreateWithoutAvailabilityTemplatesInput, Prisma.ConsultantProfileUncheckedCreateWithoutAvailabilityTemplatesInput>
+  connectOrCreate?: Prisma.ConsultantProfileCreateOrConnectWithoutAvailabilityTemplatesInput
+  upsert?: Prisma.ConsultantProfileUpsertWithoutAvailabilityTemplatesInput
   connect?: Prisma.ConsultantProfileWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.ConsultantProfileUpdateToOneWithWhereWithoutAvailabilitySlotsInput, Prisma.ConsultantProfileUpdateWithoutAvailabilitySlotsInput>, Prisma.ConsultantProfileUncheckedUpdateWithoutAvailabilitySlotsInput>
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ConsultantProfileUpdateToOneWithWhereWithoutAvailabilityTemplatesInput, Prisma.ConsultantProfileUpdateWithoutAvailabilityTemplatesInput>, Prisma.ConsultantProfileUncheckedUpdateWithoutAvailabilityTemplatesInput>
 }
 
 export type ConsultantProfileCreateNestedOneWithoutBookingsInput = {
@@ -574,7 +597,8 @@ export type ConsultantProfileCreateWithoutUserInput = {
   sessionIncentive?: runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Date | string
   updatedAt?: Date | string
-  availabilitySlots?: Prisma.AvailabilitySlotCreateNestedManyWithoutConsultantInput
+  assignedStudents?: Prisma.StudentProfileCreateNestedManyWithoutAssignedConsultantInput
+  availabilityTemplates?: Prisma.AvailabilityTemplateCreateNestedManyWithoutConsultantInput
   bookings?: Prisma.BookingCreateNestedManyWithoutConsultantInput
   meetingNotes?: Prisma.MeetingNoteCreateNestedManyWithoutConsultantInput
   attendances?: Prisma.AttendanceCreateNestedManyWithoutConsultantInput
@@ -588,7 +612,8 @@ export type ConsultantProfileUncheckedCreateWithoutUserInput = {
   sessionIncentive?: runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Date | string
   updatedAt?: Date | string
-  availabilitySlots?: Prisma.AvailabilitySlotUncheckedCreateNestedManyWithoutConsultantInput
+  assignedStudents?: Prisma.StudentProfileUncheckedCreateNestedManyWithoutAssignedConsultantInput
+  availabilityTemplates?: Prisma.AvailabilityTemplateUncheckedCreateNestedManyWithoutConsultantInput
   bookings?: Prisma.BookingUncheckedCreateNestedManyWithoutConsultantInput
   meetingNotes?: Prisma.MeetingNoteUncheckedCreateNestedManyWithoutConsultantInput
   attendances?: Prisma.AttendanceUncheckedCreateNestedManyWithoutConsultantInput
@@ -618,7 +643,8 @@ export type ConsultantProfileUpdateWithoutUserInput = {
   sessionIncentive?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  availabilitySlots?: Prisma.AvailabilitySlotUpdateManyWithoutConsultantNestedInput
+  assignedStudents?: Prisma.StudentProfileUpdateManyWithoutAssignedConsultantNestedInput
+  availabilityTemplates?: Prisma.AvailabilityTemplateUpdateManyWithoutConsultantNestedInput
   bookings?: Prisma.BookingUpdateManyWithoutConsultantNestedInput
   meetingNotes?: Prisma.MeetingNoteUpdateManyWithoutConsultantNestedInput
   attendances?: Prisma.AttendanceUpdateManyWithoutConsultantNestedInput
@@ -632,14 +658,15 @@ export type ConsultantProfileUncheckedUpdateWithoutUserInput = {
   sessionIncentive?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  availabilitySlots?: Prisma.AvailabilitySlotUncheckedUpdateManyWithoutConsultantNestedInput
+  assignedStudents?: Prisma.StudentProfileUncheckedUpdateManyWithoutAssignedConsultantNestedInput
+  availabilityTemplates?: Prisma.AvailabilityTemplateUncheckedUpdateManyWithoutConsultantNestedInput
   bookings?: Prisma.BookingUncheckedUpdateManyWithoutConsultantNestedInput
   meetingNotes?: Prisma.MeetingNoteUncheckedUpdateManyWithoutConsultantNestedInput
   attendances?: Prisma.AttendanceUncheckedUpdateManyWithoutConsultantNestedInput
   leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutConsultantNestedInput
 }
 
-export type ConsultantProfileCreateWithoutAvailabilitySlotsInput = {
+export type ConsultantProfileCreateWithoutAssignedStudentsInput = {
   id?: string
   specialization?: string | null
   hourlyRate?: runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -647,13 +674,14 @@ export type ConsultantProfileCreateWithoutAvailabilitySlotsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutConsultantProfileInput
+  availabilityTemplates?: Prisma.AvailabilityTemplateCreateNestedManyWithoutConsultantInput
   bookings?: Prisma.BookingCreateNestedManyWithoutConsultantInput
   meetingNotes?: Prisma.MeetingNoteCreateNestedManyWithoutConsultantInput
   attendances?: Prisma.AttendanceCreateNestedManyWithoutConsultantInput
   leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutConsultantInput
 }
 
-export type ConsultantProfileUncheckedCreateWithoutAvailabilitySlotsInput = {
+export type ConsultantProfileUncheckedCreateWithoutAssignedStudentsInput = {
   id?: string
   userId: string
   specialization?: string | null
@@ -661,29 +689,30 @@ export type ConsultantProfileUncheckedCreateWithoutAvailabilitySlotsInput = {
   sessionIncentive?: runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Date | string
   updatedAt?: Date | string
+  availabilityTemplates?: Prisma.AvailabilityTemplateUncheckedCreateNestedManyWithoutConsultantInput
   bookings?: Prisma.BookingUncheckedCreateNestedManyWithoutConsultantInput
   meetingNotes?: Prisma.MeetingNoteUncheckedCreateNestedManyWithoutConsultantInput
   attendances?: Prisma.AttendanceUncheckedCreateNestedManyWithoutConsultantInput
   leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutConsultantInput
 }
 
-export type ConsultantProfileCreateOrConnectWithoutAvailabilitySlotsInput = {
+export type ConsultantProfileCreateOrConnectWithoutAssignedStudentsInput = {
   where: Prisma.ConsultantProfileWhereUniqueInput
-  create: Prisma.XOR<Prisma.ConsultantProfileCreateWithoutAvailabilitySlotsInput, Prisma.ConsultantProfileUncheckedCreateWithoutAvailabilitySlotsInput>
+  create: Prisma.XOR<Prisma.ConsultantProfileCreateWithoutAssignedStudentsInput, Prisma.ConsultantProfileUncheckedCreateWithoutAssignedStudentsInput>
 }
 
-export type ConsultantProfileUpsertWithoutAvailabilitySlotsInput = {
-  update: Prisma.XOR<Prisma.ConsultantProfileUpdateWithoutAvailabilitySlotsInput, Prisma.ConsultantProfileUncheckedUpdateWithoutAvailabilitySlotsInput>
-  create: Prisma.XOR<Prisma.ConsultantProfileCreateWithoutAvailabilitySlotsInput, Prisma.ConsultantProfileUncheckedCreateWithoutAvailabilitySlotsInput>
+export type ConsultantProfileUpsertWithoutAssignedStudentsInput = {
+  update: Prisma.XOR<Prisma.ConsultantProfileUpdateWithoutAssignedStudentsInput, Prisma.ConsultantProfileUncheckedUpdateWithoutAssignedStudentsInput>
+  create: Prisma.XOR<Prisma.ConsultantProfileCreateWithoutAssignedStudentsInput, Prisma.ConsultantProfileUncheckedCreateWithoutAssignedStudentsInput>
   where?: Prisma.ConsultantProfileWhereInput
 }
 
-export type ConsultantProfileUpdateToOneWithWhereWithoutAvailabilitySlotsInput = {
+export type ConsultantProfileUpdateToOneWithWhereWithoutAssignedStudentsInput = {
   where?: Prisma.ConsultantProfileWhereInput
-  data: Prisma.XOR<Prisma.ConsultantProfileUpdateWithoutAvailabilitySlotsInput, Prisma.ConsultantProfileUncheckedUpdateWithoutAvailabilitySlotsInput>
+  data: Prisma.XOR<Prisma.ConsultantProfileUpdateWithoutAssignedStudentsInput, Prisma.ConsultantProfileUncheckedUpdateWithoutAssignedStudentsInput>
 }
 
-export type ConsultantProfileUpdateWithoutAvailabilitySlotsInput = {
+export type ConsultantProfileUpdateWithoutAssignedStudentsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   specialization?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   hourlyRate?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -691,13 +720,14 @@ export type ConsultantProfileUpdateWithoutAvailabilitySlotsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutConsultantProfileNestedInput
+  availabilityTemplates?: Prisma.AvailabilityTemplateUpdateManyWithoutConsultantNestedInput
   bookings?: Prisma.BookingUpdateManyWithoutConsultantNestedInput
   meetingNotes?: Prisma.MeetingNoteUpdateManyWithoutConsultantNestedInput
   attendances?: Prisma.AttendanceUpdateManyWithoutConsultantNestedInput
   leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutConsultantNestedInput
 }
 
-export type ConsultantProfileUncheckedUpdateWithoutAvailabilitySlotsInput = {
+export type ConsultantProfileUncheckedUpdateWithoutAssignedStudentsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   specialization?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -705,6 +735,83 @@ export type ConsultantProfileUncheckedUpdateWithoutAvailabilitySlotsInput = {
   sessionIncentive?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  availabilityTemplates?: Prisma.AvailabilityTemplateUncheckedUpdateManyWithoutConsultantNestedInput
+  bookings?: Prisma.BookingUncheckedUpdateManyWithoutConsultantNestedInput
+  meetingNotes?: Prisma.MeetingNoteUncheckedUpdateManyWithoutConsultantNestedInput
+  attendances?: Prisma.AttendanceUncheckedUpdateManyWithoutConsultantNestedInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutConsultantNestedInput
+}
+
+export type ConsultantProfileCreateWithoutAvailabilityTemplatesInput = {
+  id?: string
+  specialization?: string | null
+  hourlyRate?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  sessionIncentive?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  user: Prisma.UserCreateNestedOneWithoutConsultantProfileInput
+  assignedStudents?: Prisma.StudentProfileCreateNestedManyWithoutAssignedConsultantInput
+  bookings?: Prisma.BookingCreateNestedManyWithoutConsultantInput
+  meetingNotes?: Prisma.MeetingNoteCreateNestedManyWithoutConsultantInput
+  attendances?: Prisma.AttendanceCreateNestedManyWithoutConsultantInput
+  leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutConsultantInput
+}
+
+export type ConsultantProfileUncheckedCreateWithoutAvailabilityTemplatesInput = {
+  id?: string
+  userId: string
+  specialization?: string | null
+  hourlyRate?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  sessionIncentive?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  assignedStudents?: Prisma.StudentProfileUncheckedCreateNestedManyWithoutAssignedConsultantInput
+  bookings?: Prisma.BookingUncheckedCreateNestedManyWithoutConsultantInput
+  meetingNotes?: Prisma.MeetingNoteUncheckedCreateNestedManyWithoutConsultantInput
+  attendances?: Prisma.AttendanceUncheckedCreateNestedManyWithoutConsultantInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutConsultantInput
+}
+
+export type ConsultantProfileCreateOrConnectWithoutAvailabilityTemplatesInput = {
+  where: Prisma.ConsultantProfileWhereUniqueInput
+  create: Prisma.XOR<Prisma.ConsultantProfileCreateWithoutAvailabilityTemplatesInput, Prisma.ConsultantProfileUncheckedCreateWithoutAvailabilityTemplatesInput>
+}
+
+export type ConsultantProfileUpsertWithoutAvailabilityTemplatesInput = {
+  update: Prisma.XOR<Prisma.ConsultantProfileUpdateWithoutAvailabilityTemplatesInput, Prisma.ConsultantProfileUncheckedUpdateWithoutAvailabilityTemplatesInput>
+  create: Prisma.XOR<Prisma.ConsultantProfileCreateWithoutAvailabilityTemplatesInput, Prisma.ConsultantProfileUncheckedCreateWithoutAvailabilityTemplatesInput>
+  where?: Prisma.ConsultantProfileWhereInput
+}
+
+export type ConsultantProfileUpdateToOneWithWhereWithoutAvailabilityTemplatesInput = {
+  where?: Prisma.ConsultantProfileWhereInput
+  data: Prisma.XOR<Prisma.ConsultantProfileUpdateWithoutAvailabilityTemplatesInput, Prisma.ConsultantProfileUncheckedUpdateWithoutAvailabilityTemplatesInput>
+}
+
+export type ConsultantProfileUpdateWithoutAvailabilityTemplatesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  specialization?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hourlyRate?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  sessionIncentive?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  user?: Prisma.UserUpdateOneRequiredWithoutConsultantProfileNestedInput
+  assignedStudents?: Prisma.StudentProfileUpdateManyWithoutAssignedConsultantNestedInput
+  bookings?: Prisma.BookingUpdateManyWithoutConsultantNestedInput
+  meetingNotes?: Prisma.MeetingNoteUpdateManyWithoutConsultantNestedInput
+  attendances?: Prisma.AttendanceUpdateManyWithoutConsultantNestedInput
+  leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutConsultantNestedInput
+}
+
+export type ConsultantProfileUncheckedUpdateWithoutAvailabilityTemplatesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  specialization?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hourlyRate?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  sessionIncentive?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  assignedStudents?: Prisma.StudentProfileUncheckedUpdateManyWithoutAssignedConsultantNestedInput
   bookings?: Prisma.BookingUncheckedUpdateManyWithoutConsultantNestedInput
   meetingNotes?: Prisma.MeetingNoteUncheckedUpdateManyWithoutConsultantNestedInput
   attendances?: Prisma.AttendanceUncheckedUpdateManyWithoutConsultantNestedInput
@@ -719,7 +826,8 @@ export type ConsultantProfileCreateWithoutBookingsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutConsultantProfileInput
-  availabilitySlots?: Prisma.AvailabilitySlotCreateNestedManyWithoutConsultantInput
+  assignedStudents?: Prisma.StudentProfileCreateNestedManyWithoutAssignedConsultantInput
+  availabilityTemplates?: Prisma.AvailabilityTemplateCreateNestedManyWithoutConsultantInput
   meetingNotes?: Prisma.MeetingNoteCreateNestedManyWithoutConsultantInput
   attendances?: Prisma.AttendanceCreateNestedManyWithoutConsultantInput
   leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutConsultantInput
@@ -733,7 +841,8 @@ export type ConsultantProfileUncheckedCreateWithoutBookingsInput = {
   sessionIncentive?: runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Date | string
   updatedAt?: Date | string
-  availabilitySlots?: Prisma.AvailabilitySlotUncheckedCreateNestedManyWithoutConsultantInput
+  assignedStudents?: Prisma.StudentProfileUncheckedCreateNestedManyWithoutAssignedConsultantInput
+  availabilityTemplates?: Prisma.AvailabilityTemplateUncheckedCreateNestedManyWithoutConsultantInput
   meetingNotes?: Prisma.MeetingNoteUncheckedCreateNestedManyWithoutConsultantInput
   attendances?: Prisma.AttendanceUncheckedCreateNestedManyWithoutConsultantInput
   leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutConsultantInput
@@ -763,7 +872,8 @@ export type ConsultantProfileUpdateWithoutBookingsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutConsultantProfileNestedInput
-  availabilitySlots?: Prisma.AvailabilitySlotUpdateManyWithoutConsultantNestedInput
+  assignedStudents?: Prisma.StudentProfileUpdateManyWithoutAssignedConsultantNestedInput
+  availabilityTemplates?: Prisma.AvailabilityTemplateUpdateManyWithoutConsultantNestedInput
   meetingNotes?: Prisma.MeetingNoteUpdateManyWithoutConsultantNestedInput
   attendances?: Prisma.AttendanceUpdateManyWithoutConsultantNestedInput
   leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutConsultantNestedInput
@@ -777,7 +887,8 @@ export type ConsultantProfileUncheckedUpdateWithoutBookingsInput = {
   sessionIncentive?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  availabilitySlots?: Prisma.AvailabilitySlotUncheckedUpdateManyWithoutConsultantNestedInput
+  assignedStudents?: Prisma.StudentProfileUncheckedUpdateManyWithoutAssignedConsultantNestedInput
+  availabilityTemplates?: Prisma.AvailabilityTemplateUncheckedUpdateManyWithoutConsultantNestedInput
   meetingNotes?: Prisma.MeetingNoteUncheckedUpdateManyWithoutConsultantNestedInput
   attendances?: Prisma.AttendanceUncheckedUpdateManyWithoutConsultantNestedInput
   leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutConsultantNestedInput
@@ -791,7 +902,8 @@ export type ConsultantProfileCreateWithoutMeetingNotesInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutConsultantProfileInput
-  availabilitySlots?: Prisma.AvailabilitySlotCreateNestedManyWithoutConsultantInput
+  assignedStudents?: Prisma.StudentProfileCreateNestedManyWithoutAssignedConsultantInput
+  availabilityTemplates?: Prisma.AvailabilityTemplateCreateNestedManyWithoutConsultantInput
   bookings?: Prisma.BookingCreateNestedManyWithoutConsultantInput
   attendances?: Prisma.AttendanceCreateNestedManyWithoutConsultantInput
   leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutConsultantInput
@@ -805,7 +917,8 @@ export type ConsultantProfileUncheckedCreateWithoutMeetingNotesInput = {
   sessionIncentive?: runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Date | string
   updatedAt?: Date | string
-  availabilitySlots?: Prisma.AvailabilitySlotUncheckedCreateNestedManyWithoutConsultantInput
+  assignedStudents?: Prisma.StudentProfileUncheckedCreateNestedManyWithoutAssignedConsultantInput
+  availabilityTemplates?: Prisma.AvailabilityTemplateUncheckedCreateNestedManyWithoutConsultantInput
   bookings?: Prisma.BookingUncheckedCreateNestedManyWithoutConsultantInput
   attendances?: Prisma.AttendanceUncheckedCreateNestedManyWithoutConsultantInput
   leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutConsultantInput
@@ -835,7 +948,8 @@ export type ConsultantProfileUpdateWithoutMeetingNotesInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutConsultantProfileNestedInput
-  availabilitySlots?: Prisma.AvailabilitySlotUpdateManyWithoutConsultantNestedInput
+  assignedStudents?: Prisma.StudentProfileUpdateManyWithoutAssignedConsultantNestedInput
+  availabilityTemplates?: Prisma.AvailabilityTemplateUpdateManyWithoutConsultantNestedInput
   bookings?: Prisma.BookingUpdateManyWithoutConsultantNestedInput
   attendances?: Prisma.AttendanceUpdateManyWithoutConsultantNestedInput
   leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutConsultantNestedInput
@@ -849,7 +963,8 @@ export type ConsultantProfileUncheckedUpdateWithoutMeetingNotesInput = {
   sessionIncentive?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  availabilitySlots?: Prisma.AvailabilitySlotUncheckedUpdateManyWithoutConsultantNestedInput
+  assignedStudents?: Prisma.StudentProfileUncheckedUpdateManyWithoutAssignedConsultantNestedInput
+  availabilityTemplates?: Prisma.AvailabilityTemplateUncheckedUpdateManyWithoutConsultantNestedInput
   bookings?: Prisma.BookingUncheckedUpdateManyWithoutConsultantNestedInput
   attendances?: Prisma.AttendanceUncheckedUpdateManyWithoutConsultantNestedInput
   leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutConsultantNestedInput
@@ -863,7 +978,8 @@ export type ConsultantProfileCreateWithoutAttendancesInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutConsultantProfileInput
-  availabilitySlots?: Prisma.AvailabilitySlotCreateNestedManyWithoutConsultantInput
+  assignedStudents?: Prisma.StudentProfileCreateNestedManyWithoutAssignedConsultantInput
+  availabilityTemplates?: Prisma.AvailabilityTemplateCreateNestedManyWithoutConsultantInput
   bookings?: Prisma.BookingCreateNestedManyWithoutConsultantInput
   meetingNotes?: Prisma.MeetingNoteCreateNestedManyWithoutConsultantInput
   leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutConsultantInput
@@ -877,7 +993,8 @@ export type ConsultantProfileUncheckedCreateWithoutAttendancesInput = {
   sessionIncentive?: runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Date | string
   updatedAt?: Date | string
-  availabilitySlots?: Prisma.AvailabilitySlotUncheckedCreateNestedManyWithoutConsultantInput
+  assignedStudents?: Prisma.StudentProfileUncheckedCreateNestedManyWithoutAssignedConsultantInput
+  availabilityTemplates?: Prisma.AvailabilityTemplateUncheckedCreateNestedManyWithoutConsultantInput
   bookings?: Prisma.BookingUncheckedCreateNestedManyWithoutConsultantInput
   meetingNotes?: Prisma.MeetingNoteUncheckedCreateNestedManyWithoutConsultantInput
   leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutConsultantInput
@@ -907,7 +1024,8 @@ export type ConsultantProfileUpdateWithoutAttendancesInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutConsultantProfileNestedInput
-  availabilitySlots?: Prisma.AvailabilitySlotUpdateManyWithoutConsultantNestedInput
+  assignedStudents?: Prisma.StudentProfileUpdateManyWithoutAssignedConsultantNestedInput
+  availabilityTemplates?: Prisma.AvailabilityTemplateUpdateManyWithoutConsultantNestedInput
   bookings?: Prisma.BookingUpdateManyWithoutConsultantNestedInput
   meetingNotes?: Prisma.MeetingNoteUpdateManyWithoutConsultantNestedInput
   leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutConsultantNestedInput
@@ -921,7 +1039,8 @@ export type ConsultantProfileUncheckedUpdateWithoutAttendancesInput = {
   sessionIncentive?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  availabilitySlots?: Prisma.AvailabilitySlotUncheckedUpdateManyWithoutConsultantNestedInput
+  assignedStudents?: Prisma.StudentProfileUncheckedUpdateManyWithoutAssignedConsultantNestedInput
+  availabilityTemplates?: Prisma.AvailabilityTemplateUncheckedUpdateManyWithoutConsultantNestedInput
   bookings?: Prisma.BookingUncheckedUpdateManyWithoutConsultantNestedInput
   meetingNotes?: Prisma.MeetingNoteUncheckedUpdateManyWithoutConsultantNestedInput
   leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutConsultantNestedInput
@@ -935,7 +1054,8 @@ export type ConsultantProfileCreateWithoutLeaveRequestsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutConsultantProfileInput
-  availabilitySlots?: Prisma.AvailabilitySlotCreateNestedManyWithoutConsultantInput
+  assignedStudents?: Prisma.StudentProfileCreateNestedManyWithoutAssignedConsultantInput
+  availabilityTemplates?: Prisma.AvailabilityTemplateCreateNestedManyWithoutConsultantInput
   bookings?: Prisma.BookingCreateNestedManyWithoutConsultantInput
   meetingNotes?: Prisma.MeetingNoteCreateNestedManyWithoutConsultantInput
   attendances?: Prisma.AttendanceCreateNestedManyWithoutConsultantInput
@@ -949,7 +1069,8 @@ export type ConsultantProfileUncheckedCreateWithoutLeaveRequestsInput = {
   sessionIncentive?: runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Date | string
   updatedAt?: Date | string
-  availabilitySlots?: Prisma.AvailabilitySlotUncheckedCreateNestedManyWithoutConsultantInput
+  assignedStudents?: Prisma.StudentProfileUncheckedCreateNestedManyWithoutAssignedConsultantInput
+  availabilityTemplates?: Prisma.AvailabilityTemplateUncheckedCreateNestedManyWithoutConsultantInput
   bookings?: Prisma.BookingUncheckedCreateNestedManyWithoutConsultantInput
   meetingNotes?: Prisma.MeetingNoteUncheckedCreateNestedManyWithoutConsultantInput
   attendances?: Prisma.AttendanceUncheckedCreateNestedManyWithoutConsultantInput
@@ -979,7 +1100,8 @@ export type ConsultantProfileUpdateWithoutLeaveRequestsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutConsultantProfileNestedInput
-  availabilitySlots?: Prisma.AvailabilitySlotUpdateManyWithoutConsultantNestedInput
+  assignedStudents?: Prisma.StudentProfileUpdateManyWithoutAssignedConsultantNestedInput
+  availabilityTemplates?: Prisma.AvailabilityTemplateUpdateManyWithoutConsultantNestedInput
   bookings?: Prisma.BookingUpdateManyWithoutConsultantNestedInput
   meetingNotes?: Prisma.MeetingNoteUpdateManyWithoutConsultantNestedInput
   attendances?: Prisma.AttendanceUpdateManyWithoutConsultantNestedInput
@@ -993,7 +1115,8 @@ export type ConsultantProfileUncheckedUpdateWithoutLeaveRequestsInput = {
   sessionIncentive?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  availabilitySlots?: Prisma.AvailabilitySlotUncheckedUpdateManyWithoutConsultantNestedInput
+  assignedStudents?: Prisma.StudentProfileUncheckedUpdateManyWithoutAssignedConsultantNestedInput
+  availabilityTemplates?: Prisma.AvailabilityTemplateUncheckedUpdateManyWithoutConsultantNestedInput
   bookings?: Prisma.BookingUncheckedUpdateManyWithoutConsultantNestedInput
   meetingNotes?: Prisma.MeetingNoteUncheckedUpdateManyWithoutConsultantNestedInput
   attendances?: Prisma.AttendanceUncheckedUpdateManyWithoutConsultantNestedInput
@@ -1005,7 +1128,8 @@ export type ConsultantProfileUncheckedUpdateWithoutLeaveRequestsInput = {
  */
 
 export type ConsultantProfileCountOutputType = {
-  availabilitySlots: number
+  assignedStudents: number
+  availabilityTemplates: number
   bookings: number
   meetingNotes: number
   attendances: number
@@ -1013,7 +1137,8 @@ export type ConsultantProfileCountOutputType = {
 }
 
 export type ConsultantProfileCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  availabilitySlots?: boolean | ConsultantProfileCountOutputTypeCountAvailabilitySlotsArgs
+  assignedStudents?: boolean | ConsultantProfileCountOutputTypeCountAssignedStudentsArgs
+  availabilityTemplates?: boolean | ConsultantProfileCountOutputTypeCountAvailabilityTemplatesArgs
   bookings?: boolean | ConsultantProfileCountOutputTypeCountBookingsArgs
   meetingNotes?: boolean | ConsultantProfileCountOutputTypeCountMeetingNotesArgs
   attendances?: boolean | ConsultantProfileCountOutputTypeCountAttendancesArgs
@@ -1033,8 +1158,15 @@ export type ConsultantProfileCountOutputTypeDefaultArgs<ExtArgs extends runtime.
 /**
  * ConsultantProfileCountOutputType without action
  */
-export type ConsultantProfileCountOutputTypeCountAvailabilitySlotsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.AvailabilitySlotWhereInput
+export type ConsultantProfileCountOutputTypeCountAssignedStudentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.StudentProfileWhereInput
+}
+
+/**
+ * ConsultantProfileCountOutputType without action
+ */
+export type ConsultantProfileCountOutputTypeCountAvailabilityTemplatesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.AvailabilityTemplateWhereInput
 }
 
 /**
@@ -1075,7 +1207,8 @@ export type ConsultantProfileSelect<ExtArgs extends runtime.Types.Extensions.Int
   createdAt?: boolean
   updatedAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
-  availabilitySlots?: boolean | Prisma.ConsultantProfile$availabilitySlotsArgs<ExtArgs>
+  assignedStudents?: boolean | Prisma.ConsultantProfile$assignedStudentsArgs<ExtArgs>
+  availabilityTemplates?: boolean | Prisma.ConsultantProfile$availabilityTemplatesArgs<ExtArgs>
   bookings?: boolean | Prisma.ConsultantProfile$bookingsArgs<ExtArgs>
   meetingNotes?: boolean | Prisma.ConsultantProfile$meetingNotesArgs<ExtArgs>
   attendances?: boolean | Prisma.ConsultantProfile$attendancesArgs<ExtArgs>
@@ -1098,7 +1231,8 @@ export type ConsultantProfileSelectScalar = {
 export type ConsultantProfileOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "specialization" | "hourlyRate" | "sessionIncentive" | "createdAt" | "updatedAt", ExtArgs["result"]["consultantProfile"]>
 export type ConsultantProfileInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
-  availabilitySlots?: boolean | Prisma.ConsultantProfile$availabilitySlotsArgs<ExtArgs>
+  assignedStudents?: boolean | Prisma.ConsultantProfile$assignedStudentsArgs<ExtArgs>
+  availabilityTemplates?: boolean | Prisma.ConsultantProfile$availabilityTemplatesArgs<ExtArgs>
   bookings?: boolean | Prisma.ConsultantProfile$bookingsArgs<ExtArgs>
   meetingNotes?: boolean | Prisma.ConsultantProfile$meetingNotesArgs<ExtArgs>
   attendances?: boolean | Prisma.ConsultantProfile$attendancesArgs<ExtArgs>
@@ -1110,7 +1244,8 @@ export type $ConsultantProfilePayload<ExtArgs extends runtime.Types.Extensions.I
   name: "ConsultantProfile"
   objects: {
     user: Prisma.$UserPayload<ExtArgs>
-    availabilitySlots: Prisma.$AvailabilitySlotPayload<ExtArgs>[]
+    assignedStudents: Prisma.$StudentProfilePayload<ExtArgs>[]
+    availabilityTemplates: Prisma.$AvailabilityTemplatePayload<ExtArgs>[]
     bookings: Prisma.$BookingPayload<ExtArgs>[]
     meetingNotes: Prisma.$MeetingNotePayload<ExtArgs>[]
     attendances: Prisma.$AttendancePayload<ExtArgs>[]
@@ -1465,7 +1600,8 @@ readonly fields: ConsultantProfileFieldRefs;
 export interface Prisma__ConsultantProfileClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   user<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-  availabilitySlots<T extends Prisma.ConsultantProfile$availabilitySlotsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ConsultantProfile$availabilitySlotsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AvailabilitySlotPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  assignedStudents<T extends Prisma.ConsultantProfile$assignedStudentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ConsultantProfile$assignedStudentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$StudentProfilePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  availabilityTemplates<T extends Prisma.ConsultantProfile$availabilityTemplatesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ConsultantProfile$availabilityTemplatesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AvailabilityTemplatePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   bookings<T extends Prisma.ConsultantProfile$bookingsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ConsultantProfile$bookingsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$BookingPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   meetingNotes<T extends Prisma.ConsultantProfile$meetingNotesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ConsultantProfile$meetingNotesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$MeetingNotePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   attendances<T extends Prisma.ConsultantProfile$attendancesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ConsultantProfile$attendancesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AttendancePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -1854,27 +1990,51 @@ export type ConsultantProfileDeleteManyArgs<ExtArgs extends runtime.Types.Extens
 }
 
 /**
- * ConsultantProfile.availabilitySlots
+ * ConsultantProfile.assignedStudents
  */
-export type ConsultantProfile$availabilitySlotsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type ConsultantProfile$assignedStudentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the AvailabilitySlot
+   * Select specific fields to fetch from the StudentProfile
    */
-  select?: Prisma.AvailabilitySlotSelect<ExtArgs> | null
+  select?: Prisma.StudentProfileSelect<ExtArgs> | null
   /**
-   * Omit specific fields from the AvailabilitySlot
+   * Omit specific fields from the StudentProfile
    */
-  omit?: Prisma.AvailabilitySlotOmit<ExtArgs> | null
+  omit?: Prisma.StudentProfileOmit<ExtArgs> | null
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.AvailabilitySlotInclude<ExtArgs> | null
-  where?: Prisma.AvailabilitySlotWhereInput
-  orderBy?: Prisma.AvailabilitySlotOrderByWithRelationInput | Prisma.AvailabilitySlotOrderByWithRelationInput[]
-  cursor?: Prisma.AvailabilitySlotWhereUniqueInput
+  include?: Prisma.StudentProfileInclude<ExtArgs> | null
+  where?: Prisma.StudentProfileWhereInput
+  orderBy?: Prisma.StudentProfileOrderByWithRelationInput | Prisma.StudentProfileOrderByWithRelationInput[]
+  cursor?: Prisma.StudentProfileWhereUniqueInput
   take?: number
   skip?: number
-  distinct?: Prisma.AvailabilitySlotScalarFieldEnum | Prisma.AvailabilitySlotScalarFieldEnum[]
+  distinct?: Prisma.StudentProfileScalarFieldEnum | Prisma.StudentProfileScalarFieldEnum[]
+}
+
+/**
+ * ConsultantProfile.availabilityTemplates
+ */
+export type ConsultantProfile$availabilityTemplatesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the AvailabilityTemplate
+   */
+  select?: Prisma.AvailabilityTemplateSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the AvailabilityTemplate
+   */
+  omit?: Prisma.AvailabilityTemplateOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.AvailabilityTemplateInclude<ExtArgs> | null
+  where?: Prisma.AvailabilityTemplateWhereInput
+  orderBy?: Prisma.AvailabilityTemplateOrderByWithRelationInput | Prisma.AvailabilityTemplateOrderByWithRelationInput[]
+  cursor?: Prisma.AvailabilityTemplateWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.AvailabilityTemplateScalarFieldEnum | Prisma.AvailabilityTemplateScalarFieldEnum[]
 }
 
 /**

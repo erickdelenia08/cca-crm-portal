@@ -278,6 +278,8 @@ export type AttendanceOrderByWithRelationInput = {
 
 export type AttendanceWhereUniqueInput = Prisma.AtLeast<{
   id?: string
+  staffId_date?: Prisma.AttendanceStaffIdDateCompoundUniqueInput
+  consultantId_date?: Prisma.AttendanceConsultantIdDateCompoundUniqueInput
   AND?: Prisma.AttendanceWhereInput | Prisma.AttendanceWhereInput[]
   OR?: Prisma.AttendanceWhereInput[]
   NOT?: Prisma.AttendanceWhereInput | Prisma.AttendanceWhereInput[]
@@ -292,7 +294,7 @@ export type AttendanceWhereUniqueInput = Prisma.AtLeast<{
   updatedAt?: Prisma.DateTimeFilter<"Attendance"> | Date | string
   staff?: Prisma.XOR<Prisma.StaffProfileNullableScalarRelationFilter, Prisma.StaffProfileWhereInput> | null
   consultant?: Prisma.XOR<Prisma.ConsultantProfileNullableScalarRelationFilter, Prisma.ConsultantProfileWhereInput> | null
-}, "id">
+}, "id" | "staffId_date" | "consultantId_date">
 
 export type AttendanceOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
@@ -431,6 +433,16 @@ export type AttendanceOrderByRelevanceInput = {
   fields: Prisma.AttendanceOrderByRelevanceFieldEnum | Prisma.AttendanceOrderByRelevanceFieldEnum[]
   sort: Prisma.SortOrder
   search: string
+}
+
+export type AttendanceStaffIdDateCompoundUniqueInput = {
+  staffId: string
+  date: Date | string
+}
+
+export type AttendanceConsultantIdDateCompoundUniqueInput = {
+  consultantId: string
+  date: Date | string
 }
 
 export type AttendanceCountOrderByAggregateInput = {

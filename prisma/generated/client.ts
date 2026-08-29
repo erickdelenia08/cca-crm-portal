@@ -47,6 +47,21 @@ export { Prisma }
  */
 export type User = Prisma.UserModel
 /**
+ * Model Account
+ * 
+ */
+export type Account = Prisma.AccountModel
+/**
+ * Model Session
+ * 
+ */
+export type Session = Prisma.SessionModel
+/**
+ * Model VerificationToken
+ * 
+ */
+export type VerificationToken = Prisma.VerificationTokenModel
+/**
  * Model StudentProfile
  * 
  */
@@ -62,10 +77,10 @@ export type ConsultantProfile = Prisma.ConsultantProfileModel
  */
 export type StaffProfile = Prisma.StaffProfileModel
 /**
- * Model AvailabilitySlot
+ * Model AvailabilityTemplate
  * 
  */
-export type AvailabilitySlot = Prisma.AvailabilitySlotModel
+export type AvailabilityTemplate = Prisma.AvailabilityTemplateModel
 /**
  * Model Booking
  * 
@@ -101,6 +116,11 @@ export type LeaveRequest = Prisma.LeaveRequestModel
  * 
  */
 export type Payslip = Prisma.PayslipModel
+/**
+ * Model Announcement
+ * 
+ */
+export type Announcement = Prisma.AnnouncementModel
 /**
  * Model Notification
  * 

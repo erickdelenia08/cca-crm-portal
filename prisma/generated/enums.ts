@@ -63,7 +63,8 @@ export type AttendanceStatus = (typeof AttendanceStatus)[keyof typeof Attendance
 
 
 export const LeaveType = {
-  LEAVE: 'LEAVE',
+  PERMIT: 'PERMIT',
+  ANNUAL_LEAVE: 'ANNUAL_LEAVE',
   SICK: 'SICK',
   OVERTIME: 'OVERTIME'
 } as const
@@ -78,3 +79,21 @@ export const ApprovalStatus = {
 } as const
 
 export type ApprovalStatus = (typeof ApprovalStatus)[keyof typeof ApprovalStatus]
+
+
+export const Department = {
+  HR: 'HR',
+  DOCUMENT_PROCESSING: 'DOCUMENT_PROCESSING',
+  MANAGEMENT: 'MANAGEMENT'
+} as const
+
+export type Department = (typeof Department)[keyof typeof Department]
+
+
+export const NotificationChannel = {
+  EMAIL: 'EMAIL',
+  WHATSAPP: 'WHATSAPP',
+  IN_APP: 'IN_APP'
+} as const
+
+export type NotificationChannel = (typeof NotificationChannel)[keyof typeof NotificationChannel]

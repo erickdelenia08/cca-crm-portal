@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+
+<html lang="id"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Manajemen Jadwal &amp; Booking - EduConsult CRM</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Plus+Jakarta+Sans:wght@600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-secondary": "#ffffff",
+                        "on-tertiary-container": "#469e95",
+                        "secondary": "#4b41e1",
+                        "primary-container": "#1e293b",
+                        "inverse-on-surface": "#f3f0f2",
+                        "primary-fixed-dim": "#bcc7de",
+                        "outline-variant": "#c5c6cd",
+                        "surface": "#f8fafc",
+                        "tertiary-fixed": "#9cf2e8",
+                        "success": "#10b981",
+                        "surface-container-lowest": "#ffffff",
+                        "inverse-surface": "#303032",
+                        "on-secondary-fixed-variant": "#3323cc",
+                        "surface-container-highest": "#e4e2e3",
+                        "primary-fixed": "#d8e3fb",
+                        "on-tertiary": "#ffffff",
+                        "background": "#fbf8fa",
+                        "inverse-primary": "#bcc7de",
+                        "on-primary-fixed-variant": "#3c475a",
+                        "surface-container-high": "#eae7e9",
+                        "outline": "#64748b",
+                        "info": "#0284c7",
+                        "on-tertiary-fixed-variant": "#00504a",
+                        "tertiary-fixed-dim": "#80d5cb",
+                        "on-background": "#1b1b1d",
+                        "surface-container": "#f0edef",
+                        "on-error": "#ffffff",
+                        "surface-dim": "#dcd9db",
+                        "secondary-fixed": "#e2dfff",
+                        "surface-bright": "#fbf8fa",
+                        "error": "#ef4444",
+                        "on-primary-fixed": "#111c2d",
+                        "secondary-fixed-dim": "#c3c0ff",
+                        "secondary-container": "#645efb",
+                        "tertiary-container": "#002f2b",
+                        "on-error-container": "#93000a",
+                        "on-primary-container": "#8590a6",
+                        "primary": "#091426",
+                        "on-secondary-container": "#fffbff",
+                        "on-tertiary-fixed": "#00201d",
+                        "on-surface": "#1b1b1d",
+                        "surface-tint": "#545f73",
+                        "tertiary": "#0f766e",
+                        "on-surface-variant": "#45474c",
+                        "surface-container-low": "#f5f3f4",
+                        "on-primary": "#ffffff",
+                        "error-container": "#ffdad6",
+                        "surface-variant": "#e4e2e3",
+                        "warning": "#f59e0b",
+                        "on-secondary-fixed": "#0f0069"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "gutter": "16px",
+                        "container-margin": "24px",
+                        "base": "4px",
+                        "margin": "24px",
+                        "base-unit": "4px",
+                        "section-gap": "28px",
+                        "card-padding": "20px"
+                    },
+                    "fontFamily": {
+                        "headline-md": ["Plus Jakarta Sans"],
+                        "h1": ["Plus Jakarta Sans"],
+                        "body-sm": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "headline-lg-mobile": ["Plus Jakarta Sans"],
+                        "h1-mobile": ["Plus Jakarta Sans"],
+                        "body-md": ["Inter"],
+                        "label-md": ["Inter"],
+                        "mono-sm": ["\"JetBrains Mono, monospace\""],
+                        "label-sm": ["Inter"],
+                        "h3": ["Plus Jakarta Sans"],
+                        "headline-sm": ["Plus Jakarta Sans"],
+                        "h2": ["Plus Jakarta Sans"],
+                        "headline-lg": ["Plus Jakarta Sans"]
+                    },
+                    "fontSize": {
+                        "headline-md": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                        "h1": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "body-sm": ["12px", {"lineHeight": "16px", "fontWeight": "400"}],
+                        "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "700"}],
+                        "h1-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "700"}],
+                        "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "label-md": ["14px", {"lineHeight": "20px", "fontWeight": "600"}],
+                        "mono-sm": ["12px", {"lineHeight": "16px", "fontWeight": "400"}],
+                        "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "500"}],
+                        "h3": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                        "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                        "h2": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                        "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}]
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-surface text-on-surface font-body-md min-h-screen">
+<!-- TopNavBar -->
+<nav aria-label="Top Navigation" class="fixed top-0 right-0 w-[calc(100%-16rem)] h-16 bg-surface-container-lowest border-b border-outline-variant flex justify-between items-center px-6 z-40 transition-colors duration-200">
+<!-- Search Bar -->
+<div class="flex-1 max-w-md">
+<div class="relative flex items-center w-full h-10 rounded-full focus-within:shadow-lg bg-surface-container-low overflow-hidden">
+<div class="grid place-items-center h-full w-12 text-on-surface-variant">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">search</span>
+</div>
+<input class="peer h-full w-full outline-none text-sm text-on-surface bg-transparent pr-2" id="search" placeholder="Search..." type="text"/>
+</div>
+</div>
+<!-- Trailing Actions -->
+<div class="flex items-center gap-4">
+<button class="text-on-surface-variant hover:bg-surface-container-low rounded-full p-2 transition-colors duration-200">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<button class="text-on-surface-variant hover:bg-surface-container-low rounded-full p-2 transition-colors duration-200">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+</button>
+<div class="h-8 w-8 rounded-full overflow-hidden bg-surface-container-high border border-outline-variant ml-2">
+<img alt="User Avatar" class="w-full h-full object-cover" data-alt="A close up professional headshot of an individual in business attire, against a light clean background, suitable for a corporate avatar or profile picture, soft natural lighting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAaOtYmCKRdSNWT5Pzv0koy9aCH8_gz8jI8SNzNaKQvxgyOy_A3UQzkUsMdae2vj-9YeDmXZ2KvB5w_-ZNgAwNcnY5qYVWLOuQYUVi1DQi2HxWeT22kpNvr1AE_BolLnAzeYFVTX24mejPi0wouP37PqdH_ZGoJX44K2vplaftFaKbK3U0sYo3Bzn6yZonUaodurmHnp3d0jbVitXjYfDFpEs4rX4qxPwYCQN5ZSXJgpH_XofJ1rkITTA"/>
+</div>
+</div>
+</nav>
+<!-- SideNavBar -->
+<aside aria-label="Sidebar Navigation" class="h-screen w-64 fixed left-0 top-0 bg-surface-container-low border-r border-outline-variant flex flex-col h-full py-6 z-50">
+<!-- Header / Brand Logo -->
+<div class="px-6 mb-8 flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-primary flex items-center justify-center text-on-primary font-headline-sm">
+                EC
+            </div>
+<div>
+<h1 class="font-headline-sm text-headline-sm text-primary">EduConsult CRM</h1>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Professional Suite</p>
+</div>
+</div>
+<!-- Navigation Tabs -->
+<nav class="flex-1 overflow-y-auto">
+<ul class="space-y-1">
+<li>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-high transition-colors mx-2 rounded-lg font-body-md text-body-md" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+                        Dashboard
+                    </a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-high transition-colors mx-2 rounded-lg font-body-md text-body-md" href="#">
+<span class="material-symbols-outlined" data-icon="school">school</span>
+                        Students
+                    </a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-4 py-3 bg-secondary-container text-on-secondary-container rounded-lg mx-2 font-body-md text-body-md" href="#">
+<span class="material-symbols-outlined" data-icon="calendar_today">calendar_today</span>
+                        Schedule
+                    </a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-high transition-colors mx-2 rounded-lg font-body-md text-body-md" href="#">
+<span class="material-symbols-outlined" data-icon="description">description</span>
+                        Document Review
+                    </a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-high transition-colors mx-2 rounded-lg font-body-md text-body-md" href="#">
+<span class="material-symbols-outlined" data-icon="payments">payments</span>
+                        Payroll
+                    </a>
+</li>
+</ul>
+</nav>
+</aside>
+<!-- Main Content Canvas -->
+<main class="ml-64 mt-16 p-container-margin min-h-[calc(100vh-4rem)] bg-background">
+<!-- Page Header -->
+<header class="mb-section-gap">
+<h1 class="font-headline-md text-headline-md text-on-surface">Manajemen Jadwal &amp; Booking</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant mt-2 max-w-2xl">Atur slot waktu ketersediaan Anda untuk sesi konsultasi mingguan. Pastikan jadwal selalu mutakhir untuk memudahkan siswa melakukan booking.</p>
+</header>
+<!-- Tabs -->
+<div class="border-b border-outline-variant mb-6">
+<nav aria-label="Tabs" class="-mb-px flex space-x-8">
+<a aria-current="page" class="border-secondary text-secondary whitespace-nowrap py-4 px-1 border-b-2 font-label-md text-label-md" href="#">
+                    Pengaturan Slot Ketersediaan
+                </a>
+<a class="border-transparent text-on-surface-variant hover:text-on-surface hover:border-outline-variant whitespace-nowrap py-4 px-1 border-b-2 font-label-md text-label-md transition-colors" href="#">
+                    Permintaan Booking Siswa
+                </a>
+</nav>
+</div>
+<!-- Weekly Schedule Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-gutter pb-24">
+<!-- Monday -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-lg p-card-padding flex flex-col h-full shadow-sm">
+<div class="flex items-center justify-between mb-4 pb-2 border-b border-outline-variant">
+<h3 class="font-headline-sm text-headline-sm text-on-surface">Senin</h3>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox" value=""/>
+<div class="w-9 h-5 bg-surface-variant peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-secondary"></div>
+</label>
+</div>
+<div class="flex-1 space-y-3">
+<!-- Slot -->
+<div class="flex items-center justify-between p-2 rounded bg-surface-container-low border border-outline-variant">
+<span class="font-mono-sm text-mono-sm text-on-surface">09:00 - 10:00</span>
+<button class="text-on-surface-variant hover:text-error transition-colors">
+<span class="material-symbols-outlined text-sm">close</span>
+</button>
+</div>
+<!-- Slot -->
+<div class="flex items-center justify-between p-2 rounded bg-surface-container-low border border-outline-variant">
+<span class="font-mono-sm text-mono-sm text-on-surface">10:30 - 11:30</span>
+<button class="text-on-surface-variant hover:text-error transition-colors">
+<span class="material-symbols-outlined text-sm">close</span>
+</button>
+</div>
+<!-- Slot -->
+<div class="flex items-center justify-between p-2 rounded bg-surface-container-low border border-outline-variant">
+<span class="font-mono-sm text-mono-sm text-on-surface">13:00 - 14:00</span>
+<button class="text-on-surface-variant hover:text-error transition-colors">
+<span class="material-symbols-outlined text-sm">close</span>
+</button>
+</div>
+</div>
+<button class="mt-4 w-full py-2 border-2 border-dashed border-outline-variant text-on-surface-variant rounded-lg font-label-md text-label-md hover:bg-surface-container-low hover:text-primary transition-colors flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-sm">add</span> Add Slot Range
+                </button>
+</div>
+<!-- Tuesday -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-lg p-card-padding flex flex-col h-full shadow-sm">
+<div class="flex items-center justify-between mb-4 pb-2 border-b border-outline-variant">
+<h3 class="font-headline-sm text-headline-sm text-on-surface">Selasa</h3>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox" value=""/>
+<div class="w-9 h-5 bg-surface-variant peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-secondary"></div>
+</label>
+</div>
+<div class="flex-1 space-y-3">
+<!-- Slot -->
+<div class="flex items-center justify-between p-2 rounded bg-surface-container-low border border-outline-variant">
+<span class="font-mono-sm text-mono-sm text-on-surface">09:00 - 10:00</span>
+<button class="text-on-surface-variant hover:text-error transition-colors">
+<span class="material-symbols-outlined text-sm">close</span>
+</button>
+</div>
+<!-- Slot -->
+<div class="flex items-center justify-between p-2 rounded bg-surface-container-low border border-outline-variant">
+<span class="font-mono-sm text-mono-sm text-on-surface">14:00 - 15:00</span>
+<button class="text-on-surface-variant hover:text-error transition-colors">
+<span class="material-symbols-outlined text-sm">close</span>
+</button>
+</div>
+</div>
+<button class="mt-4 w-full py-2 border-2 border-dashed border-outline-variant text-on-surface-variant rounded-lg font-label-md text-label-md hover:bg-surface-container-low hover:text-primary transition-colors flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-sm">add</span> Add Slot Range
+                </button>
+</div>
+<!-- Wednesday -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-lg p-card-padding flex flex-col h-full shadow-sm">
+<div class="flex items-center justify-between mb-4 pb-2 border-b border-outline-variant">
+<h3 class="font-headline-sm text-headline-sm text-on-surface text-on-surface-variant">Rabu</h3>
+<label class="relative inline-flex items-center cursor-pointer">
+<input class="sr-only peer" type="checkbox" value=""/>
+<div class="w-9 h-5 bg-surface-variant peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-secondary"></div>
+</label>
+</div>
+<div class="flex-1 flex items-center justify-center">
+<p class="font-body-sm text-body-sm text-on-surface-variant italic">Tidak Tersedia</p>
+</div>
+<button class="mt-4 w-full py-2 border-2 border-dashed border-outline-variant text-on-surface-variant rounded-lg font-label-md text-label-md hover:bg-surface-container-low hover:text-primary transition-colors flex items-center justify-center gap-2 opacity-50 cursor-not-allowed">
+<span class="material-symbols-outlined text-sm">add</span> Add Slot Range
+                </button>
+</div>
+<!-- Thursday -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-lg p-card-padding flex flex-col h-full shadow-sm">
+<div class="flex items-center justify-between mb-4 pb-2 border-b border-outline-variant">
+<h3 class="font-headline-sm text-headline-sm text-on-surface">Kamis</h3>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox" value=""/>
+<div class="w-9 h-5 bg-surface-variant peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-secondary"></div>
+</label>
+</div>
+<div class="flex-1 space-y-3">
+<!-- Slot -->
+<div class="flex items-center justify-between p-2 rounded bg-surface-container-low border border-outline-variant">
+<span class="font-mono-sm text-mono-sm text-on-surface">10:00 - 12:00</span>
+<button class="text-on-surface-variant hover:text-error transition-colors">
+<span class="material-symbols-outlined text-sm">close</span>
+</button>
+</div>
+</div>
+<button class="mt-4 w-full py-2 border-2 border-dashed border-outline-variant text-on-surface-variant rounded-lg font-label-md text-label-md hover:bg-surface-container-low hover:text-primary transition-colors flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-sm">add</span> Add Slot Range
+                </button>
+</div>
+<!-- Friday -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-lg p-card-padding flex flex-col h-full shadow-sm">
+<div class="flex items-center justify-between mb-4 pb-2 border-b border-outline-variant">
+<h3 class="font-headline-sm text-headline-sm text-on-surface">Jumat</h3>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox" value=""/>
+<div class="w-9 h-5 bg-surface-variant peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-secondary"></div>
+</label>
+</div>
+<div class="flex-1 space-y-3">
+<!-- Slot -->
+<div class="flex items-center justify-between p-2 rounded bg-surface-container-low border border-outline-variant">
+<span class="font-mono-sm text-mono-sm text-on-surface">09:00 - 10:00</span>
+<button class="text-on-surface-variant hover:text-error transition-colors">
+<span class="material-symbols-outlined text-sm">close</span>
+</button>
+</div>
+<!-- Slot -->
+<div class="flex items-center justify-between p-2 rounded bg-surface-container-low border border-outline-variant">
+<span class="font-mono-sm text-mono-sm text-on-surface">15:00 - 16:30</span>
+<button class="text-on-surface-variant hover:text-error transition-colors">
+<span class="material-symbols-outlined text-sm">close</span>
+</button>
+</div>
+</div>
+<button class="mt-4 w-full py-2 border-2 border-dashed border-outline-variant text-on-surface-variant rounded-lg font-label-md text-label-md hover:bg-surface-container-low hover:text-primary transition-colors flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-sm">add</span> Add Slot Range
+                </button>
+</div>
+</div>
+</main>
+<!-- Sticky Footer CTA -->
+<div class="fixed bottom-0 right-0 w-[calc(100%-16rem)] bg-surface-container-lowest border-t border-outline-variant p-4 flex justify-end z-30 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
+<button class="bg-secondary text-on-secondary px-6 py-2.5 rounded-lg font-label-md text-label-md hover:bg-opacity-90 transition-all shadow-sm">
+            Simpan Ketersediaan
+        </button>
+</div>
+</body></html>

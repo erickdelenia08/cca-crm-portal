@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+
+<html lang="id"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Tracker Dokumen - EduPortal CRM</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Plus+Jakarta+Sans:wght@600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "error-container": "#ffdad6",
+                        "info": "#0284c7",
+                        "warning": "#f59e0b",
+                        "on-primary-fixed": "#111c2d",
+                        "on-tertiary-container": "#469e95",
+                        "on-primary-container": "#8590a6",
+                        "surface-bright": "#fbf8fa",
+                        "surface-container-low": "#f5f3f4",
+                        "tertiary-container": "#002f2b",
+                        "surface-container": "#f0edef",
+                        "secondary-fixed-dim": "#c3c0ff",
+                        "surface": "#f8fafc",
+                        "outline": "#64748b",
+                        "on-secondary": "#ffffff",
+                        "on-error-container": "#93000a",
+                        "secondary": "#4b41e1",
+                        "tertiary": "#0f766e",
+                        "on-error": "#ffffff",
+                        "tertiary-fixed": "#9cf2e8",
+                        "tertiary-fixed-dim": "#80d5cb",
+                        "on-tertiary": "#ffffff",
+                        "surface-container-highest": "#e4e2e3",
+                        "on-tertiary-fixed": "#00201d",
+                        "on-primary-fixed-variant": "#3c475a",
+                        "error": "#ef4444",
+                        "primary-fixed-dim": "#bcc7de",
+                        "on-secondary-container": "#fffbff",
+                        "on-secondary-fixed-variant": "#3323cc",
+                        "secondary-fixed": "#e2dfff",
+                        "surface-dim": "#dcd9db",
+                        "surface-container-lowest": "#ffffff",
+                        "inverse-on-surface": "#f3f0f2",
+                        "primary-fixed": "#d8e3fb",
+                        "on-background": "#1b1b1d",
+                        "inverse-surface": "#303032",
+                        "surface-tint": "#545f73",
+                        "on-primary": "#ffffff",
+                        "on-surface-variant": "#45474c",
+                        "on-secondary-fixed": "#0f0069",
+                        "primary": "#091426",
+                        "success": "#10b981",
+                        "on-tertiary-fixed-variant": "#00504a",
+                        "primary-container": "#1e293b",
+                        "surface-variant": "#e4e2e3",
+                        "on-surface": "#1b1b1d",
+                        "outline-variant": "#c5c6cd",
+                        "surface-container-high": "#eae7e9",
+                        "background": "#fbf8fa",
+                        "inverse-primary": "#bcc7de",
+                        "secondary-container": "#645efb"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "section-gap": "28px",
+                        "base": "4px",
+                        "base-unit": "4px",
+                        "container-margin": "24px",
+                        "gutter": "16px",
+                        "margin": "24px",
+                        "card-padding": "20px"
+                    },
+                    "fontFamily": {
+                        "mono-sm": ["\"JetBrains Mono, monospace\""],
+                        "body-lg": ["Inter"],
+                        "headline-md": ["Plus Jakarta Sans"],
+                        "h1": ["Plus Jakarta Sans"],
+                        "h1-mobile": ["Plus Jakarta Sans"],
+                        "body-md": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "h3": ["Plus Jakarta Sans"],
+                        "headline-lg-mobile": ["Plus Jakarta Sans"],
+                        "label-md": ["Inter"],
+                        "headline-lg": ["Plus Jakarta Sans"],
+                        "h2": ["Plus Jakarta Sans"],
+                        "headline-sm": ["Plus Jakarta Sans"],
+                        "label-sm": ["Inter"]
+                    },
+                    "fontSize": {
+                        "mono-sm": ["12px", { "lineHeight": "16px", "fontWeight": "400" }],
+                        "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+                        "h1": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "h1-mobile": ["24px", { "lineHeight": "32px", "fontWeight": "700" }],
+                        "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "body-sm": ["12px", { "lineHeight": "16px", "fontWeight": "400" }],
+                        "h3": ["20px", { "lineHeight": "28px", "fontWeight": "600" }],
+                        "headline-lg-mobile": ["24px", { "lineHeight": "32px", "fontWeight": "700" }],
+                        "label-md": ["14px", { "lineHeight": "20px", "fontWeight": "600" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "h2": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+                        "headline-sm": ["20px", { "lineHeight": "28px", "fontWeight": "600" }],
+                        "label-sm": ["12px", { "lineHeight": "16px", "fontWeight": "500" }]
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-surface-container-low text-on-surface font-body-md text-body-md flex h-screen overflow-hidden antialiased">
+<!-- SideNavBar -->
+<nav aria-label="Sidebar" class="fixed left-0 top-0 h-full w-64 flex flex-col p-gutter z-50 bg-surface-container-low hidden md:flex">
+<!-- Brand -->
+<div class="mb-8 px-4 flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-primary flex items-center justify-center text-on-primary font-bold text-lg">
+                EP
+            </div>
+<div>
+<h1 class="font-headline-sm text-headline-sm font-extrabold text-primary">EduPortal</h1>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Student Access</p>
+</div>
+</div>
+<!-- Navigation Links -->
+<ul class="flex flex-col gap-2 flex-grow">
+<li>
+<a class="flex items-center gap-3 text-on-surface-variant px-4 py-3 hover:bg-surface-variant transition-all rounded-lg" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">dashboard</span>
+<span class="font-label-md text-label-md">Dashboard</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-3 text-on-surface-variant px-4 py-3 hover:bg-surface-variant transition-all rounded-lg" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">calendar_today</span>
+<span class="font-label-md text-label-md">Book Sesi</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-3 bg-secondary-container text-on-secondary-container rounded-lg px-4 py-3 hover:bg-surface-variant transition-all cursor-pointer active:scale-95 duration-150" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">description</span>
+<span class="font-label-md text-label-md">Tracker Dokumen</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-3 text-on-surface-variant px-4 py-3 hover:bg-surface-variant transition-all rounded-lg" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">history</span>
+<span class="font-label-md text-label-md">Riwayat Sesi</span>
+</a>
+</li>
+</ul>
+<!-- Footer Actions -->
+<div class="mt-auto flex flex-col gap-2">
+<button class="flex items-center justify-center gap-2 w-full py-3 bg-surface-container-highest text-on-surface rounded-lg font-label-md text-label-md hover:bg-surface-variant transition-colors mb-4 border border-outline-variant">
+                Help Center
+            </button>
+<a class="flex items-center gap-3 text-on-surface-variant px-4 py-3 hover:bg-surface-variant transition-all rounded-lg" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">settings</span>
+<span class="font-label-md text-label-md">Settings</span>
+</a>
+<a class="flex items-center gap-3 text-on-surface-variant px-4 py-3 hover:bg-surface-variant transition-all rounded-lg" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">logout</span>
+<span class="font-label-md text-label-md">Logout</span>
+</a>
+</div>
+</nav>
+<!-- Main Content Area -->
+<div class="flex-1 flex flex-col md:ml-64 relative overflow-y-auto">
+<!-- TopNavBar -->
+<header class="sticky top-0 z-40 flex justify-between items-center w-full px-margin h-16 bg-surface-container-lowest border-b border-outline-variant shadow-sm md:shadow-none">
+<div class="flex items-center gap-4">
+<div class="md:hidden font-headline-md text-headline-md font-bold text-primary">EduPortal CRM</div>
+<div class="hidden md:flex items-center bg-surface-container-low rounded-full px-4 py-2 border border-outline-variant focus-within:border-secondary focus-within:ring-1 focus-within:ring-secondary transition-all">
+<span class="material-symbols-outlined text-on-surface-variant mr-2 text-[20px]">search</span>
+<input class="bg-transparent border-none focus:outline-none font-body-md text-body-md text-on-surface w-64 placeholder-on-surface-variant" placeholder="Search..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-6">
+<button class="text-on-surface-variant hover:text-on-surface transition-colors relative">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">notifications</span>
+<span class="absolute top-0 right-0 w-2 h-2 bg-error rounded-full"></span>
+</button>
+<div class="w-8 h-8 rounded-full overflow-hidden border border-outline-variant cursor-pointer hover:border-secondary transition-colors">
+<img alt="Student Profile Avatar" class="w-full h-full object-cover" data-alt="A professional headshot of a student, light mode styling, soft lighting, clean corporate educational aesthetic, high resolution portrait, minimalist background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBLjYIt1_jKn4faqnKLROVScee9N9OmcWeVlVJShol-wESz9suDpDSwZPcl4akPQW5XeJN9xIBhtOG3ID_C9uIFEc9ErGrxs9EJl3uZFvPUnCthwdTZOwCs0uEksSJ1NOj0HLn4IBVKSQ68XuUsAezL2G6MdtELdzZhh1e68uALqcBantuozWblLBd9lM9iPdyBDEs1HtaDxvdP8Q1cNLPlKbhAbevZc4iIolTDZ-CIxMQN3v-ip8QZeg"/>
+</div>
+</div>
+</header>
+<!-- Page Content Canvas -->
+<main class="flex-1 p-margin pb-20">
+<div class="max-w-[1200px] mx-auto">
+<!-- Page Header -->
+<div class="mb-section-gap">
+<h2 class="font-headline-lg text-headline-lg md:font-h1 md:text-h1 text-primary">Tracker Dokumen &amp; Unggah Berkas</h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant mt-2">Kelola, lacak, dan perbarui dokumen persyaratan akademik Anda.</p>
+</div>
+<!-- Bento Grid Layout for main content -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter">
+<!-- Left Column: Upload & Alerts (8 cols) -->
+<div class="lg:col-span-8 flex flex-col gap-section-gap">
+<!-- Section 1: Drag-and-Drop Upload Card -->
+<div class="bg-surface-container-lowest rounded-lg p-card-padding border border-outline-variant shadow-sm flex flex-col items-center justify-center border-dashed border-2 hover:border-secondary transition-colors group cursor-pointer h-[280px]">
+<div class="bg-surface-container-low rounded-full w-16 h-16 flex items-center justify-center mb-4 group-hover:bg-secondary-container transition-colors">
+<span class="material-symbols-outlined text-[32px] text-on-surface-variant group-hover:text-secondary" style="font-variation-settings: 'FILL' 0;">cloud_upload</span>
+</div>
+<h3 class="font-h3 text-h3 text-primary mb-2 text-center">Tarik dan lepas berkas di sini atau klik untuk memilih</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-6 text-center">Mendukung format .pdf, .jpg, .png (Maks 5MB)</p>
+<button class="bg-primary hover:bg-primary-container text-on-primary font-label-md text-label-md px-6 py-2.5 rounded-lg transition-colors flex items-center gap-2 active:scale-95 duration-150 shadow-sm">
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 0;">upload_file</span>
+                                Unggah Berkas
+                            </button>
+</div>
+<!-- Section 4: Catatan Revisi Alert -->
+<div class="bg-[#FEF3C7] rounded-lg p-card-padding border border-warning shadow-sm flex flex-col sm:flex-row items-start sm:items-center gap-4 justify-between relative overflow-hidden">
+<!-- Subtle warning accent bar -->
+<div class="absolute left-0 top-0 bottom-0 w-1.5 bg-warning"></div>
+<div class="flex items-start gap-3 flex-1 pl-2">
+<span class="material-symbols-outlined text-warning mt-0.5" style="font-variation-settings: 'FILL' 1;">warning</span>
+<div>
+<h4 class="font-label-md text-label-md text-[#92400e]">Perhatian: Academic Transcript</h4>
+<p class="font-body-sm text-body-sm text-[#92400e] mt-1">Catatan: Hasil scan kurang jelas, mohon unggah kembali versi berwarna resolusi tinggi.</p>
+</div>
+</div>
+<div class="flex items-center gap-2 mt-4 sm:mt-0 whitespace-nowrap">
+<button class="bg-surface-container-lowest border border-outline-variant hover:bg-surface-container text-on-surface font-label-sm text-label-sm px-4 py-2 rounded-lg transition-colors">
+                                    Pilih File
+                                </button>
+<button class="bg-warning hover:bg-[#d97706] text-white font-label-sm text-label-sm px-4 py-2 rounded-lg transition-colors flex items-center gap-1 shadow-sm">
+<span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 0;">sync</span>
+                                    Unggah Ulang
+                                </button>
+</div>
+</div>
+</div>
+<!-- Right Column: Active Progress (4 cols) -->
+<div class="lg:col-span-4 flex flex-col gap-section-gap">
+<!-- Section 2: Active Document Progress -->
+<div class="bg-surface-container-lowest rounded-lg p-card-padding border border-outline-variant shadow-sm h-full flex flex-col">
+<div class="flex items-center justify-between mb-6">
+<h3 class="font-h3 text-h3 text-primary">Status Dokumen Aktif</h3>
+<span class="bg-info/10 text-info px-2.5 py-1 rounded-full font-label-sm text-label-sm flex items-center gap-1 border border-info/20">
+<span class="material-symbols-outlined text-[14px]">public</span> Passport
+                                </span>
+</div>
+<!-- Vertical Stepper -->
+<div class="relative pl-6 border-l-2 border-surface-variant flex-1 flex flex-col justify-between py-2">
+<!-- Step 1: Uploaded (Completed) -->
+<div class="relative mb-8">
+<div class="absolute -left-[35px] top-0 w-6 h-6 rounded-full bg-success text-on-secondary flex items-center justify-center ring-4 ring-surface-container-lowest">
+<span class="material-symbols-outlined text-[14px]" style="font-variation-settings: 'FILL' 1;">check</span>
+</div>
+<h4 class="font-label-md text-label-md text-on-surface">Uploaded</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant">12 Okt 2023, 09:41</p>
+</div>
+<!-- Step 2: In Verification (Active) -->
+<div class="relative mb-8">
+<!-- Animated active line -->
+<div class="absolute -left-[26px] bottom-full h-full w-[2px] bg-info"></div>
+<div class="absolute -left-[35px] top-0 w-6 h-6 rounded-full bg-info text-on-secondary flex items-center justify-center ring-4 ring-info/20 shadow-[0_0_10px_rgba(2,132,199,0.3)]">
+<div class="w-2 h-2 bg-on-secondary rounded-full animate-pulse"></div>
+</div>
+<h4 class="font-label-md text-label-md text-info font-bold">In Verification</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Sedang ditinjau oleh Admin</p>
+</div>
+<!-- Step 3: Processing (Pending) -->
+<div class="relative mb-8 opacity-50">
+<div class="absolute -left-[35px] top-0 w-6 h-6 rounded-full bg-surface-variant border-2 border-outline-variant flex items-center justify-center ring-4 ring-surface-container-lowest"></div>
+<h4 class="font-label-md text-label-md text-on-surface-variant">Processing</h4>
+<p class="font-body-sm text-body-sm text-outline">Menunggu verifikasi selesai</p>
+</div>
+<!-- Step 4: Approved (Pending) -->
+<div class="relative opacity-50">
+<div class="absolute -left-[35px] top-0 w-6 h-6 rounded-full bg-surface-variant border-2 border-outline-variant flex items-center justify-center ring-4 ring-surface-container-lowest"></div>
+<h4 class="font-label-md text-label-md text-on-surface-variant">Approved</h4>
+</div>
+</div>
+</div>
+</div>
+<!-- Full Width: Document Master Table (12 cols) -->
+<div class="lg:col-span-12 mt-section-gap">
+<div class="bg-surface-container-lowest rounded-lg border border-outline-variant shadow-sm overflow-hidden">
+<div class="p-card-padding border-b border-outline-variant bg-surface flex justify-between items-center">
+<h3 class="font-h3 text-h3 text-primary">Master Dokumen</h3>
+<div class="flex items-center gap-2">
+<button class="text-on-surface-variant hover:text-primary transition-colors p-1">
+<span class="material-symbols-outlined text-[20px]">filter_list</span>
+</button>
+</div>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="border-b border-outline-variant bg-surface-container-low text-on-surface-variant font-label-sm text-label-sm uppercase tracking-wider">
+<th class="py-3 px-6 font-medium">Nama Dokumen</th>
+<th class="py-3 px-6 font-medium">Tanggal Unggah</th>
+<th class="py-3 px-6 font-medium">Departemen</th>
+<th class="py-3 px-6 font-medium">Status</th>
+<th class="py-3 px-6 font-medium text-right">Aksi</th>
+</tr>
+</thead>
+<tbody class="font-body-md text-body-md">
+<!-- Row 1: Processing -->
+<tr class="border-b border-outline-variant hover:bg-surface/50 transition-colors">
+<td class="py-4 px-6 flex items-center gap-3">
+<div class="w-10 h-10 rounded bg-info/10 flex items-center justify-center text-info">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">public</span>
+</div>
+<div>
+<p class="font-label-md text-label-md text-on-surface">Passport</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">PDF • 2.4 MB</p>
+</div>
+</td>
+<td class="py-4 px-6 text-on-surface-variant">12 Okt 2023</td>
+<td class="py-4 px-6 text-on-surface-variant">Visa Processing</td>
+<td class="py-4 px-6">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-info/10 text-info border border-info/20">
+<span class="w-1.5 h-1.5 rounded-full bg-info"></span> Processing
+                                                </span>
+</td>
+<td class="py-4 px-6 text-right">
+<div class="flex items-center justify-end gap-2">
+<button class="p-2 text-outline hover:text-primary transition-colors rounded-lg hover:bg-surface-variant" title="View Document">
+<span class="material-symbols-outlined text-[20px]">visibility</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 2: Warning -->
+<tr class="border-b border-outline-variant hover:bg-surface/50 transition-colors bg-warning/5">
+<td class="py-4 px-6 flex items-center gap-3">
+<div class="w-10 h-10 rounded bg-warning/10 flex items-center justify-center text-warning">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">school</span>
+</div>
+<div>
+<p class="font-label-md text-label-md text-on-surface">Academic Transcript</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">JPG • 1.1 MB</p>
+</div>
+</td>
+<td class="py-4 px-6 text-on-surface-variant">10 Okt 2023</td>
+<td class="py-4 px-6 text-on-surface-variant">Academic Affairs</td>
+<td class="py-4 px-6">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-warning/10 text-warning border border-warning/20">
+<span class="w-1.5 h-1.5 rounded-full bg-warning"></span> Needs Revision
+                                                </span>
+</td>
+<td class="py-4 px-6 text-right">
+<div class="flex items-center justify-end gap-2">
+<button class="p-2 text-outline hover:text-primary transition-colors rounded-lg hover:bg-surface-variant" title="View Document">
+<span class="material-symbols-outlined text-[20px]">visibility</span>
+</button>
+<button class="p-2 text-warning hover:bg-warning/10 transition-colors rounded-lg" title="Upload Revision">
+<span class="material-symbols-outlined text-[20px]">upload</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 3: Success -->
+<tr class="hover:bg-surface/50 transition-colors">
+<td class="py-4 px-6 flex items-center gap-3">
+<div class="w-10 h-10 rounded bg-success/10 flex items-center justify-center text-success">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">verified</span>
+</div>
+<div>
+<p class="font-label-md text-label-md text-on-surface">Language Certificate</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">PDF • 3.5 MB</p>
+</div>
+</td>
+<td class="py-4 px-6 text-on-surface-variant">05 Okt 2023</td>
+<td class="py-4 px-6 text-on-surface-variant">Admissions</td>
+<td class="py-4 px-6">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-success/10 text-success border border-success/20">
+<span class="w-1.5 h-1.5 rounded-full bg-success"></span> Approved
+                                                </span>
+</td>
+<td class="py-4 px-6 text-right">
+<div class="flex items-center justify-end gap-2">
+<button class="p-2 text-outline hover:text-primary transition-colors rounded-lg hover:bg-surface-variant" title="View Document">
+<span class="material-symbols-outlined text-[20px]">visibility</span>
+</button>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+</body></html>
