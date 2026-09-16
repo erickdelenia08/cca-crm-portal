@@ -1,208 +1,269 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import {
-  ChevronRight,
-  GraduationCap,
-  BadgeCheck,
-  Mail,
-  Phone,
+  ArrowLeft,
+  Calendar,
   Clock,
-  FileEdit,
-  CalendarDays,
-  ChevronDown,
-  Paperclip,
+  Video,
+  User,
+  FileText,
+  CheckCircle2,
   Save,
-  History,
-  Briefcase,
-  MessageSquare,
-  FileText
+  Plus,
+  Trash2,
+  ExternalLink,
+  BookOpen
 } from "lucide-react";
+import { useParams } from "next/navigation";
 
-export default function SessionNotesPage() {
+export default function SessionDetailPage() {
+  const params = useParams();
+  const id = params.id;
+
+  // State Catatan Konsultan & Action Items
+  const [notes, setNotes] = useState(
+    "Siswa perlu memperbaiki bagian Executive Summary pada Personal Statement. Struktur alur paragraf 2 masih terlalu umum."
+  );
+  const [actionItems, setActionItems] = useState([
+    { id: "1", text: "Revisi Paragraf 2 Personal Statement", done: false },
+    { id: "2", text: "Kirim draft CV format Harvard ke konsultan", done: true },
+  ]);
+  const [newItemText, setNewItemText] = useState("");
+  const [isSaved, setIsSaved] = useState(false);
+
+  // Mock Data Detail Sesi
+  const sessionData = {
+    id: id || "ses-1",
+    studentName: "Budi Santoso",
+    studentEmail: "budi.santoso@example.com",
+    program: "Study Abroad (S2 UK)",
+    topic: "Review Personal Statement & Essay Draft 2",
+    date: "2026-09-10",
+    startTime: "10:00",
+    endTime: "11:00",
+    status: "UPCOMING",
+    meetingUrl: "https://meet.google.com/abc-defg-hij",
+    studentNotes: "Halo Kak, ini draft essay kedua saya. Mohon fokus review di paragraf pembuka dan motivasi memilih kampus.",
+  };
+
+  // Handler Tambah Action Item
+  const handleAddActionItem = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newItemText.trim()) return;
+    setActionItems([
+      ...actionItems,
+      { id: Date.now().toString(), text: newItemText, done: false },
+    ]);
+    setNewItemText("");
+  };
+
+  // Handler Toggle Checkbox Action Item
+  const handleToggleItem = (id: string) => {
+    setActionItems(
+      actionItems.map((item) =>
+        item.id === id ? { ...item, done: !item.done } : item
+      )
+    );
+  };
+
+  // Handler Hapus Action Item
+  const handleDeleteItem = (id: string) => {
+    setActionItems(actionItems.filter((item) => item.id !== id));
+  };
+
+  // Handler Simpan Catatan
+  const handleSaveSession = () => {
+    setIsSaved(true);
+    setTimeout(() => setIsSaved(false), 3000);
+  };
+
   return (
-    <div className="flex-1 pb-20">
-      <div className="max-w-7xl mx-auto space-y-7">
-        {/* Breadcrumb */}
-        <div className="flex items-center text-body-sm font-body-sm text-on-surface-variant gap-2">
-          <Link href="/consultant" className="hover:text-secondary transition-colors">
-            My Students
-          </Link>
-          <ChevronRight className="w-4 h-4" />
-          <span className="text-primary font-medium">Budi Santoso</span>
+    <div className="space-y-6 p-6 max-w-6xl mx-auto">
+      {/* Top Bar Navigation */}
+      <div className="flex items-center justify-between">
+        <Link
+          href="/consultant/sessions"
+          className="inline-flex items-center gap-2 text-xs font-semibold text-slate-600 hover:text-slate-900 transition-colors"
+        >
+          <ArrowLeft className="w-4 h-4" />
+          Kembali ke Daftar Sesi
+        </Link>
+        <span className="text-xs font-bold px-2.5 py-1 rounded bg-slate-100 text-slate-700">
+          ID Sesi: #{sessionData.id}
+        </span>
+      </div>
+
+      {/* Main Grid Layout */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* LEFT COLUMN: Main Workspace & Notes (2 Cols) */}
+        <div className="lg:col-span-2 space-y-6">
+          {/* Card Meeting & Topik */}
+          <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm space-y-4">
+            <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 pb-4">
+              <div>
+                <span className="text-xs font-bold text-blue-600 uppercase tracking-wider">
+                  {sessionData.program}
+                </span>
+                <h1 className="text-xl font-bold text-slate-900 mt-0.5">
+                  {sessionData.topic}
+                </h1>
+              </div>
+              <a
+                href={sessionData.meetingUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold px-4 py-2.5 rounded-lg transition-colors shadow-sm"
+              >
+                <Video className="w-4 h-4" />
+                Masuk Room Meeting
+                <ExternalLink className="w-3.5 h-3.5" />
+              </a>
+            </div>
+
+            {/* Note dari Siswa Sebelum Sesi */}
+            <div className="bg-slate-50 p-3.5 rounded-lg border border-slate-200 text-xs text-slate-700">
+              <span className="font-bold text-slate-900 block mb-1">
+                📌 Catatan Pengajuan dari Siswa:
+              </span>
+              &ldquo;{sessionData.studentNotes}&rdquo;
+            </div>
+          </div>
+
+          {/* Form Private Notes Konsultan */}
+          <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm space-y-4">
+            <div className="flex items-center justify-between">
+              <h2 className="text-base font-bold text-slate-900 flex items-center gap-2">
+                <FileText className="w-5 h-5 text-blue-600" />
+                Catatan Hasil Bimbingan
+              </h2>
+              {isSaved && (
+                <span className="text-xs font-bold text-emerald-600 flex items-center gap-1">
+                  <CheckCircle2 className="w-4 h-4" /> Tersimpan!
+                </span>
+              )}
+            </div>
+
+            <textarea
+              rows={5}
+              value={notes}
+              onChange={(e) => setNotes(e.target.value)}
+              placeholder="Tuliskan poin penting, kelebihan, atau kekurangan siswa selama sesi..."
+              className="w-full text-xs font-medium p-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 leading-relaxed"
+            />
+
+            {/* Action Items / Tugas Lanjutan */}
+            <div className="pt-2">
+              <h3 className="text-xs font-bold text-slate-900 mb-2">
+                Action Items / Tugas Lanjutan Siswa:
+              </h3>
+              <div className="space-y-2 mb-3">
+                {actionItems.map((item) => (
+                  <div
+                    key={item.id}
+                    className="flex items-center justify-between p-2.5 bg-slate-50 rounded-lg border border-slate-200 text-xs"
+                  >
+                    <label className="flex items-center gap-2 cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={item.done}
+                        onChange={() => handleToggleItem(item.id)}
+                        className="rounded border-slate-300 text-blue-600 focus:ring-blue-500"
+                      />
+                      <span
+                        className={
+                          item.done
+                            ? "line-through text-slate-400"
+                            : "text-slate-800 font-medium"
+                        }
+                      >
+                        {item.text}
+                      </span>
+                    </label>
+                    <button
+                      onClick={() => handleDeleteItem(item.id)}
+                      className="text-slate-400 hover:text-rose-600 transition-colors"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                ))}
+              </div>
+
+              {/* Form Tambah Item */}
+              <form onSubmit={handleAddActionItem} className="flex gap-2">
+                <input
+                  type="text"
+                  placeholder="+ Tambah tugas baru untuk siswa..."
+                  value={newItemText}
+                  onChange={(e) => setNewItemText(e.target.value)}
+                  className="w-full text-xs px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+                <button
+                  type="submit"
+                  className="bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold px-3 py-2 rounded-lg transition-colors shrink-0"
+                >
+                  <Plus className="w-4 h-4" />
+                </button>
+              </form>
+            </div>
+
+            <div className="pt-3 border-t border-slate-100 flex justify-end">
+              <button
+                onClick={handleSaveSession}
+                className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold px-4 py-2.5 rounded-lg transition-colors shadow-sm"
+              >
+                <Save className="w-4 h-4" />
+                Simpan Catatan & Finish Sesi
+              </button>
+            </div>
+          </div>
         </div>
 
-        {/* Student Profile Banner */}
-        <section className="bg-surface-container-lowest rounded-xl p-5 border border-outline-variant flex flex-col md:flex-row gap-6 items-start md:items-center relative overflow-hidden">
-          {/* Subtle background pattern/gradient */}
-          <div className="absolute top-0 right-0 w-64 h-64 bg-secondary/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/4 pointer-events-none"></div>
-          
-          <div className="w-24 h-24 rounded-full overflow-hidden border-4 border-surface flex-shrink-0 shadow-sm relative z-10">
-            <img
-              src="https://lh3.googleusercontent.com/aida-public/AB6AXuDSz1Vfk8kI5jVeaKJURM1sWgoLYD-FJcRxQJrgixmy1kly7iOvN5QjyR9CA1EvLQ0WLEbLUML_R2Y1RYgQe0RLg-xQOEhUIxmylKZrwLKiE4IxXLR4vEac34cT_z52JfhyVuS4OLUeubtly5MErtsgL27cbgCi9Yu7q9r8OYVRDmDAx-AZUO4i2Zn12mZoR9WL3laDlfjxaBEIYudweHHkjIt7wc70mCx_aje0uX8SN5oS1k8vBzGA-w"
-              alt="Budi Santoso"
-              className="w-full h-full object-cover"
-            />
-          </div>
-          
-          <div className="flex-1 z-10 space-y-2 w-full">
-            <div className="flex flex-col sm:flex-row sm:items-center gap-3 justify-between">
+        {/* RIGHT COLUMN: Student Info & Quick Links (1 Col) */}
+        <div className="space-y-6">
+          {/* Informational Card Siswa */}
+          <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm space-y-4">
+            <h2 className="text-base font-bold text-slate-900 border-b border-slate-100 pb-3 flex items-center gap-2">
+              <User className="w-4 h-4 text-slate-500" />
+              Info Siswa
+            </h2>
+
+            <div className="space-y-3 text-xs">
               <div>
-                <h1 className="font-h1 text-h1 text-primary">Budi Santoso</h1>
-                <p className="font-body-lg text-body-lg text-on-surface-variant mt-1 flex items-center gap-2">
-                  <GraduationCap className="w-5 h-5" />
-                  Target: University of Indonesia - Computer Science
-                </p>
+                <span className="text-slate-400 block">Nama Lengkap:</span>
+                <span className="font-bold text-slate-900 text-sm">
+                  {sessionData.studentName}
+                </span>
               </div>
-              <div className="flex-shrink-0">
-                <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-success/10 text-success border border-success/20 font-label-md text-label-md">
-                  <BadgeCheck className="w-4 h-4" />
-                  Document Status: Verified
+              <div>
+                <span className="text-slate-400 block">Email:</span>
+                <span className="font-semibold text-slate-800">
+                  {sessionData.studentEmail}
+                </span>
+              </div>
+              <div>
+                <span className="text-slate-400 block">Waktu Sesi:</span>
+                <span className="font-semibold text-slate-800 flex items-center gap-1 mt-0.5">
+                  <Calendar className="w-3.5 h-3.5 text-slate-400" />
+                  {sessionData.date}
+                </span>
+                <span className="font-semibold text-slate-800 flex items-center gap-1 mt-0.5">
+                  <Clock className="w-3.5 h-3.5 text-slate-400" />
+                  {sessionData.startTime} - {sessionData.endTime} WIB
                 </span>
               </div>
             </div>
-            
-            <div className="flex flex-wrap gap-4 pt-2 border-t border-outline-variant/50">
-              <a href="mailto:budi.santoso@example.com" className="flex items-center gap-2 font-body-sm text-body-sm text-on-surface-variant hover:text-secondary transition-colors">
-                <Mail className="w-4 h-4" /> budi.santoso@example.com
-              </a>
-              <a href="tel:+6281234567890" className="flex items-center gap-2 font-body-sm text-body-sm text-on-surface-variant hover:text-secondary transition-colors">
-                <Phone className="w-4 h-4" /> +62 812-3456-7890
-              </a>
-              <span className="flex items-center gap-2 font-body-sm text-body-sm text-on-surface-variant">
-                <Clock className="w-4 h-4" /> Last Session: Oct 12, 2023
-              </span>
-            </div>
-          </div>
-        </section>
 
-        {/* Split Layout: Form & Timeline */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 items-start">
-          {/* Left Column: Meeting Notes Form */}
-          <div className="lg:col-span-7 space-y-4">
-            <h2 className="font-headline-sm text-headline-sm text-primary flex items-center gap-2">
-              <FileEdit className="w-5 h-5 text-secondary" />
-              New Meeting Note
-            </h2>
-            <form className="bg-surface-container-lowest rounded-xl p-5 border border-outline-variant space-y-5">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-1.5">
-                  <label className="font-label-sm text-label-sm text-on-surface-variant block">Date</label>
-                  <div className="relative">
-                    <CalendarDays className="w-5 h-5 absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant" />
-                    <input
-                      type="date"
-                      className="w-full pl-10 pr-3 py-2 bg-surface-container-lowest border border-outline-variant rounded-lg focus:ring-2 focus:ring-secondary/20 focus:border-secondary transition-all font-body-md text-body-md text-primary"
-                    />
-                  </div>
-                </div>
-                <div className="space-y-1.5">
-                  <label className="font-label-sm text-label-sm text-on-surface-variant block">Session Category</label>
-                  <div className="relative">
-                    <select className="w-full pl-3 pr-10 py-2 bg-surface-container-lowest border border-outline-variant rounded-lg focus:ring-2 focus:ring-secondary/20 focus:border-secondary transition-all font-body-md text-body-md text-primary appearance-none">
-                      <option>Academic Tutoring</option>
-                      <option>Career Consultation</option>
-                      <option>Document Review</option>
-                      <option>General Check-in</option>
-                    </select>
-                    <ChevronDown className="w-5 h-5 absolute right-3 top-1/2 -translate-y-1/2 text-on-surface-variant pointer-events-none" />
-                  </div>
-                </div>
-              </div>
-              <div className="space-y-1.5">
-                <label className="font-label-sm text-label-sm text-on-surface-variant block">Poin Utama Diskusi (Main Discussion Points)</label>
-                <textarea
-                  className="w-full p-3 bg-surface-container-lowest border border-outline-variant rounded-lg focus:ring-2 focus:ring-secondary/20 focus:border-secondary transition-all font-body-md text-body-md text-primary resize-y"
-                  placeholder="Detail the main topics discussed during this session..."
-                  rows={4}
-                ></textarea>
-              </div>
-              <div className="space-y-1.5">
-                <label className="font-label-sm text-label-sm text-on-surface-variant block">Rekomendasi & Action Plan Siswa (Recommendations)</label>
-                <textarea
-                  className="w-full p-3 bg-surface-container-lowest border border-outline-variant rounded-lg focus:ring-2 focus:ring-secondary/20 focus:border-secondary transition-all font-body-md text-body-md text-primary resize-y"
-                  placeholder="What are the next steps for the student?"
-                  rows={3}
-                ></textarea>
-              </div>
-              <div className="flex items-center justify-between border-t border-outline-variant/50 mt-4 pt-4">
-                <button
-                  type="button"
-                  className="flex items-center gap-2 px-4 py-2 border border-outline-variant rounded-lg font-label-md text-label-md text-on-surface-variant hover:bg-surface-container-low transition-colors"
-                >
-                  <Paperclip className="w-5 h-5" /> Attach Files
-                </button>
-                <button
-                  type="submit"
-                  className="flex items-center gap-2 px-6 py-2 bg-primary text-on-primary rounded-lg font-label-md text-label-md hover:bg-primary/90 transition-colors shadow-sm"
-                >
-                  <Save className="w-5 h-5" /> Simpan Catatan Sesi
-                </button>
-              </div>
-            </form>
-          </div>
-
-          {/* Right Column: Interaction Timeline */}
-          <div className="lg:col-span-5 space-y-4">
-            <h2 className="font-headline-sm text-headline-sm text-primary flex items-center gap-2">
-              <History className="w-5 h-5 text-secondary" /> Log Interaksi (History)
-            </h2>
-            <div className="bg-surface-container-lowest rounded-xl p-5 border border-outline-variant h-[600px] overflow-y-auto relative">
-              {/* Timeline Line */}
-              <div className="absolute left-[39px] top-6 bottom-6 w-px bg-outline-variant/50"></div>
-              
-              <div className="space-y-6 relative">
-                {/* Timeline Item 1 */}
-                <div className="relative pl-14 group">
-                  <div className="absolute left-0 top-1 w-8 h-8 rounded-full bg-secondary-container text-secondary flex items-center justify-center border-4 border-surface-container-lowest z-10 group-hover:scale-110 transition-transform">
-                    <GraduationCap className="w-4 h-4" />
-                  </div>
-                  <div className="bg-surface-container-low rounded-lg p-4 border border-outline-variant/50 group-hover:border-secondary/30 transition-colors">
-                    <div className="flex justify-between items-start mb-2">
-                      <span className="font-label-sm text-label-sm px-2 py-0.5 rounded bg-surface-container-lowest border border-outline-variant text-on-surface-variant">Academic Tutoring</span>
-                      <span className="font-mono-sm text-mono-sm text-on-surface-variant">Oct 12, 2023 • 14:00</span>
-                    </div>
-                    <p className="font-body-sm text-body-sm text-primary mb-3">
-                      Reviewed draft for personal statement. Suggested stronger opening paragraph focusing on early exposure to coding.
-                    </p>
-                    <button className="text-secondary font-label-sm text-label-sm flex items-center gap-1 hover:underline">
-                      <FileText className="w-3.5 h-3.5" /> View Files (1)
-                    </button>
-                  </div>
-                </div>
-
-                {/* Timeline Item 2 */}
-                <div className="relative pl-14 group">
-                  <div className="absolute left-0 top-1 w-8 h-8 rounded-full bg-tertiary-fixed text-on-tertiary-fixed flex items-center justify-center border-4 border-surface-container-lowest z-10 group-hover:scale-110 transition-transform">
-                    <Briefcase className="w-4 h-4" />
-                  </div>
-                  <div className="bg-surface-container-low rounded-lg p-4 border border-outline-variant/50 group-hover:border-tertiary/30 transition-colors">
-                    <div className="flex justify-between items-start mb-2">
-                      <span className="font-label-sm text-label-sm px-2 py-0.5 rounded bg-surface-container-lowest border border-outline-variant text-on-surface-variant">Career Consultation</span>
-                      <span className="font-mono-sm text-mono-sm text-on-surface-variant">Sep 28, 2023 • 10:30</span>
-                    </div>
-                    <p className="font-body-sm text-body-sm text-primary">
-                      Discussed potential internships for Summer 2024. Student is leaning towards local tech startups rather than large enterprises.
-                    </p>
-                  </div>
-                </div>
-
-                {/* Timeline Item 3 */}
-                <div className="relative pl-14 group">
-                  <div className="absolute left-0 top-1 w-8 h-8 rounded-full bg-surface-variant text-on-surface-variant flex items-center justify-center border-4 border-surface-container-lowest z-10 group-hover:scale-110 transition-transform">
-                    <MessageSquare className="w-4 h-4" />
-                  </div>
-                  <div className="bg-surface-container-low rounded-lg p-4 border border-outline-variant/50 group-hover:border-outline-variant transition-colors">
-                    <div className="flex justify-between items-start mb-2">
-                      <span className="font-label-sm text-label-sm px-2 py-0.5 rounded bg-surface-container-lowest border border-outline-variant text-on-surface-variant">General Check-in</span>
-                      <span className="font-mono-sm text-mono-sm text-on-surface-variant">Sep 10, 2023 • 09:15</span>
-                    </div>
-                    <p className="font-body-sm text-body-sm text-primary">
-                      Initial onboarding session. Established communication preferences and mapped out key deadlines for the semester.
-                    </p>
-                  </div>
-                </div>
-              </div>
+            <div className="pt-3 border-t border-slate-100">
+              <Link
+                href={`/consultant/students/std-1`}
+                className="w-full inline-flex justify-center items-center gap-2 text-xs font-bold text-blue-600 bg-blue-50 hover:bg-blue-100 py-2.5 px-3 rounded-lg transition-colors"
+              >
+                <BookOpen className="w-4 h-4" />
+                Lihat Portfolio Siswa Ini
+              </Link>
             </div>
           </div>
         </div>

@@ -14,6 +14,7 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  allowedDevOrigins: ["tumble-scary-crown.ngrok-free.dev"]
 };
 
 export default nextConfig;

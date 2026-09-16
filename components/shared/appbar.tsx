@@ -45,7 +45,7 @@ export function AppBar({ user }: AppBarProps) {
         PAGE_TITLES[pathname] ||
         pathname.split("/").pop()?.replace(/-/g, " ") ||
         "Portal";
-
+    const userRole = session?.user?.role || user?.role;
     const currentUser = session?.user || user;
     const userName = currentUser?.name || "User";
     const userEmail = currentUser?.email || "";
@@ -100,7 +100,7 @@ export function AppBar({ user }: AppBarProps) {
 
                         <div className="py-1">
                             <Link
-                                href="/profile"
+                                href={"/" + userRole?.toLowerCase() + "/profile"}
                                 onClick={() => setIsOpen(false)}
                                 className="flex items-center gap-3 px-4 py-2 text-sm text-on-surface hover:bg-surface-container-high transition-colors"
                             >
@@ -121,7 +121,7 @@ export function AppBar({ user }: AppBarProps) {
                             <button
                                 type="button"
                                 // onClick={() => signOut({ callbackUrl: "/login" })}
-                                onClick={() => signOut({ callbackUrl: "/" })}
+                                onClick={() => signOut({ redirectTo: "/" })}
                                 className="w-full flex items-center gap-3 px-4 py-2 text-sm text-error hover:bg-error-container/30 transition-colors text-left"
                             >
                                 <LogOut className="w-4 h-4 text-error" />

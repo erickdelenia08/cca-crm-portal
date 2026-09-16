@@ -21,6 +21,10 @@ import {
     Fingerprint,
     Wallet,
     BarChart3,
+    SquareActivity,
+    Settings2Icon,
+    BookOpen,
+    Trophy,
 } from "lucide-react";
 import { CCALogo } from "./logo";
 
@@ -34,52 +38,70 @@ export interface NavItem {
 const NAV_ITEMS_BY_ROLE: Record<string, NavItem[]> = {
     STUDENT: [
         { title: "Dashboard", shortTitle: "Home", href: "/student", icon: LayoutDashboard },
-        { title: "Book a Session", shortTitle: "Book", href: "/student/schedule", icon: CalendarDays },
-        { title: "My Bookings", shortTitle: "Bookings", href: "/student/bookings", icon: CalendarCheck },
-        { title: "Session History", shortTitle: "History", href: "/student/history", icon: History },
+        { title: "Advisory", shortTitle: "Advisory", href: "/student/advisory", icon: CalendarCheck },
+        { title: "Booking", shortTitle: "Booking", href: "/student/booking", icon: CalendarCheck },
+        // { title: "History", shortTitle: "History", href: "/student/history", icon: History },
         { title: "Documents", shortTitle: "Docs", href: "/student/documents", icon: FileText },
+        { title: "Classes", shortTitle: "Classes", href: "/student/classes", icon: SquareActivity },
     ],
-    // CONSULTANT: [
-    //     { title: "Dashboard", shortTitle: "Home", href: "/consultant", icon: LayoutDashboard },
-    //     { title: "Schedule", shortTitle: "Schedule", href: "/consultant/schedule", icon: Calendar },
-    //     { title: "Sessions", shortTitle: "Sessions", href: "/consultant/sessions", icon: CheckSquare },
-    // ],
+    TEACHER: [
+        { title: "Dashboard", shortTitle: "Home", href: "/teacher", icon: LayoutDashboard },
+        { title: "Classes", shortTitle: "Classes", href: "/teacher/classes", icon: SquareActivity },
+        { title: "My Attendance", shortTitle: "Attendance", href: "/teacher/my-attendance", icon: CheckSquare },
+        { title: "Materials", shortTitle: "Materials", href: "/teacher/material", icon: BookOpen },
+        { title: "Grades", shortTitle: "Grades", href: "/teacher/grades", icon: Trophy },
+    ],
     CONSULTANT: [
         { title: "Dashboard", href: "/consultant", icon: LayoutDashboard },
         { title: "Availability", href: "/consultant/availability", icon: CalendarClock },
-        { title: "Bookings", href: "/consultant/bookings", icon: CalendarCheck },
+        { title: "Sessions", href: "/consultant/sessions", icon: CalendarCheck },
         { title: "My Students", href: "/consultant/students", icon: Users },
         { title: "Attendance", href: "/consultant/attendance", icon: Fingerprint },
-        { title: "Payroll", href: "/consultant/payroll", icon: Wallet },
         // Profile → app bar
     ],
-    DOCUMENT_PROCESSOR: [
+    PROCESSING_DEPARTMENT: [
         { title: "Dashboard", href: "/processor", icon: LayoutDashboard },
         { title: "Document Queue", href: "/processor/documents", icon: FileText },
     ],
-    ADMIN_MANAGEMENT: [
+    MANAGEMENT: [
         { title: "Dashboard", href: "/management", icon: LayoutDashboard },
         { title: "Bookings", href: "/management/bookings", icon: CalendarCheck },
-        { title: "Students & Consultants", href: "/management/users", icon: Users },
+        { title: "Users", href: "/management/users", icon: Users },
+        { title: "Program Type", href: "/management/program-types", icon: Users },
+        { title: "Programs", href: "/management/programs", icon: Users },
+        { title: "Courses", href: "/management/courses", icon: Users },
+        { title: "Enrollments", href: "/management/enrollments", icon: Users },
         { title: "Attendance", href: "/management/attendance", icon: Fingerprint },
+        { title: "Invoices", href: "/management/invoices", icon: CreditCard },
         { title: "Payroll", href: "/management/payroll", icon: Wallet },
         { title: "Documents", href: "/management/documents", icon: FileText },
         { title: "Reports", href: "/management/reports", icon: BarChart3 },
+        { title: "Settings", href: "/management/settings", icon: Settings2Icon },
         // Profile → app bar
     ],
 };
 
 interface NavigationProps {
     role?: string;
+    hasCourse?: boolean;
+    hasProgram?: boolean;
 }
 
-export function Navigation({ role = "STUDENT" }: NavigationProps) {
+export function Navigation({ role = "STUDENT", hasCourse = true, hasProgram = true }: NavigationProps) {
     const pathname = usePathname();
-    const items = NAV_ITEMS_BY_ROLE[role] ?? [];
+    let items = NAV_ITEMS_BY_ROLE[role] ?? [];
+
+    if (role === "STUDENT") {
+        items = items.filter(item => {
+            if (item.title === "Classes") return hasCourse;
+            if (["Advisory", "Booking", "Documents"].includes(item.title)) return hasProgram;
+            return true;
+        });
+    }
 
     const checkIsActive = (href: string) => {
         const isBaseDashboard =
-            href === `/${role.toLowerCase()}` || href === "/admin" || href === "/processor";
+            href === `/${role.toLowerCase()}` || href === "/management" || href === "/processor";
         if (isBaseDashboard) {
             return pathname === href;
         }

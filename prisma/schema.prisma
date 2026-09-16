@@ -1,72 +1,97 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Get a free hosted Postgres database in seconds: `npx create-db`
-
 generator client {
-  provider = "prisma-client"
-  output   = "./generated"
+  provider = "prisma-client-js"
 }
 
 datasource db {
   provider = "mysql"
 }
 
-// ==========================================
-// 1. ENUMS (RBAC & STATUS)
-// ==========================================
+// ============================================================
+// ENUMS
+// ============================================================
 
 enum Role {
   STUDENT
   CONSULTANT
-  ADMIN_MANAGEMENT
-  DOCUMENT_PROCESSOR
+  TEACHER
+  MANAGEMENT
+  PROCESSING_DEPARTMENT
 }
 
-enum SessionType {
-  ACADEMIC_TUTORING
-  CONSULTATION
+enum Department {
+  HR
+  DOCUMENT_PROCESSING
+  MANAGEMENT
+  ACADEMIC
+  FINANCE
+}
+
+enum EnrollmentStatus {
+  ONBOARDING
+  PROCESSING
+  ACTIVE
+  COMPLETED
+  CANCELLED
+}
+
+enum CourseEnrollmentStatus {
+  ACTIVE
+  COMPLETED
+  CANCELLED
+}
+
+enum DocumentStatus {
+  SUBMITTED
+  UNDER_REVIEW
+  APPROVED
+  REJECTED
+  REVISION_REQUIRED
 }
 
 enum BookingStatus {
   PENDING
-  APPROVED
-  REJECTED
-  CANCELLED
+  CONFIRMED
   COMPLETED
-  RESCHEDULE_REQUESTED
+  CANCELLED
+  NO_SHOW
 }
 
-// NOTE: urutan di bawah ini (SUBMITTED -> IN_VERIFICATION -> PROCESSING_BY_ADMIN
-// -> NEEDS_REVISION -> APPROVED/REJECTED) lebih logis dibanding diagram pada
-// dokumen spesifikasi (yang menaruh "Submitted" di tengah alur). Perlu
-// dikonfirmasi ke stakeholder istilah mana yang dipakai di UI Progress Tracker
-// agar tidak membingungkan siswa.
-enum DocumentStatus {
-  SUBMITTED
-  IN_VERIFICATION
-  PROCESSING_BY_ADMIN
-  NEEDS_REVISION
-  APPROVED
-  REJECTED
+enum BookingSessionType {
+  CONSULTATION
+  FOLLOW_UP
+  DOCUMENT_REVIEW
+  INTERVIEW
+  ORIENTATION
+  OTHER
+}
+
+enum CourseLevel {
+  BASIC
+  INTERMEDIATE
+  ADVANCED
+  PREPARATION
+}
+
+enum CourseCategory {
+  LANGUAGE
+  ACADEMIC
+  SKILL
+  ORIENTATION
 }
 
 enum AttendanceStatus {
   ON_TIME
   LATE
   ABSENT
-  LEAVE
-  SICK
+  EXCUSED
 }
 
-// Dipecah dari LeaveType lama (LEAVE, SICK, OVERTIME) karena dokumen
-// menyebutkan 4 kategori terpisah: Izin, Sakit, Cuti, Lembur. Izin dan cuti
-// digabung sebelumnya, padahal biasanya punya kuota/aturan berbeda.
 enum LeaveType {
-  PERMIT // Izin (ketidakhadiran singkat/personal)
-  ANNUAL_LEAVE // Cuti (jatah tahunan)
+  ANNUAL
   SICK
-  OVERTIME
+  PERSONAL
+  MATERNITY
+  OTHER
 }
 
 enum ApprovalStatus {
@@ -75,33 +100,51 @@ enum ApprovalStatus {
   REJECTED
 }
 
-enum Department {
-  HR
-  DOCUMENT_PROCESSING
-  MANAGEMENT
-}
-
 enum NotificationChannel {
+  IN_APP
   EMAIL
   WHATSAPP
-  IN_APP
 }
 
-// ==========================================
-// 2. USER & AUTHENTICATION (RBAC)
-// ==========================================
+enum BackupStatus {
+  PENDING
+  RUNNING
+  SUCCESS
+  FAILED
+}
+
+enum AnnouncementTargetRole {
+  ALL
+  STUDENT
+  CONSULTANT
+  TEACHER
+  MANAGEMENT
+  PROCESSING_DEPARTMENT
+}
+
+enum InvoiceStatus {
+  DRAFT
+  ISSUED
+  PARTIALLY_PAID
+  PAID
+  OVERDUE
+  CANCELLED
+}
+
+// ============================================================
+// AUTH.JS / NEXTAUTH
+// ============================================================
 
 model User {
-  id            String    @id @default(uuid())
-  email         String    @unique
-  emailVerified DateTime? // wajib untuk Auth.js adapter
-  passwordHash  String? // ganti jadi optional
-  name          String? // jadikan optional juga, karena Google kirim "name" bukan "fullName"
-  phone         String?
-  role          Role      @default(STUDENT) // kasih default
+  id            String      @id
+  name          String?
+  email         String?     @unique
+  emailVerified DateTime?
   image         String?
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  passwordHash  String?
+  role          Role        @default(STUDENT)
+  department    Department?
+  isActive      Boolean     @default(true)
 
   accounts Account[]
   sessions Session[]
@@ -109,15 +152,45 @@ model User {
   studentProfile    StudentProfile?
   consultantProfile ConsultantProfile?
   staffProfile      StaffProfile?
-  notifications     Notification[]
-  announcementsMade Announcement[]   @relation("AnnouncementAuthor")
 
+  studentEnrollments    ProgramEnrollment[] @relation("StudentEnrollments")
+  consultantEnrollments ProgramEnrollment[] @relation("ConsultantEnrollments")
+  documents             Document[]
+
+  createdInvoices Invoice[] @relation("InvoiceCreatedBy")
+
+  uploadedDocuments Document[]        @relation("DocumentUploadedBy")
+  reviewedDocuments Document[]        @relation("DocumentReviewedBy")
+  documentHistories DocumentHistory[] @relation("DocumentHistoryUpdatedBy")
+
+  meetingNotes     MeetingNote[]               @relation("MeetingNoteCreatedBy")
+  handoversCreated StudentConsultantHandover[] @relation("HandoverCreatedBy")
+
+  attendances Attendance[] @relation("AttendanceRecordedBy")
+
+  leaveRequests  LeaveRequest[] @relation("LeaveRequestedBy")
+  approvedLeaves LeaveRequest[] @relation("LeaveApprovedBy")
+
+  announcements Announcement[] @relation("AnnouncementCreatedBy")
+  notifications Notification[]
+
+  backupLogs BackupLog[] @relation("BackupTriggeredBy")
+
+  createdAt             DateTime                      @default(now())
+  updatedAt             DateTime                      @updatedAt
+  // studentConsultantAssignments StudentConsultantAssignment[]
+  // studentConsultantAssignments StudentConsultantAssignment[]
+  studentAssignments    StudentConsultantAssignment[] @relation("StudentAssignments")
+  consultantAssignments StudentConsultantAssignment[] @relation("ConsultantAssignments")
+
+  @@index([role])
+  @@index([department])
+  @@index([isActive])
   @@map("users")
 }
 
-// ===== WAJIB untuk PrismaAdapter =====
 model Account {
-  id                String  @id @default(uuid())
+  id                String  @id @default(cuid())
   userId            String
   type              String
   provider          String
@@ -133,16 +206,19 @@ model Account {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
+  @@index([userId])
   @@map("accounts")
 }
 
 model Session {
-  id           String   @id @default(uuid())
+  id           String   @id @default(cuid())
   sessionToken String   @unique
   userId       String
   expires      DateTime
-  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
   @@map("sessions")
 }
 
@@ -155,350 +231,1092 @@ model VerificationToken {
   @@map("verification_tokens")
 }
 
+// ============================================================
+// STUDENT
+// ============================================================
+
 model StudentProfile {
-  id              String   @id @default(uuid())
-  userId          String   @unique
-  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  academicHistory String?  @db.Text
-  targetProgram   String?
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+  id String @id @default(uuid())
 
-  // Relasi permanen siswa <-> konsultan pembina ("siswa binaan").
-  // Sebelumnya tidak ada; hubungan hanya bisa disimpulkan dari histori
-  // Booking, yang rapuh jika siswa pernah booking ke beberapa konsultan
-  // berbeda. Field ini eksplisit menjawab kebutuhan "Statistik Siswa: jumlah
-  // siswa aktif dalam binaan" dan "Profil Detail Siswa binaan" di Modul 2.
-  // Satu siswa hanya boleh punya SATU konsultan pembina aktif pada satu
-  // waktu. Perpindahan konsultan (handover) hanya boleh dilakukan oleh role
-  // ADMIN_MANAGEMENT dan tercatat di StudentConsultantHandover di bawah.
+  userId String @unique
+
+  // Personal information
+  studentNumber String?   @unique
+  fullName      String
+  email         String?
+  phone         String?
+  whatsapp      String?
+  dateOfBirth   DateTime?
+  gender        String?
+  nationality   String?
+
+  // Address
+  address    String? @db.Text
+  city       String?
+  province   String?
+  postalCode String?
+  country    String?
+
+  // Education
+  educationLevel String?
+  institution    String?
+  major          String?
+  graduationYear Int?
+
+  // Current consultant
   assignedConsultantId String?
-  assignedConsultant   ConsultantProfile? @relation("AssignedStudents", fields: [assignedConsultantId], references: [id])
 
-  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  assignedConsultant ConsultantProfile? @relation("AssignedStudents", fields: [assignedConsultantId], references: [id], onDelete: SetNull)
+
+  // consultantAssignments StudentConsultantAssignment[]
+
+  // programEnrollments ProgramEnrollment[]
+  courseEnrollments CourseEnrollment[]
+
+  documents Document[]
+
   bookings     Booking[]
-  documents    Document[]
   meetingNotes MeetingNote[]
-  handovers    StudentConsultantHandover[]
 
+  handovers StudentConsultantHandover[] @relation("StudentHandovers")
+
+  invoices Invoice[]
+
+  courseAttendances CourseAttendance[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([assignedConsultantId])
+  @@index([fullName])
+  @@index([email])
+  @@index([phone])
   @@map("student_profiles")
 }
 
+// ============================================================
+// CONSULTANT
+// ============================================================
+
 model ConsultantProfile {
-  id               String   @id @default(uuid())
-  userId           String   @unique
-  user             User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  employeeId       String   @unique // ID internal kantor untuk slip gaji, BUKAN NIK
-  specialization   String?
-  hourlyRate       Decimal  @default(0.00) @db.Decimal(12, 2)
-  sessionIncentive Decimal  @default(0.00) @db.Decimal(12, 2)
-  createdAt        DateTime @default(now())
-  updatedAt        DateTime @updatedAt
+  id String @id @default(uuid())
 
-  // Relations
-  assignedStudents      StudentProfile[]              @relation("AssignedStudents")
-  handoversAsPrevious   StudentConsultantHandover[]    @relation("HandoverFromConsultant")
-  handoversAsNew        StudentConsultantHandover[]    @relation("HandoverToConsultant")
+  userId String @unique
+
+  employeeNumber String? @unique
+  fullName       String
+  phone          String?
+  specialization String?
+  isAvailable    Boolean @default(true)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  assignedStudents StudentProfile[] @relation("AssignedStudents")
+
+  // consultantAssignments StudentConsultantAssignment[]
+
+  // programEnrollments ProgramEnrollment[] @relation("EnrollmentConsultant")
+
+  bookings     Booking[]
+  meetingNotes MeetingNote[]
+
+  handoversFrom         StudentConsultantHandover[] @relation("HandoverFromConsultant")
+  handoversTo           StudentConsultantHandover[] @relation("HandoverToConsultant")
   availabilityTemplates AvailabilityTemplate[]
-  bookings              Booking[]
-  meetingNotes          MeetingNote[]
-  attendances           Attendance[]
-  leaveRequests         LeaveRequest[]
-  payslips              Payslip[] // konsultan juga menerima slip gaji (RBAC: Read Only Self)
 
+  createdAt             DateTime               @default(now())
+  updatedAt             DateTime               @updatedAt
+  availabilityOverrides AvailabilityOverride[]
+
+  @@index([fullName])
+  @@index([isAvailable])
   @@map("consultant_profiles")
 }
 
+// ============================================================
+// STAFF / TEACHER
+// ============================================================
+
 model StaffProfile {
-  id         String     @id @default(uuid())
-  userId     String     @unique
-  user       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
-  employeeId String     @unique // ID internal kantor untuk slip gaji, BUKAN NIK
-  department Department // enum, sebelumnya String bebas -> rawan typo/variasi penulisan
-  baseSalary Decimal    @default(0.00) @db.Decimal(12, 2)
-  createdAt  DateTime   @default(now())
-  updatedAt  DateTime   @updatedAt
+  id String @id @default(uuid())
 
-  // Relations
-  attendances        Attendance[]
-  leaveRequests      LeaveRequest[]
-  payslips           Payslip[]
-  processedDocuments Document[]     @relation("ProcessedByStaff")
-  approvedLeaves     LeaveRequest[] @relation("ApprovedByStaff")
+  userId String @unique
 
+  employeeNumber String?     @unique
+  fullName       String
+  phone          String?
+  position       String?
+  department     Department?
+  isActive       Boolean     @default(true)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  taughtClasses CourseClass[] @relation("PrimaryTeacher")
+
+  classTeacherAssignments CourseClassTeacher[]
+
+  attendances Attendance[] @relation("TeacherAttendance")
+
+  leaveRequests LeaveRequest[] @relation("StaffLeaveRequests")
+
+  payslips Payslip[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([department])
+  @@index([isActive])
+  @@index([fullName])
   @@map("staff_profiles")
 }
 
-// ==========================================
-// 3. SCHEDULING & BOOKING MODULE
-// ==========================================
+// ============================================================
+// PROGRAM MASTER
+// ============================================================
 
-// Diganti namanya dari "AvailabilitySlot" -> "AvailabilityTemplate" dan field
-// isBooked dihapus. Alasan: dayOfWeek + startTime/endTime menyiratkan pola
-// REKURING mingguan ("setiap Senin jam 9-10"), tapi isBooked: Boolean hanya
-// valid untuk SATU tanggal spesifik. Kalau setiap minggu Senin bisa dibooking
-// siswa yang berbeda-beda, satu baris isBooked=true akan salah menutup semua
-// Senin ke depannya. Status "terisi/tidak" sekarang dicek langsung terhadap
-// tabel Booking pada tanggal aktual (startTime/endTime), bukan disimpan di sini.
-model AvailabilityTemplate {
-  id           String            @id @default(uuid())
-  consultantId String
-  consultant   ConsultantProfile @relation(fields: [consultantId], references: [id], onDelete: Cascade)
-  dayOfWeek    Int // 0 = Sunday, 1 = Monday, dst.
-  startTime    String // HH:mm format, e.g., "09:00"
-  endTime      String // HH:mm format, e.g., "10:00"
-  isActive     Boolean           @default(true) // konsultan bisa menonaktifkan template tanpa menghapus riwayat
-  createdAt    DateTime          @default(now())
+model ProgramType {
+  id String @id @default(uuid())
 
-  bookings Booking[]
+  name        String
+  code        String  @unique
+  description String? @db.Text
 
-  @@map("availability_templates")
+  isActive Boolean @default(true)
+
+  programs Program[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([isActive])
+  @@map("program_types")
 }
 
-model Booking {
-  id             String            @id @default(uuid())
-  studentId      String
-  student        StudentProfile    @relation(fields: [studentId], references: [id], onDelete: Cascade)
-  consultantId   String
-  consultant     ConsultantProfile @relation(fields: [consultantId], references: [id], onDelete: Cascade)
+// ============================================================
+// PROGRAM
+// ============================================================
 
-  // Link eksplisit ke slot ketersediaan yang "dikonsumsi" booking ini.
-  // Sebelumnya tidak ada relasi ini sama sekali, sehingga validasi bahwa jam
-  // booking benar-benar berada dalam jam ketersediaan konsultan harus 100%
-  // ditangani di application layer tanpa jejak di database. Nullable karena
-  // booking tertentu (mis. dibuat manual oleh admin) mungkin tidak berasal
-  // dari template ketersediaan.
-  availabilityTemplateId String?
-  availabilityTemplate   AvailabilityTemplate? @relation(fields: [availabilityTemplateId], references: [id])
+model Program {
+  id String @id @default(uuid())
 
-  sessionType    SessionType
-  topic          String
-  startTime      DateTime
-  endTime        DateTime
-  status         BookingStatus     @default(PENDING)
-  cancelReason   String?
-  rescheduleTime DateTime?
-  createdAt      DateTime          @default(now())
-  updatedAt      DateTime          @updatedAt
+  code String @unique
+  name String
 
-  // Relations
-  meetingNote MeetingNote?
+  typeId String
 
-  // Mencegah konsultan double-booked pada rentang waktu yang identik.
-  // (Overlap parsial tetap perlu dicek di application layer karena unique
-  // constraint tidak bisa menangani range overlap.)
-  @@unique([consultantId, startTime, endTime])
-  @@map("bookings")
+  destination String?
+
+  basePrice Decimal? @db.Decimal(12, 2)
+
+  description String? @db.Text
+
+  isActive Boolean @default(true)
+
+  type ProgramType @relation(fields: [typeId], references: [id])
+
+  enrollments ProgramEnrollment[]
+
+  documentRequirements DocumentRequirement[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([typeId])
+  @@index([destination])
+  @@index([isActive])
+  @@map("programs")
 }
 
-model MeetingNote {
-  id              String            @id @default(uuid())
-  bookingId       String            @unique
-  booking         Booking           @relation(fields: [bookingId], references: [id], onDelete: Cascade)
-  studentId       String
-  student         StudentProfile    @relation(fields: [studentId], references: [id], onDelete: Cascade)
-  consultantId    String
-  consultant      ConsultantProfile @relation(fields: [consultantId], references: [id], onDelete: Cascade)
-  discussionPoint String            @db.Text
-  recommendations String            @db.Text
-  actionPlan      String            @db.Text
-  createdAt       DateTime          @default(now())
-  updatedAt       DateTime          @updatedAt
+// ============================================================
+// PROGRAM ENROLLMENT
+// ============================================================
 
-  @@map("meeting_notes")
+model ProgramEnrollment {
+  id String @id @default(uuid())
+
+  studentId String
+  programId String
+
+  consultantId String?
+
+  status EnrollmentStatus @default(ONBOARDING)
+
+  isPrimary Boolean @default(false)
+
+  enrolledAt DateTime @default(now())
+
+  notes String? @db.Text
+
+  // student StudentProfile @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  // consultant ConsultantProfile? @relation("EnrollmentConsultant", fields: [consultantId], references: [id], onDelete: SetNull)
+
+  student    User  @relation("StudentEnrollments", fields: [studentId], references: [id], onDelete: Cascade)
+  consultant User? @relation("ConsultantEnrollments", fields: [consultantId], references: [id], onDelete: SetNull)
+
+  program Program @relation(fields: [programId], references: [id])
+
+  documentRequirements EnrollmentDocumentRequirement[]
+
+  documents Document[]
+
+  invoices Invoice[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  // studentProfile      StudentProfile?    @relation(fields: [studentProfileId], references: [id])
+  // studentProfileId    String?
+  // consultantProfile   ConsultantProfile? @relation(fields: [consultantProfileId], references: [id])
+  // consultantProfileId String?
+
+  @@index([studentId])
+  @@index([programId])
+  @@index([consultantId])
+  @@index([status])
+  @@map("program_enrollments")
 }
 
-// Model baru: audit trail untuk perpindahan siswa dari satu konsultan
-// pembina ke konsultan lain. Perubahan langsung pada
-// StudentProfile.assignedConsultantId tidak menyimpan riwayat siapa yang
-// mengubah, kapan, dan alasannya -- padahal aksi ini dibatasi hanya untuk
-// role ADMIN_MANAGEMENT sehingga penting untuk akuntabilitas/audit.
-model StudentConsultantHandover {
-  id          String   @id @default(uuid())
-  studentId   String
-  student     StudentProfile @relation(fields: [studentId], references: [id], onDelete: Cascade)
+// ============================================================
+// PROGRAM DOCUMENT REQUIREMENTS
+// ============================================================
 
-  fromConsultantId String?
-  fromConsultant    ConsultantProfile? @relation("HandoverFromConsultant", fields: [fromConsultantId], references: [id])
+model DocumentRequirement {
+  id String @id @default(uuid())
 
-  toConsultantId String
-  toConsultant   ConsultantProfile @relation("HandoverToConsultant", fields: [toConsultantId], references: [id])
+  programId String
 
-  changedByUserId String // wajib User dengan role ADMIN_MANAGEMENT (divalidasi di application layer)
-  reason          String? @db.Text
-  createdAt       DateTime @default(now())
+  code String
+  name String
 
-  @@map("student_consultant_handovers")
+  description String? @db.Text
+
+  isRequired Boolean @default(true)
+  isActive   Boolean @default(true)
+
+  program Program @relation(fields: [programId], references: [id], onDelete: Cascade)
+
+  enrollmentRequirements EnrollmentDocumentRequirement[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([programId, code])
+  @@index([programId])
+  @@index([isActive])
+  @@map("document_requirements")
 }
 
-// ==========================================
-// 4. DOCUMENT TRACKING MODULE
-// ==========================================
+// ============================================================
+// SNAPSHOT DOCUMENT REQUIREMENT
+// ============================================================
+
+model EnrollmentDocumentRequirement {
+  id String @id @default(uuid())
+
+  enrollmentId  String
+  requirementId String?
+
+  code String
+  name String
+
+  description String? @db.Text
+
+  isRequired Boolean @default(true)
+  isActive   Boolean @default(true)
+
+  enrollment ProgramEnrollment @relation(fields: [enrollmentId], references: [id], onDelete: Cascade)
+
+  requirement DocumentRequirement? @relation(fields: [requirementId], references: [id], onDelete: SetNull)
+
+  documents Document[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([enrollmentId, code])
+  @@index([enrollmentId])
+  @@index([requirementId])
+  @@map("enrollment_document_requirements")
+}
+
+// ============================================================
+// DOCUMENT
+// ============================================================
 
 model Document {
-  id             String         @id @default(uuid())
-  studentId      String
-  student        StudentProfile @relation(fields: [studentId], references: [id], onDelete: Cascade)
-  processedById  String?
-  processedBy    StaffProfile?  @relation("ProcessedByStaff", fields: [processedById], references: [id])
-  title          String // e.g., "Passport", "Transcript"
-  fileUrl        String
-  outcomeFileUrl String? // Document uploaded by processor
-  status         DocumentStatus @default(SUBMITTED)
-  revisionNote   String?        @db.Text
-  createdAt      DateTime       @default(now())
-  updatedAt      DateTime       @updatedAt
+  id String @id @default(uuid())
 
-  // Tracking History
+  enrollmentId                    String
+  enrollmentDocumentRequirementId String
+
+  studentId String
+
+  title String
+
+  objectKey String
+  fileName  String
+  mimeType  String?
+  fileSize  Int?
+
+  outcomeObjectKey String?
+
+  status DocumentStatus @default(SUBMITTED)
+
+  revisionNote String? @db.Text
+
+  uploadedById String?
+  reviewedById String?
+
+  reviewedAt DateTime?
+
+  enrollment ProgramEnrollment @relation(fields: [enrollmentId], references: [id], onDelete: Cascade)
+
+  requirement EnrollmentDocumentRequirement @relation(fields: [enrollmentDocumentRequirementId], references: [id], onDelete: Cascade)
+
+  // student StudentProfile @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  student User @relation(fields: [studentId], references: [id], onDelete: Cascade)
+
+  uploadedBy User? @relation("DocumentUploadedBy", fields: [uploadedById], references: [id], onDelete: SetNull)
+
+  reviewedBy User? @relation("DocumentReviewedBy", fields: [reviewedById], references: [id], onDelete: SetNull)
+
   history DocumentHistory[]
 
+  createdAt        DateTime        @default(now())
+  updatedAt        DateTime        @updatedAt
+  studentProfile   StudentProfile? @relation(fields: [studentProfileId], references: [id])
+  studentProfileId String?
+
+  @@index([enrollmentId])
+  @@index([enrollmentDocumentRequirementId])
+  @@index([studentId])
+  @@index([uploadedById])
+  @@index([reviewedById])
+  @@index([status])
   @@map("documents")
 }
 
-model DocumentHistory {
-  id         String         @id @default(uuid())
-  documentId String
-  document   Document       @relation(fields: [documentId], references: [id], onDelete: Cascade)
-  status     DocumentStatus
-  note       String?
-  updatedBy  String // User ID / Name
-  createdAt  DateTime       @default(now())
+// ============================================================
+// DOCUMENT HISTORY
+// ============================================================
 
+model DocumentHistory {
+  id String @id @default(uuid())
+
+  documentId String
+
+  status DocumentStatus
+
+  note String? @db.Text
+
+  updatedById String
+
+  document Document @relation(fields: [documentId], references: [id], onDelete: Cascade)
+
+  updatedBy User @relation("DocumentHistoryUpdatedBy", fields: [updatedById], references: [id])
+
+  createdAt DateTime @default(now())
+
+  @@index([documentId])
+  @@index([updatedById])
   @@map("document_histories")
 }
 
-// ==========================================
-// 5. ATTENDANCE & PAYROLL MODULE
-// ==========================================
+// ============================================================
+// COURSE MASTER
+// ============================================================
+
+model Course {
+  id String @id @default(uuid())
+
+  code String @unique
+  name String
+
+  description String? @db.Text
+
+  category CourseCategory?
+  level    CourseLevel?
+
+  durationHours Int?
+
+  basePrice Decimal? @db.Decimal(12, 2)
+
+  isActive Boolean @default(true)
+
+  classes CourseClass[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([isActive])
+  @@index([category])
+  @@index([level])
+  @@map("courses")
+}
+
+// ============================================================
+// COURSE CLASS / BATCH
+// ============================================================
+
+model CourseClass {
+  id String @id @default(uuid())
+
+  courseId String
+
+  teacherId String
+
+  code String
+  name String?
+
+  schedule String?
+
+  maxCapacity Int
+
+  startDate DateTime
+  endDate   DateTime
+
+  isActive Boolean @default(true)
+
+  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  teacher StaffProfile @relation("PrimaryTeacher", fields: [teacherId], references: [id])
+
+  teacherAssignments CourseClassTeacher[]
+
+  enrollments CourseEnrollment[]
+
+  sessions CourseSession[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([courseId, code])
+  @@index([courseId])
+  @@index([teacherId])
+  @@index([isActive])
+  @@index([startDate])
+  @@index([endDate])
+  @@map("course_classes")
+}
+
+// ============================================================
+// COURSE CLASS TEACHER ASSIGNMENT HISTORY
+// ============================================================
+
+model CourseClassTeacher {
+  id String @id @default(uuid())
+
+  courseClassId String
+  teacherId     String
+
+  startDate DateTime
+  endDate   DateTime?
+
+  isTemporary Boolean @default(false)
+
+  reason String? @db.Text
+
+  courseClass CourseClass @relation(fields: [courseClassId], references: [id], onDelete: Cascade)
+
+  teacher StaffProfile @relation(fields: [teacherId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([courseClassId])
+  @@index([teacherId])
+  @@index([startDate])
+  @@index([endDate])
+  @@map("course_class_teachers")
+}
+
+// ============================================================
+// COURSE ENROLLMENT
+// ============================================================
+
+model CourseEnrollment {
+  id String @id @default(uuid())
+
+  studentId String
+
+  courseClassId String
+
+  status CourseEnrollmentStatus @default(ACTIVE)
+
+  startedAt DateTime  @default(now())
+  endedAt   DateTime?
+
+  notes String? @db.Text
+
+  student StudentProfile @relation(fields: [studentId], references: [id], onDelete: Cascade)
+
+  courseClass CourseClass @relation(fields: [courseClassId], references: [id])
+
+  invoices Invoice[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([studentId])
+  @@index([courseClassId])
+  @@index([status])
+  @@map("course_enrollments")
+}
+
+// ============================================================
+// COURSE SESSION
+// ============================================================
+
+model CourseSession {
+  id String @id @default(uuid())
+
+  courseClassId String
+
+  title String
+
+  startTime DateTime
+  endTime   DateTime
+
+  courseClass CourseClass @relation(fields: [courseClassId], references: [id], onDelete: Cascade)
+
+  attendances CourseAttendance[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([courseClassId])
+  @@index([startTime])
+  @@map("course_sessions")
+}
+
+// ============================================================
+// COURSE ATTENDANCE
+// ============================================================
+
+model CourseAttendance {
+  id String @id @default(uuid())
+
+  sessionId String
+  studentId String
+
+  status AttendanceStatus @default(ON_TIME)
+
+  note String? @db.Text
+
+  session CourseSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+
+  student StudentProfile @relation(fields: [studentId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([sessionId, studentId])
+  @@index([sessionId])
+  @@index([studentId])
+  @@map("course_attendances")
+}
+
+// ============================================================
+// STUDENT ↔ CONSULTANT ASSIGNMENT HISTORY
+// ============================================================
+
+model StudentConsultantAssignment {
+  id String @id @default(uuid())
+
+  studentId    String
+  consultantId String
+
+  startDate DateTime
+  endDate   DateTime?
+
+  isTemporary Boolean @default(false)
+
+  reason String? @db.Text
+
+  // student StudentProfile @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  // consultant ConsultantProfile @relation(fields: [consultantId], references: [id])
+
+  student    User @relation("StudentAssignments", fields: [studentId], references: [id], onDelete: Cascade)
+  consultant User @relation("ConsultantAssignments", fields: [consultantId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([studentId])
+  @@index([consultantId])
+  @@index([startDate])
+  @@index([endDate])
+  @@map("student_consultant_assignments")
+}
+
+// ============================================================
+// AVAILABILITY
+// ============================================================
+
+model AvailabilityTemplate {
+  id String @id @default(uuid())
+
+  consultantId String
+
+  dayOfWeek Int
+
+  startTime String
+  endTime   String
+
+  isActive Boolean @default(true)
+
+  consultant ConsultantProfile @relation(fields: [consultantId], references: [id], onDelete: Cascade)
+
+  bookings Booking[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([consultantId])
+  @@index([dayOfWeek])
+  @@index([isActive])
+  @@map("availability_templates")
+}
+
+model AvailabilityOverride {
+  id String @id @default(uuid())
+
+  consultantId String
+
+  date      String // Format: YYYY-MM-DD
+  startTime String
+  endTime   String
+
+  isAvailable Boolean @default(true)
+
+  consultant ConsultantProfile @relation(fields: [consultantId], references: [id], onDelete: Cascade)
+
+  bookings Booking[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([consultantId])
+  @@index([date])
+  @@map("availability_overrides")
+}
+
+// ============================================================
+// BOOKING
+// ============================================================
+
+model Booking {
+  id String @id @default(uuid())
+
+  studentId    String
+  consultantId String
+
+  availabilityTemplateId String?
+  availabilityOverrideId String?
+
+  scheduledAt     DateTime
+  durationMinutes Int      @default(60)
+
+  sessionType BookingSessionType @default(CONSULTATION)
+
+  status BookingStatus @default(PENDING)
+
+  meetingUrl String?
+
+  notes String? @db.Text
+
+  student StudentProfile @relation(fields: [studentId], references: [id], onDelete: Cascade)
+
+  consultant ConsultantProfile @relation(fields: [consultantId], references: [id])
+
+  availabilityTemplate AvailabilityTemplate? @relation(fields: [availabilityTemplateId], references: [id], onDelete: SetNull)
+
+  availabilityOverride AvailabilityOverride? @relation(fields: [availabilityOverrideId], references: [id], onDelete: SetNull)
+
+  meetingNotes MeetingNote[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([studentId])
+  @@index([consultantId])
+  @@index([availabilityTemplateId])
+  @@index([scheduledAt])
+  @@index([status])
+  @@map("bookings")
+}
+
+// ============================================================
+// MEETING NOTE
+// ============================================================
+
+model MeetingNote {
+  id String @id @default(uuid())
+
+  studentId    String
+  consultantId String
+
+  bookingId String?
+
+  title   String
+  content String @db.Text
+
+  createdById String
+
+  student StudentProfile @relation(fields: [studentId], references: [id], onDelete: Cascade)
+
+  consultant ConsultantProfile @relation(fields: [consultantId], references: [id])
+
+  booking Booking? @relation(fields: [bookingId], references: [id], onDelete: SetNull)
+
+  createdBy User @relation("MeetingNoteCreatedBy", fields: [createdById], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([studentId])
+  @@index([consultantId])
+  @@index([bookingId])
+  @@index([createdById])
+  @@map("meeting_notes")
+}
+
+// ============================================================
+// STUDENT CONSULTANT HANDOVER
+// ============================================================
+
+model StudentConsultantHandover {
+  id String @id @default(uuid())
+
+  studentId String
+
+  fromConsultantId String?
+  toConsultantId   String
+
+  reason String @db.Text
+
+  handoverDate DateTime @default(now())
+
+  createdById String
+
+  student StudentProfile @relation("StudentHandovers", fields: [studentId], references: [id], onDelete: Cascade)
+
+  fromConsultant ConsultantProfile? @relation("HandoverFromConsultant", fields: [fromConsultantId], references: [id], onDelete: SetNull)
+
+  toConsultant ConsultantProfile @relation("HandoverToConsultant", fields: [toConsultantId], references: [id])
+
+  createdBy User @relation("HandoverCreatedBy", fields: [createdById], references: [id])
+
+  createdAt DateTime @default(now())
+
+  @@index([studentId])
+  @@index([fromConsultantId])
+  @@index([toConsultantId])
+  @@index([createdById])
+  @@index([handoverDate])
+  @@map("student_consultant_handovers")
+}
+
+// ============================================================
+// INVOICE
+// ============================================================
+
+model Invoice {
+  id String @id @default(uuid())
+
+  invoiceNumber String @unique
+
+  studentId String
+
+  programEnrollmentId String?
+  courseEnrollmentId  String?
+
+  createdById String
+
+  subtotal       Decimal @db.Decimal(12, 2)
+  taxAmount      Decimal @default(0.00) @db.Decimal(12, 2)
+  discountAmount Decimal @default(0.00) @db.Decimal(12, 2)
+  totalAmount    Decimal @db.Decimal(12, 2)
+
+  status InvoiceStatus @default(DRAFT)
+
+  dueDate DateTime
+  paidAt  DateTime?
+
+  paymentMethod String?
+
+  pdfUrl String?
+
+  notes String? @db.Text
+
+  student StudentProfile @relation(fields: [studentId], references: [id], onDelete: Cascade)
+
+  programEnrollment ProgramEnrollment? @relation(fields: [programEnrollmentId], references: [id], onDelete: SetNull)
+
+  courseEnrollment CourseEnrollment? @relation(fields: [courseEnrollmentId], references: [id], onDelete: SetNull)
+
+  createdBy User @relation("InvoiceCreatedBy", fields: [createdById], references: [id])
+
+  items InvoiceItem[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([studentId])
+  @@index([programEnrollmentId])
+  @@index([courseEnrollmentId])
+  @@index([createdById])
+  @@index([status])
+  @@index([dueDate])
+  @@map("invoices")
+}
+
+// ============================================================
+// INVOICE ITEM
+// ============================================================
+
+model InvoiceItem {
+  id String @id @default(uuid())
+
+  invoiceId String
+
+  description String
+
+  quantity Decimal @default(1.00) @db.Decimal(10, 2)
+
+  unitPrice Decimal @db.Decimal(12, 2)
+
+  amount Decimal @db.Decimal(12, 2)
+
+  invoice Invoice @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([invoiceId])
+  @@map("invoice_items")
+}
+
+// ============================================================
+// GENERAL ATTENDANCE
+// ============================================================
 
 model Attendance {
-  id           String             @id @default(uuid())
-  staffId      String?
-  staff        StaffProfile?      @relation(fields: [staffId], references: [id], onDelete: Cascade)
-  consultantId String?
-  consultant   ConsultantProfile? @relation(fields: [consultantId], references: [id], onDelete: Cascade)
-  date         DateTime           @db.Date
-  clockIn      DateTime?
-  clockOut     DateTime?
-  status       AttendanceStatus   @default(ON_TIME)
-  workHours    Decimal            @default(0.00) @db.Decimal(5, 2)
-  createdAt    DateTime           @default(now())
-  updatedAt    DateTime           @updatedAt
+  id String @id @default(uuid())
 
-  // Mencegah duplikat presensi pada hari yang sama untuk orang yang sama.
-  // Sebelumnya tidak ada constraint ini sama sekali.
+  staffId      String
+  recordedById String
+
+  date DateTime
+
+  checkIn  DateTime?
+  checkOut DateTime?
+
+  status AttendanceStatus @default(ON_TIME)
+
+  note String? @db.Text
+
+  staff StaffProfile @relation("TeacherAttendance", fields: [staffId], references: [id], onDelete: Cascade)
+
+  recordedBy User @relation("AttendanceRecordedBy", fields: [recordedById], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
   @@unique([staffId, date])
-  @@unique([consultantId, date])
+  @@index([staffId])
+  @@index([recordedById])
+  @@index([date])
   @@map("attendances")
 }
 
-model LeaveRequest {
-  id           String             @id @default(uuid())
-  staffId      String?
-  staff        StaffProfile?      @relation(fields: [staffId], references: [id], onDelete: Cascade)
-  consultantId String?
-  consultant   ConsultantProfile? @relation(fields: [consultantId], references: [id], onDelete: Cascade)
-  approvedById String?
-  approvedBy   StaffProfile?      @relation("ApprovedByStaff", fields: [approvedById], references: [id])
-  type         LeaveType
-  startDate    DateTime           @db.Date
-  endDate      DateTime           @db.Date
-  reason       String             @db.Text
-  proofFileUrl String?
-  status       ApprovalStatus     @default(PENDING)
-  createdAt    DateTime           @default(now())
-  updatedAt    DateTime           @updatedAt
+// ============================================================
+// LEAVE REQUEST
+// ============================================================
 
+model LeaveRequest {
+  id String @id @default(uuid())
+
+  staffId       String
+  requestedById String
+
+  type LeaveType
+
+  startDate DateTime
+  endDate   DateTime
+
+  reason String? @db.Text
+
+  status ApprovalStatus @default(PENDING)
+
+  approvedById String?
+  approvedAt   DateTime?
+
+  staff StaffProfile @relation("StaffLeaveRequests", fields: [staffId], references: [id], onDelete: Cascade)
+
+  requestedBy User @relation("LeaveRequestedBy", fields: [requestedById], references: [id])
+
+  approvedBy User? @relation("LeaveApprovedBy", fields: [approvedById], references: [id], onDelete: SetNull)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([staffId])
+  @@index([requestedById])
+  @@index([approvedById])
+  @@index([status])
+  @@index([startDate])
   @@map("leave_requests")
 }
 
+// ============================================================
+// PAYSLIP
+// ============================================================
+
 model Payslip {
-  id           String             @id @default(uuid())
-  // Diubah jadi nullable ganda (pola sama seperti Attendance/LeaveRequest)
-  // karena RBAC matrix menyatakan Konsultan punya akses "Read Only (Self)"
-  // ke modul payroll -- sebelumnya Payslip hanya bisa terhubung ke StaffProfile.
-  staffId      String?
-  staff        StaffProfile?      @relation(fields: [staffId], references: [id], onDelete: Cascade)
-  consultantId String?
-  consultant   ConsultantProfile? @relation(fields: [consultantId], references: [id], onDelete: Cascade)
+  id String @id @default(uuid())
 
-  periodMonth Int // 1 - 12
-  periodYear  Int // e.g., 2026
+  staffId String
 
-  // Snapshot identitas & employeeId pada saat slip diterbitkan. Ini
-  // sengaja DIDUPLIKASI dari StaffProfile/ConsultantProfile (bukan dibaca
-  // live saat render) supaya slip gaji lama tetap akurat & tidak berubah
-  // meskipun nama karyawan atau employeeId di-update di kemudian hari --
-  // properti penting untuk dokumen finansial yang bersifat arsip resmi.
-  recipientName       String
-  recipientEmployeeId String
+  periodStart DateTime
+  periodEnd   DateTime
 
-  baseSalary       Decimal  @db.Decimal(12, 2)
-  allowances       Decimal  @default(0.00) @db.Decimal(12, 2)
-  sessionIncentive Decimal  @default(0.00) @db.Decimal(12, 2)
-  deductions       Decimal  @default(0.00) @db.Decimal(12, 2)
-  netSalary        Decimal  @db.Decimal(12, 2)
-  pdfUrl           String // Encrypted PDF storage URL, berisi letterhead dari CompanySettings
-  isDistributed    Boolean  @default(false)
-  createdAt        DateTime @default(now())
-  updatedAt        DateTime @updatedAt
+  baseSalary Decimal @db.Decimal(12, 2)
+  allowances Decimal @default(0.00) @db.Decimal(12, 2)
+  deductions Decimal @default(0.00) @db.Decimal(12, 2)
+  netSalary  Decimal @db.Decimal(12, 2)
 
-  @@unique([staffId, periodMonth, periodYear])
-  @@unique([consultantId, periodMonth, periodYear])
+  pdfUrl String?
+
+  staff StaffProfile @relation(fields: [staffId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([staffId, periodStart, periodEnd])
+  @@index([staffId])
+  @@index([periodStart])
   @@map("payslips")
 }
 
-// Model baru (singleton, biasanya cuma 1 baris): identitas perusahaan yang
-// dipakai sebagai letterhead di semua slip gaji (logo, nama PT, alamat).
-// Dipisah dari Payslip karena datanya sama untuk semua slip -- tidak perlu
-// diulang di tiap baris, dan kalau logo/alamat berubah cukup update 1 tempat.
+// ============================================================
+// COMPANY SETTINGS
+// ============================================================
+
 model CompanySettings {
-  id           String   @id @default(uuid())
-  companyName  String
-  logoUrl      String
-  address      String?  @db.Text
-  phone        String?
-  email        String?
-  updatedAt    DateTime @updatedAt
+  id String @id @default(uuid())
+
+  companyName String
+
+  email    String?
+  phone    String?
+  whatsapp String?
+
+  address String? @db.Text
+
+  logoUrl String?
+
+  website String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@map("company_settings")
 }
 
-// ==========================================
-// 6. NOTIFICATIONS & ANNOUNCEMENTS
-// ==========================================
+// ============================================================
+// ANNOUNCEMENT
+// ============================================================
 
-// Model baru. Sebelumnya "Pengumuman Portal" dari manajemen ke banyak siswa
-// harus di-insert sebagai satu baris Notification per user -> mahal untuk
-// basis pengguna besar dan menyulitkan audit (siapa penulisnya, kapan
-// diedit, ke role mana ditujukan). Announcement dibuat sekali oleh
-// manajemen; status "sudah dibaca" tetap dilacak per-user lewat Notification.
 model Announcement {
-  id          String   @id @default(uuid())
-  authorId    String
-  author      User     @relation("AnnouncementAuthor", fields: [authorId], references: [id])
-  title       String
-  message     String   @db.Text
-  targetRole  Role? // null = untuk semua role
-  publishedAt DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id String @id @default(uuid())
+
+  title String
+
+  content String @db.Text
+
+  targetRole AnnouncementTargetRole @default(ALL)
+
+  isPublished Boolean @default(false)
+
+  publishedAt DateTime?
+
+  createdById String
+
+  createdBy User @relation("AnnouncementCreatedBy", fields: [createdById], references: [id])
 
   notifications Notification[]
 
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([targetRole])
+  @@index([isPublished])
+  @@index([publishedAt])
+  @@index([createdById])
   @@map("announcements")
 }
 
-model Notification {
-  id             String              @id @default(uuid())
-  userId         String
-  user           User                @relation(fields: [userId], references: [id], onDelete: Cascade)
-  announcementId String?
-  announcement   Announcement?       @relation(fields: [announcementId], references: [id], onDelete: Cascade)
-  title          String
-  message        String              @db.Text
-  isRead         Boolean             @default(false)
-  channel        NotificationChannel // enum, sebelumnya String bebas -> rawan typo/variasi penulisan
-  createdAt      DateTime            @default(now())
+// ============================================================
+// NOTIFICATION
+// ============================================================
 
+model Notification {
+  id String @id @default(uuid())
+
+  userId String
+
+  announcementId String?
+
+  title   String
+  message String @db.Text
+
+  channel NotificationChannel @default(IN_APP)
+
+  isRead Boolean @default(false)
+
+  readAt DateTime?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  announcement Announcement? @relation(fields: [announcementId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([announcementId])
+  @@index([isRead])
+  @@index([createdAt])
   @@map("notifications")
+}
+
+// ============================================================
+// BACKUP LOG
+// ============================================================
+
+model BackupLog {
+  id String @id @default(uuid())
+
+  backupName String
+
+  cloudStorageUrl String?
+  googleDriveId   String?
+
+  fileSizeBytes BigInt?
+
+  status BackupStatus @default(PENDING)
+
+  errorMessage String? @db.Text
+
+  triggeredById String?
+
+  triggeredBy User? @relation("BackupTriggeredBy", fields: [triggeredById], references: [id], onDelete: SetNull)
+
+  createdAt DateTime @default(now())
+
+  @@index([triggeredById])
+  @@index([status])
+  @@index([createdAt])
+  @@map("backup_logs")
 }

@@ -6,6 +6,7 @@ import { prisma } from "@/lib/prisma";
 import bcrypt from "bcryptjs";
 
 import { PrismaAdapter } from "@auth/prisma-adapter";
+import { Role } from "@prisma/client";
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
     // debug: true,
@@ -44,12 +45,15 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
             if (user) {
                 // Simpan role di JWT token untuk middleware RBAC
                 token.role = user.role;
+                token.id = user.id;
             }
             return token;
         },
         async session({ session, token }) {
             if (token && session.user) {
-                session.user.role = token.role;
+                session.user.role = token.role as Role;
+                // session.user.id = token.id as string;
+                session.user.id = (token.id as string) || (token.sub as string);
             }
             return session;
         },

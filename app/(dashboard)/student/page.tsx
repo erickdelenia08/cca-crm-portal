@@ -1,198 +1,185 @@
+"use client";
+
 import Link from "next/link";
 import {
-  CalendarDays,
-  FolderOpen,
-  Megaphone,
-  PlusCircle,
-  Upload,
+  FileCheck,
+  Calendar,
+  Award,
   ArrowRight,
   Clock,
-  ChevronRight,
+  CheckCircle2,
+  AlertCircle,
+  Video,
+  UserCheck
 } from "lucide-react";
 
-export default function StudentDashboardPage() {
-  // Simulasi data dari backend/state
-  const upcomingSession = {
-    id: "1",
-    type: "Konsultasi", // atau "Les"
-    consultantName: "Sarah J.",
-    dateTime: "24 Aug 2026, 10:00 AM",
+export default function ClientDashboardPage() {
+  const clientProfile = {
+    name: "Ahmad Rizky",
+    clientCode: "CCA-CLI-26-000102",
+    hasActiveClasses: true,
+    hasActiveAdvisory: true,
   };
 
-  const latestDocumentStatus = {
-    status: "Verification", // e.g. "Approved", "Verification", "Rejected"
-    summary: "Dokumen Transkrip Nilai sedang diverifikasi oleh tim.",
-  };
+  const advisorySteps = [
+    { name: "Konsultasi Awal & Jurusan", status: "COMPLETED" },
+    { name: "Persiapan Dokumen (Ijazah/Paspor)", status: "COMPLETED" },
+    { name: "Pendaftaran Kampus / LoA", status: "IN_PROGRESS" },
+    { name: "Pengajuan Visa Pelajar", status: "PENDING" },
+  ];
 
-  const todayDate = new Intl.DateTimeFormat("id-ID", {
-    dateStyle: "full",
-  }).format(new Date());
+  const upcomingClass = {
+    title: "IELTS Intensive - Writing Task 2",
+    time: "Hari Ini, 15:30 WIB",
+    tutor: "Ms. Sarah Jenkins",
+    link: "https://zoom.us/j/mocklink",
+  };
 
   return (
-    <div className="flex-1 overflow-y-auto space-y-7 p-6">
-      {/* 1. Header Greeting */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-primary text-on-primary rounded-xl p-6 shadow-sm">
+    <div className="space-y-6 p-6 max-w-7xl mx-auto text-slate-800">
+      {/* Header Clean & Simple (No Fancy AI Gradient) */}
+      <div className="bg-slate-900 rounded-xl p-6 text-white flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl md:text-3xl font-bold tracking-tight">
-            Halo, Budi!
-          </h1>
-          <p className="text-sm text-primary-fixed-dim mt-1">{todayDate}</p>
+          <div className="flex items-center gap-2">
+            <h1 className="text-xl font-bold tracking-tight">Halo, {clientProfile.name}</h1>
+            <span className="text-[11px] font-mono bg-slate-800 text-slate-300 px-2 py-0.5 rounded border border-slate-700">
+              {clientProfile.clientCode}
+            </span>
+          </div>
+          <p className="text-xs text-slate-400 mt-1">
+            Pantau progres pendaftaran luar negeri dan jadwal kelas aktif Anda.
+          </p>
         </div>
 
-        {/* 5. Quick Action Buttons */}
-        <div className="flex items-center gap-3">
+        {clientProfile.hasActiveAdvisory && (
           <Link
-            href="/student/bookings"
-            className="bg-secondary text-on-secondary font-medium text-xs md:text-sm px-4 py-2.5 rounded-lg hover:bg-secondary-container transition-colors shadow-sm inline-flex items-center gap-2"
+            href="/client/booking"
+            className="inline-flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-500 text-white font-medium px-3.5 py-2 rounded-lg text-xs transition-colors shrink-0"
           >
-            <PlusCircle className="w-4 h-4" />
-            <span>Book a Session</span>
+            <UserCheck className="w-4 h-4" />
+            <span>Jadwalkan Konsultasi</span>
           </Link>
-          <Link
-            href="/student/documents"
-            className="bg-surface-container-lowest text-on-surface font-medium text-xs md:text-sm px-4 py-2.5 rounded-lg hover:bg-surface-container-high transition-colors shadow-sm inline-flex items-center gap-2"
-          >
-            <Upload className="w-4 h-4 text-primary" />
-            <span>Upload Dokumen</span>
-          </Link>
-        </div>
+        )}
       </div>
 
-      {/* Grid Layout Utama */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2 space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {/* 2. Card: Sesi Terdekat */}
-            <div className="bg-surface-container-lowest rounded-xl p-5 border border-outline-variant shadow-sm flex flex-col justify-between">
-              <div>
-                <div className="flex justify-between items-center mb-4">
-                  <div className="flex items-center gap-2">
-                    <span className="bg-info-container text-on-info-container p-2 rounded-lg">
-                      <CalendarDays className="w-5 h-5" />
-                    </span>
-                    <h3 className="font-semibold text-base text-on-surface">
-                      Sesi Terdekat
-                    </h3>
-                  </div>
-                  {upcomingSession && (
-                    <span className="bg-secondary-container text-on-secondary-container text-xs font-semibold px-2.5 py-1 rounded-full">
-                      {upcomingSession.type}
-                    </span>
-                  )}
-                </div>
-
-                {upcomingSession ? (
-                  <div className="mb-4 space-y-1">
-                    <p className="text-lg font-bold text-primary">
-                      {upcomingSession.dateTime}
-                    </p>
-                    <p className="text-sm text-on-surface-variant">
-                      Konsultan:{" "}
-                      <span className="font-medium text-on-surface">
-                        {upcomingSession.consultantName}
-                      </span>
-                    </p>
-                  </div>
-                ) : (
-                  /* Empty State jika tidak ada sesi mendatang */
-                  <div className="my-4 text-center py-4">
-                    <p className="text-sm text-on-surface-variant mb-3">
-                      Belum ada sesi yang dijadwalkan.
-                    </p>
-                    <Link
-                      href="/student/bookings"
-                      className="text-xs text-primary font-semibold hover:underline inline-flex items-center gap-1"
-                    >
-                      Book a Session <ArrowRight className="w-3 h-3" />
-                    </Link>
-                  </div>
-                )}
-              </div>
-
-              {upcomingSession && (
-                <Link
-                  href="/student/bookings"
-                  className="w-full bg-primary text-on-primary text-sm font-medium py-2 rounded-lg hover:bg-primary-container transition-colors flex justify-center items-center gap-2 text-center"
-                >
-                  Lihat Detail
-                </Link>
-              )}
+      {/* SEKSI 1: UNTUK KLIEN STUDY ABROAD / ADVISORY */}
+      {clientProfile.hasActiveAdvisory && (
+        <div className="bg-white p-5 rounded-xl border border-slate-200 space-y-4">
+          <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+            <div>
+              <h2 className="text-sm font-bold text-slate-900 flex items-center gap-2">
+                <FileCheck className="w-4 h-4 text-blue-600" />
+                Progress Pendaftaran Studi Luar Negeri
+              </h2>
+              <p className="text-xs text-slate-500 mt-0.5">
+                Master Degree - Monash University, Australia (Feb 2027 Intake)
+              </p>
             </div>
-
-            {/* 3. Card: Status Dokumen */}
             <Link
-              href="/student/documents"
-              className="bg-surface-container-lowest rounded-xl p-5 border border-outline-variant shadow-sm hover:border-primary transition-colors flex flex-col justify-between group cursor-pointer"
+              href="/client/advisory"
+              className="text-xs font-semibold text-blue-600 hover:text-blue-700 flex items-center gap-1 shrink-0"
             >
-              <div>
-                <div className="flex items-center justify-between mb-4">
-                  <div className="flex items-center gap-2">
-                    <span className="bg-surface-container p-2 rounded-lg">
-                      <FolderOpen className="w-5 h-5 text-primary" />
-                    </span>
-                    <h3 className="font-semibold text-base text-on-surface">
-                      Status Dokumen
-                    </h3>
-                  </div>
-                  <ChevronRight className="w-5 h-5 text-outline group-hover:text-primary transition-colors" />
-                </div>
-
-                <div className="space-y-2">
-                  <span className="inline-block bg-warning-container text-on-warning-container text-xs font-bold px-3 py-1 rounded-full">
-                    {latestDocumentStatus.status}
-                  </span>
-                  <p className="text-xs text-on-surface-variant line-clamp-2 leading-relaxed">
-                    {latestDocumentStatus.summary}
-                  </p>
-                </div>
-              </div>
-
-              <span className="text-xs font-semibold text-primary group-hover:underline mt-4">
-                Buka Halaman Dokumen &rarr;
-              </span>
+              Detail Berkas <ArrowRight className="w-3 h-3" />
             </Link>
           </div>
-        </div>
 
-        {/* 4. Panel Pengumuman */}
-        <div className="lg:col-span-1">
-          <div className="bg-surface-container-lowest rounded-xl border border-outline-variant shadow-sm p-5">
-            <div className="flex items-center gap-2 border-b border-outline-variant pb-4 mb-4">
-              <Megaphone className="text-warning w-5 h-5 shrink-0" />
-              <h2 className="font-semibold text-base text-primary">
-                Pengumuman
+          {/* Stepper Progress Bar */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+            {advisorySteps.map((step, idx) => (
+              <div
+                key={idx}
+                className={`p-3 rounded-lg border text-xs font-medium flex items-start gap-2.5 ${step.status === "COMPLETED"
+                    ? "bg-emerald-50/50 border-emerald-200 text-emerald-950"
+                    : step.status === "IN_PROGRESS"
+                      ? "bg-amber-50/50 border-amber-200 text-amber-950"
+                      : "bg-slate-50 border-slate-200 text-slate-400"
+                  }`}
+              >
+                {step.status === "COMPLETED" ? (
+                  <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+                ) : step.status === "IN_PROGRESS" ? (
+                  <Clock className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
+                ) : (
+                  <AlertCircle className="w-4 h-4 text-slate-300 shrink-0 mt-0.5" />
+                )}
+                <div>
+                  <p className="font-semibold">{step.name}</p>
+                  <span className="text-[10px] uppercase font-bold text-slate-500 mt-0.5 block">
+                    {step.status === "COMPLETED"
+                      ? "Selesai"
+                      : step.status === "IN_PROGRESS"
+                        ? "Proses Verifikasi"
+                        : "Belum Dimulai"}
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* SEKSI 2: UNTUK KLIEN KELAS / TEST PREP */}
+      {clientProfile.hasActiveClasses && (
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Sesi Mengajar Berikutnya */}
+          <div className="lg:col-span-2 bg-white p-5 rounded-xl border border-slate-200 space-y-4">
+            <div className="flex items-center justify-between">
+              <h2 className="text-sm font-bold text-slate-900 flex items-center gap-2">
+                <Calendar className="w-4 h-4 text-blue-600" />
+                Jadwal Kelas Mendatang
               </h2>
+              <Link
+                href="/client/classes"
+                className="text-xs font-semibold text-blue-600 hover:text-blue-700 flex items-center gap-1"
+              >
+                Semua Kelas <ArrowRight className="w-3 h-3" />
+              </Link>
             </div>
-            <div className="space-y-4">
-              <div className="group cursor-pointer hover:bg-surface-container-low p-2 -mx-2 rounded-lg transition-colors">
-                <h4 className="text-sm font-semibold text-on-surface group-hover:text-secondary mb-1">
-                  Pembaruan Jadwal Libur
-                </h4>
-                <p className="text-xs text-on-surface-variant line-clamp-2 mb-2">
-                  Terdapat penyesuaian jadwal libur semester ganjil tahun ajaran
-                  2024/2025. Harap periksa kembali kalender akademik.
-                </p>
-                <span className="text-[11px] text-outline flex items-center gap-1">
-                  <Clock className="w-3 h-3" /> 2 jam yang lalu
+
+            <div className="p-4 rounded-lg bg-slate-50 border border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div className="space-y-1">
+                <span className="text-[11px] font-semibold text-blue-700 bg-blue-100/80 px-2 py-0.5 rounded">
+                  {upcomingClass.time}
                 </span>
-              </div>
-              <hr className="border-outline-variant/60" />
-              <div className="group cursor-pointer hover:bg-surface-container-low p-2 -mx-2 rounded-lg transition-colors">
-                <h4 className="text-sm font-semibold text-on-surface group-hover:text-secondary mb-1">
-                  Batas Waktu Pengumpulan Dokumen
-                </h4>
-                <p className="text-xs text-on-surface-variant line-clamp-2 mb-2">
-                  Bagi mahasiswa tingkat akhir, mohon segera melengkapi dokumen
-                  persyaratan wisuda.
+                <h3 className="font-bold text-slate-900 text-sm mt-1">
+                  {upcomingClass.title}
+                </h3>
+                <p className="text-xs text-slate-500">
+                  Pengajar: <span className="font-medium text-slate-700">{upcomingClass.tutor}</span>
                 </p>
-                <span className="text-[11px] text-outline flex items-center gap-1">
-                  <Clock className="w-3 h-3" /> 1 hari yang lalu
-                </span>
               </div>
+
+              <a
+                href={upcomingClass.link}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center justify-center gap-2 bg-emerald-700 hover:bg-emerald-800 text-white font-medium px-4 py-2 rounded-lg text-xs transition-colors shrink-0"
+              >
+                <Video className="w-3.5 h-3.5" />
+                <span>Masuk Zoom</span>
+              </a>
+            </div>
+          </div>
+
+          {/* Ringkasan Skor / Target Tryout */}
+          <div className="bg-white p-5 rounded-xl border border-slate-200 space-y-3">
+            <h2 className="text-sm font-bold text-slate-900 flex items-center gap-2">
+              <Award className="w-4 h-4 text-amber-600" />
+              Target Skor IELTS
+            </h2>
+
+            <div className="p-4 bg-slate-50 rounded-lg border border-slate-200 text-center space-y-1">
+              <p className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider">
+                Simulasi Terakhir
+              </p>
+              <div className="text-3xl font-bold text-slate-900">6.5</div>
+              <p className="text-xs text-slate-600">
+                Target Kampus: <span className="font-bold text-slate-900">7.0</span>
+              </p>
             </div>
           </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }
