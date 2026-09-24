@@ -2,7 +2,7 @@ import { auth } from "@/auth";
 import { NextResponse } from "next/server";
 
 const rolePaths: Record<string, string> = {
-  STUDENT: "/student",
+  STUDENT: "/client",
   CONSULTANT: "/consultant",
   TEACHER: "/teacher",
   PROCESSING_DEPARTMENT: "/processor",

@@ -1,339 +1,260 @@
-// "use client";
-
-// import { useState } from "react";
-// import {
-//     Video,
-//     MapPin,
-//     Calendar,
-//     Clock,
-//     Save,
-//     Users,
-//     CheckCircle2,
-//     Plus,
-//     Building2,
-//     Globe
-// } from "lucide-react";
-
-// interface ClassSession {
-//     id: string;
-//     className: string;
-//     program: string;
-//     date: string;
-//     startTime: string;
-//     endTime: string;
-//     mode: "ONLINE" | "OFFLINE";
-//     locationOrLink: string;
-//     createdBy: "MANAGEMENT" | "TEACHER";
-//     totalStudents: number;
-// }
-
-// export default function TeacherClassesPage() {
-//     const [sessions, setSessions] = useState<ClassSession[]>([
-//         {
-//             id: "s1",
-//             className: "IELTS Intensive - Batch 3",
-//             program: "IELTS Preparation",
-//             date: "2026-09-12",
-//             startTime: "10:00",
-//             endTime: "12:00",
-//             mode: "ONLINE",
-//             locationOrLink: "https://zoom.us/j/987654321",
-//             createdBy: "MANAGEMENT",
-//             totalStudents: 12,
-//         },
-//         {
-//             id: "s2",
-//             className: "TOEFL Prep - Class A1",
-//             program: "TOEFL iBT Mastery",
-//             date: "2026-09-14",
-//             startTime: "14:00",
-//             endTime: "16:00",
-//             mode: "OFFLINE",
-//             locationOrLink: "Ruang Kelas 302 - Gedung Utama Lt. 3",
-//             createdBy: "TEACHER",
-//             totalStudents: 15,
-//         },
-//     ]);
-
-//     const [savedId, setSavedId] = useState<string | null>(null);
-
-//     // Handler Perubahan Data Sesi
-//     const handleUpdateSession = (id: string, field: keyof ClassSession, value: any) => {
-//         setSessions((prev) =>
-//             prev.map((s) => (s.id === id ? { ...s, [field]: value } : s))
-//         );
-//     };
-
-//     const handleSave = (id: string) => {
-//         setSavedId(id);
-//         setTimeout(() => setSavedId(null), 3000);
-//     };
-
-//     return (
-//         <div className="p-8 max-w-6xl mx-auto space-y-6">
-//             {/* Header */}
-//             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-//                 <div>
-//                     <h1 className="text-2xl font-bold text-slate-900 tracking-tight">
-//                         Atur Jadwal & Lokasi Mengajar
-//                     </h1>
-//                     <p className="text-sm text-slate-500 mt-1">
-//                         Kelola metode kelas (Online/Offline), fleksibilitas jam, dan lokasi ruangan atau link pertemuan.
-//                     </p>
-//                 </div>
-//             </div>
-
-//             {/* Daftar Sesi Kelas */}
-//             <div className="grid grid-cols-1 gap-6">
-//                 {sessions.map((session) => (
-//                     <div
-//                         key={session.id}
-//                         className="bg-white p-6 rounded-xl border border-slate-200 shadow-xs space-y-5"
-//                     >
-//                         {/* Header Sesi */}
-//                         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-4">
-//                             <div>
-//                                 <div className="flex items-center gap-2">
-//                                     <span className="text-[10px] font-bold uppercase tracking-wider text-blue-600 bg-blue-50 px-2 py-0.5 rounded">
-//                                         {session.program}
-//                                     </span>
-//                                     <span className={`text-[10px] font-bold px-2 py-0.5 rounded uppercase ${session.createdBy === "MANAGEMENT"
-//                                         ? "bg-purple-50 text-purple-700 border border-purple-200"
-//                                         : "bg-amber-50 text-amber-700 border border-amber-200"
-//                                         }`}>
-//                                         Dibuat Oleh: {session.createdBy}
-//                                     </span>
-//                                 </div>
-//                                 <h2 className="text-lg font-bold text-slate-900 mt-1">{session.className}</h2>
-//                             </div>
-
-//                             <div className="flex items-center gap-2 text-xs font-semibold text-slate-500">
-//                                 <Users className="w-4 h-4 text-slate-400" />
-//                                 <span>{session.totalStudents} Siswa Terdaftar</span>
-//                             </div>
-//                         </div>
-
-//                         {/* Grid Form Pengaturan Jadwal & Lokasi */}
-//                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-//                             {/* Select Mode Kelas */}
-//                             <div>
-//                                 <label className="block text-xs font-bold text-slate-700 mb-1.5">
-//                                     Tipe / Mode Pembelajaran
-//                                 </label>
-//                                 <div className="grid grid-cols-2 gap-2">
-//                                     <button
-//                                         type="button"
-//                                         onClick={() => handleUpdateSession(session.id, "mode", "ONLINE")}
-//                                         className={`flex items-center justify-center gap-1.5 py-2 px-3 text-xs font-bold rounded-lg border transition-all cursor-pointer ${session.mode === "ONLINE"
-//                                             ? "bg-blue-600 text-white border-blue-600"
-//                                             : "bg-white text-slate-600 border-slate-300 hover:bg-slate-50"
-//                                             }`}
-//                                     >
-//                                         <Globe className="w-3.5 h-3.5" /> Online
-//                                     </button>
-//                                     <button
-//                                         type="button"
-//                                         onClick={() => handleUpdateSession(session.id, "mode", "OFFLINE")}
-//                                         className={`flex items-center justify-center gap-1.5 py-2 px-3 text-xs font-bold rounded-lg border transition-all cursor-pointer ${session.mode === "OFFLINE"
-//                                             ? "bg-emerald-600 text-white border-emerald-600"
-//                                             : "bg-white text-slate-600 border-slate-300 hover:bg-slate-50"
-//                                             }`}
-//                                     >
-//                                         <Building2 className="w-3.5 h-3.5" /> Offline
-//                                     </button>
-//                                 </div>
-//                             </div>
-
-//                             {/* Tanggal & Jam */}
-//                             <div>
-//                                 <label className="block text-xs font-bold text-slate-700 mb-1.5">
-//                                     Tanggal Sesi
-//                                 </label>
-//                                 <input
-//                                     type="date"
-//                                     value={session.date}
-//                                     onChange={(e) => handleUpdateSession(session.id, "date", e.target.value)}
-//                                     className="w-full text-xs font-medium border border-slate-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500"
-//                                 />
-//                             </div>
-
-//                             <div>
-//                                 <label className="block text-xs font-bold text-slate-700 mb-1.5">
-//                                     Jam Pelaksanaan (WIB)
-//                                 </label>
-//                                 <div className="flex items-center gap-1">
-//                                     <input
-//                                         type="time"
-//                                         value={session.startTime}
-//                                         onChange={(e) => handleUpdateSession(session.id, "startTime", e.target.value)}
-//                                         className="w-full text-xs font-medium border border-slate-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500"
-//                                     />
-//                                     <span className="text-slate-400 text-xs font-bold">-</span>
-//                                     <input
-//                                         type="time"
-//                                         value={session.endTime}
-//                                         onChange={(e) => handleUpdateSession(session.id, "endTime", e.target.value)}
-//                                         className="w-full text-xs font-medium border border-slate-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500"
-//                                     />
-//                                 </div>
-//                             </div>
-//                         </div>
-
-//                         {/* Input Dynamic Lokasi / Link Zoom */}
-//                         <div className="space-y-1.5 pt-2">
-//                             <label className="block text-xs font-bold text-slate-700 flex items-center gap-1.5">
-//                                 {session.mode === "ONLINE" ? (
-//                                     <>
-//                                         <Video className="w-4 h-4 text-blue-600" /> Tautan / Link Zoom Meeting
-//                                     </>
-//                                 ) : (
-//                                     <>
-//                                         <MapPin className="w-4 h-4 text-emerald-600" /> Detail Lokasi Fisik / Ruangan Kelas
-//                                     </>
-//                                 )}
-//                             </label>
-
-//                             <div className="flex flex-col sm:flex-row gap-2">
-//                                 <input
-//                                     type="text"
-//                                     value={session.locationOrLink}
-//                                     onChange={(e) => handleUpdateSession(session.id, "locationOrLink", e.target.value)}
-//                                     placeholder={
-//                                         session.mode === "ONLINE"
-//                                             ? "https://zoom.us/j/123456789..."
-//                                             : "Contoh: Ruang kelas 201, Cabang Kemang / Alamat Lengkap..."
-//                                     }
-//                                     className="flex-1 text-xs font-medium border border-slate-300 rounded-lg p-2.5 focus:ring-2 focus:ring-blue-500"
-//                                 />
-
-//                                 <button
-//                                     type="button"
-//                                     onClick={() => handleSave(session.id)}
-//                                     className="inline-flex items-center justify-center gap-1.5 bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold px-4 py-2.5 rounded-lg transition-all shrink-0 cursor-pointer"
-//                                 >
-//                                     <Save className="w-3.5 h-3.5" /> Update Sesi
-//                                 </button>
-//                             </div>
-
-//                             {savedId === session.id && (
-//                                 <p className="text-xs text-emerald-600 font-bold flex items-center gap-1 pt-1">
-//                                     <CheckCircle2 className="w-3.5 h-3.5" /> Perubahan jadwal & lokasi berhasil disimpan dan diteruskan ke portal siswa!
-//                                 </p>
-//                             )}
-//                         </div>
-//                     </div>
-//                 ))}
-//             </div>
-//         </div>
-//     );
-// }
-
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
-import { Users, Calendar, ArrowRight, BookOpen, Clock } from "lucide-react";
+import {
+    Search,
+    Users,
+    Clock,
+    MapPin,
+    PlusCircle,
+    ChevronRight,
+    BookOpen,
+    Calendar,
+    CheckCircle2
+} from "lucide-react";
 
 interface ClassItem {
     id: string;
-    name: string;
     code: string;
+    name: string;
+    level: string;
     schedule: string;
     room: string;
     totalStudents: number;
-    lastAttendance: string;
+    isToday: boolean;
+    status: "ACTIVE" | "COMPLETED";
 }
 
+const dummyClasses: ClassItem[] = [
+    {
+        id: "ielts-b12",
+        code: "IELTS-B12",
+        name: "IELTS Intensive",
+        level: "Intermediate - Advanced",
+        schedule: "Senin & Rabu, 09:00 - 10:30 WIB",
+        room: "Ruang 201",
+        totalStudents: 15,
+        isToday: true,
+        status: "ACTIVE",
+    },
+    {
+        id: "toefl-a04",
+        code: "TOEFL-A04",
+        name: "TOEFL Preparation",
+        level: "Intermediate",
+        schedule: "Selasa & Kamis, 13:00 - 14:30 WIB",
+        room: "Lab Bahasa 1",
+        totalStudents: 20,
+        isToday: false,
+        status: "ACTIVE",
+    },
+    {
+        id: "eng-biz-01",
+        code: "BIZ-ENG-01",
+        name: "Business English for Professionals",
+        level: "Upper Intermediate",
+        schedule: "Jumat, 15:30 - 17:30 WIB",
+        room: "Ruang Executive",
+        totalStudents: 12,
+        isToday: false,
+        status: "ACTIVE",
+    },
+    {
+        id: "gen-eng-09",
+        code: "GEN-ENG-09",
+        name: "General English Foundation",
+        level: "Basic",
+        schedule: "Sabtu, 08:30 - 10:30 WIB",
+        room: "Ruang 103",
+        totalStudents: 18,
+        isToday: true,
+        status: "ACTIVE",
+    },
+];
+
 export default function TeacherClassesPage() {
-    const classes: ClassItem[] = [
-        {
-            id: "c1",
-            name: "IELTS Intensive",
-            code: "IELTS-B12",
-            schedule: "Senin & Rabu, 09:00 - 10:30 WIB",
-            room: "Ruang 201",
-            totalStudents: 15,
-            lastAttendance: "9 Sep 2026",
-        },
-        {
-            id: "c2",
-            name: "TOEFL iBT Preparation",
-            code: "TOEFL-B05",
-            schedule: "Selasa & Kamis, 13:00 - 15:00 WIB",
-            room: "Ruang 104",
-            totalStudents: 12,
-            lastAttendance: "8 Sep 2026",
-        },
-        {
-            id: "c3",
-            name: "General English - Intermediate",
-            code: "GE-INT-02",
-            schedule: "Jumat, 14:00 - 16:00 WIB",
-            room: "Lab Bahasa",
-            totalStudents: 18,
-            lastAttendance: "5 Sep 2026",
-        },
-    ];
+    const [searchQuery, setSearchQuery] = useState("");
+    const [filterTab, setFilterTab] = useState<"ALL" | "TODAY">("ALL");
+
+    // Filter logika kelas
+    const filteredClasses = dummyClasses.filter((item) => {
+        const matchesSearch =
+            item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            item.code.toLowerCase().includes(searchQuery.toLowerCase());
+
+        if (filterTab === "TODAY") {
+            return matchesSearch && item.isToday;
+        }
+        return matchesSearch;
+    });
+
+    const totalStudentsCount = dummyClasses.reduce(
+        (acc, item) => acc + item.totalStudents,
+        0
+    );
+    const todayClassesCount = dummyClasses.filter((item) => item.isToday).length;
 
     return (
         <div className="space-y-6 p-6 max-w-6xl mx-auto">
-            {/* Header */}
-            <div>
-                <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Daftar Kelas Mengajar</h1>
-                <p className="text-sm text-slate-500 mt-1">
-                    Pilih kelas untuk mengelola dan mencatat presensi harian siswa.
-                </p>
+            {/* Header & Title */}
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div>
+                    <h1 className="text-2xl font-bold text-slate-900 tracking-tight">
+                        Daftar Kelas Ajar
+                    </h1>
+                    <p className="text-sm text-slate-500 mt-1">
+                        Kelola kelas, catat presensi harian, dan pantau kehadiran siswa Anda.
+                    </p>
+                </div>
             </div>
 
-            {/* Grid Kelas */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-                {classes.map((cls) => (
-                    <div
-                        key={cls.id}
-                        className="bg-white rounded-2xl border border-slate-200 p-5 shadow-2xs hover:border-slate-300 transition-all flex flex-col justify-between space-y-4"
+            {/* Ringkasan Stats */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div className="bg-white rounded-2xl border border-slate-200 p-4 shadow-sm flex items-center gap-4">
+                    <div className="p-3 bg-blue-50 text-blue-600 rounded-xl">
+                        <BookOpen className="w-5 h-5" />
+                    </div>
+                    <div>
+                        <p className="text-xs font-semibold text-slate-500">Total Kelas Active</p>
+                        <p className="text-xl font-bold text-slate-900">{dummyClasses.length}</p>
+                    </div>
+                </div>
+
+                <div className="bg-white rounded-2xl border border-slate-200 p-4 shadow-sm flex items-center gap-4">
+                    <div className="p-3 bg-amber-50 text-amber-600 rounded-xl">
+                        <Calendar className="w-5 h-5" />
+                    </div>
+                    <div>
+                        <p className="text-xs font-semibold text-slate-500">Jadwal Hari Ini</p>
+                        <p className="text-xl font-bold text-slate-900">{todayClassesCount} Sesi</p>
+                    </div>
+                </div>
+
+                <div className="bg-white rounded-2xl border border-slate-200 p-4 shadow-sm flex items-center gap-4">
+                    <div className="p-3 bg-emerald-50 text-emerald-600 rounded-xl">
+                        <Users className="w-5 h-5" />
+                    </div>
+                    <div>
+                        <p className="text-xs font-semibold text-slate-500">Total Siswa Bimbingan</p>
+                        <p className="text-xl font-bold text-slate-900">{totalStudentsCount} Siswa</p>
+                    </div>
+                </div>
+            </div>
+
+            {/* Filter & Search Bar */}
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 bg-white p-3 rounded-2xl border border-slate-200 shadow-sm">
+                {/* Search Input */}
+                <div className="relative flex-1">
+                    <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                    <input
+                        type="text"
+                        placeholder="Cari nama atau kode kelas..."
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        className="w-full text-xs pl-9 pr-4 py-2.5 rounded-xl border border-slate-200 outline-none focus:border-blue-500 transition-colors"
+                    />
+                </div>
+
+                {/* Tab Filter */}
+                <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-xl">
+                    <button
+                        onClick={() => setFilterTab("ALL")}
+                        className={`px-3 py-1.5 text-xs font-bold rounded-lg transition-all ${filterTab === "ALL"
+                                ? "bg-white text-slate-900 shadow-sm"
+                                : "text-slate-500 hover:text-slate-900"
+                            }`}
                     >
-                        <div className="space-y-3">
-                            <div className="flex items-center justify-between">
-                                <span className="text-[10px] font-bold text-blue-700 bg-blue-50 border border-blue-200 px-2 py-0.5 rounded-md font-mono">
-                                    {cls.code}
-                                </span>
-                                <span className="text-xs text-slate-400 font-medium">
-                                    {cls.totalStudents} Siswa
-                                </span>
+                        Semua Kelas
+                    </button>
+                    <button
+                        onClick={() => setFilterTab("TODAY")}
+                        className={`px-3 py-1.5 text-xs font-bold rounded-lg transition-all ${filterTab === "TODAY"
+                                ? "bg-white text-slate-900 shadow-sm"
+                                : "text-slate-500 hover:text-slate-900"
+                            }`}
+                    >
+                        Hari Ini
+                    </button>
+                </div>
+            </div>
+
+            {/* Grid List Kelas */}
+            {filteredClasses.length > 0 ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {filteredClasses.map((item) => (
+                        <div
+                            key={item.id}
+                            className="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm hover:border-slate-300 transition-all flex flex-col justify-between space-y-4"
+                        >
+                            <div className="space-y-3">
+                                {/* Header Card */}
+                                <div className="flex items-start justify-between gap-2">
+                                    <div>
+                                        <span className="text-[10px] font-mono font-bold text-blue-700 bg-blue-50 border border-blue-200 px-2 py-0.5 rounded-md">
+                                            {item.code}
+                                        </span>
+                                        <h2 className="text-base font-bold text-slate-900 mt-1.5">
+                                            {item.name}
+                                        </h2>
+                                        <p className="text-xs text-slate-400 font-medium">{item.level}</p>
+                                    </div>
+                                    {item.isToday && (
+                                        <span className="inline-flex items-center gap-1 text-[10px] font-bold text-amber-700 bg-amber-50 border border-amber-200 px-2.5 py-1 rounded-full animate-pulse">
+                                            <span className="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
+                                            Ada Sesi Hari Ini
+                                        </span>
+                                    )}
+                                </div>
+
+                                {/* Detail Information */}
+                                <div className="space-y-2 pt-2 border-t border-slate-100 text-xs font-medium text-slate-600">
+                                    <div className="flex items-center gap-2">
+                                        <Clock className="w-3.5 h-3.5 text-slate-400" />
+                                        <span>{item.schedule}</span>
+                                    </div>
+                                    <div className="flex items-center gap-2">
+                                        <MapPin className="w-3.5 h-3.5 text-slate-400" />
+                                        <span>{item.room}</span>
+                                    </div>
+                                    <div className="flex items-center gap-2">
+                                        <Users className="w-3.5 h-3.5 text-slate-400" />
+                                        <span>{item.totalStudents} Terdaftar</span>
+                                    </div>
+                                </div>
                             </div>
 
-                            <div>
-                                <h2 className="text-base font-bold text-slate-900 group-hover:text-blue-600 transition-colors">
-                                    {cls.name}
-                                </h2>
-                                <p className="text-xs text-slate-500 flex items-center gap-1 mt-1 font-medium">
-                                    <Clock className="w-3.5 h-3.5 text-slate-400" />
-                                    {cls.schedule}
-                                </p>
-                            </div>
+                            {/* Action Buttons Footer */}
+                            <div className="pt-3 border-t border-slate-100 flex items-center justify-between gap-2">
+                                <Link
+                                    href={`/teacher/classes/${item.id}/session`}
+                                    className="inline-flex items-center gap-1.5 text-xs font-bold text-blue-600 hover:text-blue-700 bg-blue-50 hover:bg-blue-100 px-3 py-2 rounded-xl transition-colors"
+                                >
+                                    <PlusCircle className="w-3.5 h-3.5" />
+                                    <span>Input Presensi</span>
+                                </Link>
 
-                            <div className="pt-2 border-t border-slate-100 text-xs text-slate-500 space-y-1">
-                                <p className="flex justify-between">
-                                    <span>Lokasi Ruangan:</span>
-                                    <span className="font-semibold text-slate-700">{cls.room}</span>
-                                </p>
-                                <p className="flex justify-between">
-                                    <span>Presensi Terakhir:</span>
-                                    <span className="font-medium text-slate-600">{cls.lastAttendance}</span>
-                                </p>
+                                <Link
+                                    href={`/teacher/classes/${item.id}`}
+                                    className="inline-flex items-center gap-1 text-xs font-bold text-slate-700 hover:text-slate-900 bg-slate-100 hover:bg-slate-200 px-3 py-2 rounded-xl transition-colors"
+                                >
+                                    <span>Detail</span>
+                                    <ChevronRight className="w-3.5 h-3.5" />
+                                </Link>
                             </div>
                         </div>
-
-                        {/* Link ke Halaman Presensi Spesifik Kelas */}
-                        <Link
-                            href={`/teacher/classes/${cls.id}/attendance`}
-                            className="w-full inline-flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold py-2.5 px-4 rounded-xl transition-colors shadow-2xs"
-                        >
-                            <span>Isi Presensi Kelas</span>
-                            <ArrowRight className="w-4 h-4" />
-                        </Link>
-                    </div>
-                ))}
-            </div>
+                    ))}
+                </div>
+            ) : (
+                /* Empty State */
+                <div className="bg-white rounded-2xl border border-slate-200 p-12 text-center space-y-3">
+                    <BookOpen className="w-10 h-10 text-slate-300 mx-auto" />
+                    <h3 className="text-sm font-bold text-slate-900">Tidak ada kelas ditemukan</h3>
+                    <p className="text-xs text-slate-500 max-w-sm mx-auto">
+                        Tidak ada data kelas yang sesuai dengan kata kunci atau filter yang Anda pilih.
+                    </p>
+                </div>
+            )}
         </div>
     );
 }

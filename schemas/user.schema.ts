@@ -12,7 +12,7 @@ export const createUserSchema = z.object({
 export type CreateUserInput = z.infer<typeof createUserSchema>;
 
 export const assignMentorSchema = z.object({
-  studentId: z.string().uuid("ID siswa tidak valid"),
+  clientId: z.string().uuid("ID client tidak valid"),
   consultantId: z.string().uuid("ID mentor tidak valid"),
 });
 

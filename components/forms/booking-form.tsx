@@ -15,9 +15,12 @@ import { BookingInput, bookingSchema } from "@/schemas/booking.schema";
 import { createStudentBooking } from "@/actions/booking.action";
 
 type AssignedConsultant = {
-    id: string;
-    fullName: string;
+    id: string; // User ID
+    name: string; // Nama Konsultan (dari User.name)
+    email: string | null;
+    image: string | null;
     specialization: string | null;
+    profileId: string | null; // ConsultantProfile ID (Opsional jika dibutuhkan)
 };
 
 type AvailabilityTemplate = {
@@ -158,7 +161,7 @@ export function BookingForm({
                 </div>
                 <h2 className="text-lg font-bold text-slate-900">Pengajuan Bimbingan Terkirim</h2>
                 <p className="text-xs text-slate-600 leading-relaxed">
-                    Jadwal konsultasi telah diajukan ke <span className="font-semibold text-slate-900">{consultant.fullName}</span> untuk tanggal <span className="font-semibold text-slate-900">{watchDate}</span> jam <span className="font-semibold text-slate-900">{watchStartTime}</span>.
+                    Jadwal konsultasi telah diajukan ke <span className="font-semibold text-slate-900">{consultant.name}</span> untuk tanggal <span className="font-semibold text-slate-900">{watchDate}</span> jam <span className="font-semibold text-slate-900">{watchStartTime}</span>.
                 </p>
                 <button
                     onClick={() => {
@@ -175,7 +178,7 @@ export function BookingForm({
     }
 
     // Helper avatar initials
-    const initials = consultant.fullName
+    const initials = consultant.name
         .split(" ")
         .map((n) => n[0])
         .join("")
@@ -199,7 +202,7 @@ export function BookingForm({
                         {initials}
                     </div>
                     <div>
-                        <p className="text-xs font-bold text-slate-900">{consultant.fullName}</p>
+                        <p className="text-xs font-bold text-slate-900">{consultant.name}</p>
                         <p className="text-[11px] text-slate-500">{consultant.specialization || "Konsultan Utama"}</p>
                     </div>
                 </div>
@@ -328,7 +331,7 @@ export function BookingForm({
                     <div className="space-y-2 text-xs">
                         <div className="flex items-center gap-2 text-slate-600">
                             <UserCheck className="w-4 h-4 text-slate-400" />
-                            <span className="font-medium text-slate-900">{consultant.fullName}</span>
+                            <span className="font-medium text-slate-900">{consultant.name}</span>
                         </div>
                         <div className="flex items-center gap-2 text-slate-600">
                             <CalendarIcon className="w-4 h-4 text-slate-400" />

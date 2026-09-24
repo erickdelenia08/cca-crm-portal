@@ -17,6 +17,7 @@ export interface CourseData {
     durationHours: number | null;
     basePrice: number | null;
     isActive: boolean;
+    programTypeId: string;
 }
 
 interface CourseTableProps {
@@ -43,6 +44,7 @@ export function CourseTable({ courses }: CourseTableProps) {
             durationHours: course.durationHours || 0,
             basePrice: course.basePrice || 0,
             isActive: course.isActive,
+            programTypeId: course.programTypeId,
         });
         setIsModalOpen(true);
     };

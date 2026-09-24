@@ -6,7 +6,7 @@ import { Department, Role } from "@prisma/client";
 async function main() {
     console.log("🌱 Seeding demo accounts...\n");
 
-    let studentSeq = 1;
+    let clientSeq = 1;
     let staffSeq = 1;
     let userSeq = 1;
 
@@ -38,7 +38,7 @@ async function main() {
                 department = Department.MANAGEMENT;
                 break;
 
-            case Role.STUDENT:
+            case Role.CLIENT:
                 department = null;
                 break;
         }
@@ -74,14 +74,14 @@ async function main() {
         });
 
         // =====================================================
-        // STUDENT
+        // client
         // =====================================================
 
-        if (account.role === Role.STUDENT) {
-            const studentNumber =
-                `CCA-STU-2026-${String(studentSeq++).padStart(4, "0")}`;
+        if (account.role === Role.CLIENT) {
+            const clientNumber =
+                `CCA-STU-2026-${String(clientSeq++).padStart(4, "0")}`;
 
-            await prisma.studentProfile.upsert({
+            await prisma.clientProfile.upsert({
                 where: {
                     userId: user.id,
                 },
@@ -93,7 +93,7 @@ async function main() {
 
                 create: {
                     userId: user.id,
-                    studentNumber,
+                    clientNumber,
                     fullName: account.label,
                     email: account.email,
                 },

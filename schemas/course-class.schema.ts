@@ -1,14 +1,27 @@
 import { z } from "zod";
+import { CourseSessionMode } from "@prisma/client";
+
+export const schedulePatternSchema = z.object({
+    id: z.string().optional(),
+    dayOfWeek: z.coerce.number().min(0).max(6), // 0: Sunday, 6: Saturday
+    startTime: z.string().regex(/^([01]\d|2[0-3]):?([0-5]\d)$/, "Invalid time format (HH:MM)"),
+    endTime: z.string().regex(/^([01]\d|2[0-3]):?([0-5]\d)$/, "Invalid time format (HH:MM)"),
+    defaultMode: z.nativeEnum(CourseSessionMode).default("OFFLINE"),
+    defaultLocation: z.string().optional(),
+});
 
 export const courseClassSchema = z.object({
     id: z.string().optional(),
     courseId: z.string().min(1, "Course ID is required"),
-    code: z.string().min(1, "Kode Kelas / Batch wajib diisi"),
-    teacherId: z.string().min(1, "Pengajar utama wajib dipilih"),
-    schedule: z.string().min(1, "Jadwal pertemuan wajib diisi"),
-    maxCapacity: z.coerce.number().min(1, "Kapasitas minimal 1 orang"),
-    startDate: z.string().min(1, "Tanggal mulai wajib diisi"),
-    endDate: z.string().min(1, "Tanggal selesai wajib diisi"),
+    teacherId: z.string().min(1, "Teacher ID is required"),
+    code: z.string().min(1, "Class code is required"),
+    name: z.string().optional(),
+    maxCapacity: z.coerce.number().min(1, "Capacity must be at least 1"),
+    startDate: z.string().or(z.date()).transform((val) => new Date(val)),
+    endDate: z.string().or(z.date()).transform((val) => new Date(val)),
+    isActive: z.boolean().default(true),
+    patterns: z.array(schedulePatternSchema).min(1, "At least one schedule pattern is required"),
 });
 
+export type SchedulePatternInput = z.infer<typeof schedulePatternSchema>;
 export type CourseClassInput = z.infer<typeof courseClassSchema>;

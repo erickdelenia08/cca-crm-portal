@@ -1,26 +1,23 @@
 import React from "react";
 import Link from "next/link";
-import { ArrowLeft } from "lucide-react";
 import { ProgramForm } from "@/components/forms/program-form";
-import { getProgramTypes } from "@/actions/program-type.action";
 
-export default async function CreateProgramPage() {
-    const programTypes = await getProgramTypes();
-
+export default function CreateProgramPage() {
     return (
-        <div className="min-h-screen bg-gray-50/50 p-6 md:p-10">
-            <div className="mx-auto max-w-5xl space-y-6">
-                <div className="flex items-center justify-between">
-                    <Link
-                        href="/management/programs"
-                        className="inline-flex items-center gap-2 text-sm text-gray-600 transition-colors hover:text-gray-900"
-                    >
-                        <ArrowLeft className="h-4 w-4" />
-                        Batal & Kembali
+        <div className="min-h-screen bg-gray-50 py-8 px-4 font-sans">
+            <div className="max-w-xl mx-auto">
+                <div className="mb-4">
+                    <Link href="/management/programs" className="text-xs text-blue-600 hover:underline">
+                        ← Back to Business Lines
                     </Link>
                 </div>
 
-                <ProgramForm programTypes={programTypes} />
+                <div className="bg-white p-6 rounded-lg border border-gray-200 shadow-sm">
+                    <h1 className="text-xl font-bold text-gray-900 mb-1">Create Program</h1>
+                    <p className="text-xs text-gray-500 mb-6">Tambah unit/kelompok bisnis baru (Business Line).</p>
+
+                    <ProgramForm />
+                </div>
             </div>
         </div>
     );

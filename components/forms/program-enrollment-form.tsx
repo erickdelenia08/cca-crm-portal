@@ -54,8 +54,8 @@ export function ProgramEnrollmentForm({
     });
 
     const studentId = watch("studentId");
-    const programId = watch("programId");
-    const [programTypeId, setProgramTypeId] = useState("");
+    const programTypeId = watch("programTypeId");
+    const [programId, setProgramId] = useState("");
 
     const selectedStudent = useMemo(() => students.find((s) => s.id === studentId), [students, studentId]);
 
@@ -64,11 +64,11 @@ export function ProgramEnrollmentForm({
         [programs, programTypeId]
     );
 
-    const selectedProgram = useMemo(() => programs.find((p) => p.id === programId), [programs, programId]);
+    const selectedProgram = useMemo(() => programs.find((p) => p.id === programTypeId), [programs, programTypeId]);
 
     const handleProgramTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        setProgramTypeId(e.target.value);
-        setValue("programId", "", { shouldValidate: true });
+        setProgramId(e.target.value);
+        setValue("programTypeId", "", { shouldValidate: true });
     };
 
     const onSubmit = async (data: ProgramEnrollmentInput) => {
@@ -191,8 +191,8 @@ export function ProgramEnrollmentForm({
                         ) : (
                             <div className="relative">
                                 <select
-                                    {...register("programId")}
-                                    className={`w-full appearance-none bg-white border rounded-lg px-4 py-3 pr-10 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 ${errors.programId ? "border-red-500" : "border-gray-300"
+                                    {...register("programTypeId")}
+                                    className={`w-full appearance-none bg-white border rounded-lg px-4 py-3 pr-10 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 ${errors.programTypeId ? "border-red-500" : "border-gray-300"
                                         }`}
                                 >
                                     <option value="">Pilih program...</option>
@@ -205,8 +205,8 @@ export function ProgramEnrollmentForm({
                                 <ChevronDown className="absolute right-3 top-3.5 w-4 h-4 text-gray-400 pointer-events-none" />
                             </div>
                         )}
-                        {errors.programId && (
-                            <p className="text-red-500 text-xs mt-1">{errors.programId.message}</p>
+                        {errors.programTypeId && (
+                            <p className="text-red-500 text-xs mt-1">{errors.programTypeId.message}</p>
                         )}
                     </div>
 

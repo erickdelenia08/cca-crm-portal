@@ -5,29 +5,21 @@ import { auth } from "@/auth";
 import { revalidatePath } from "next/cache";
 import { availabilitySchema, AvailabilityInput } from "@/schemas/availability.schema";
 
-async function getConsultantProfile() {
+// Helper internal untuk validasi otorisasi & ambil User ID langsung dari Session
+async function getAuthenticatedConsultantId(): Promise<string> {
     const session = await auth();
-    if (!session || (session.user.role !== "CONSULTANT" && session.user.role !== "MANAGEMENT")) {
+    if (!session?.user?.id || (session.user.role !== "CONSULTANT" && session.user.role !== "MANAGEMENT")) {
         throw new Error("UNAUTHORIZED");
     }
-
-    const consultant = await prisma.consultantProfile.findUnique({
-        where: { userId: session.user.id }
-    });
-
-    if (!consultant) {
-        throw new Error("Profil Konsultan tidak ditemukan.");
-    }
-
-    return consultant;
+    return session.user.id;
 }
 
 export async function getAvailabilityTemplates() {
     try {
-        const consultant = await getConsultantProfile();
-        
+        const consultantId = await getAuthenticatedConsultantId();
+
         const templates = await prisma.availabilityTemplate.findMany({
-            where: { consultantId: consultant.id },
+            where: { consultantId },
             orderBy: [
                 { dayOfWeek: "asc" },
                 { startTime: "asc" }
@@ -43,10 +35,10 @@ export async function getAvailabilityTemplates() {
 
 export async function getAvailabilityOverrides() {
     try {
-        const consultant = await getConsultantProfile();
-        
+        const consultantId = await getAuthenticatedConsultantId();
+
         const overrides = await prisma.availabilityOverride.findMany({
-            where: { consultantId: consultant.id },
+            where: { consultantId },
             orderBy: [
                 { date: "asc" },
                 { startTime: "asc" }
@@ -62,10 +54,9 @@ export async function getAvailabilityOverrides() {
 
 export async function createAvailabilitySlots(data: AvailabilityInput) {
     try {
-        const consultant = await getConsultantProfile();
+        const consultantId = await getAuthenticatedConsultantId();
         const parsed = availabilitySchema.parse(data);
 
-        // Convert string times to minutes for calculation
         const timeToMinutes = (timeStr: string) => {
             const [h, m] = timeStr.split(":").map(Number);
             return h * 60 + m;
@@ -91,7 +82,7 @@ export async function createAvailabilitySlots(data: AvailabilityInput) {
             const newSlots = [];
             while (current + slotDuration <= endMin) {
                 newSlots.push({
-                    consultantId: consultant.id,
+                    consultantId, // 👈 Langsung gunakan User ID
                     dayOfWeek: parsed.dayOfWeek!,
                     startTime: minutesToTime(current),
                     endTime: minutesToTime(current + slotDuration),
@@ -111,7 +102,7 @@ export async function createAvailabilitySlots(data: AvailabilityInput) {
             const newOverrides = [];
             while (current + slotDuration <= endMin) {
                 newOverrides.push({
-                    consultantId: consultant.id,
+                    consultantId, // 👈 Langsung gunakan User ID
                     date: parsed.date!,
                     startTime: minutesToTime(current),
                     endTime: minutesToTime(current + slotDuration),
@@ -139,14 +130,14 @@ export async function createAvailabilitySlots(data: AvailabilityInput) {
 
 export async function deleteAvailabilitySlot(id: string, type: "RECURRING" | "DATE") {
     try {
-        const consultant = await getConsultantProfile();
-        
+        const consultantId = await getAuthenticatedConsultantId();
+
         if (type === "RECURRING") {
             const template = await prisma.availabilityTemplate.findUnique({
                 where: { id }
             });
 
-            if (!template || template.consultantId !== consultant.id) {
+            if (!template || template.consultantId !== consultantId) {
                 throw new Error("Template tidak ditemukan atau bukan milik Anda.");
             }
 
@@ -170,7 +161,7 @@ export async function deleteAvailabilitySlot(id: string, type: "RECURRING" | "DA
                 where: { id }
             });
 
-            if (!override || override.consultantId !== consultant.id) {
+            if (!override || override.consultantId !== consultantId) {
                 throw new Error("Slot tidak ditemukan atau bukan milik Anda.");
             }
 
@@ -199,25 +190,26 @@ export async function deleteAvailabilitySlot(id: string, type: "RECURRING" | "DA
     }
 }
 
-// Function to fetch booked slots to display on the calendar
 export async function getBookingsForCalendar() {
     try {
-        const consultant = await getConsultantProfile();
+        const consultantId = await getAuthenticatedConsultantId();
 
         const bookings = await prisma.booking.findMany({
             where: {
-                consultantId: consultant.id,
+                consultantId, // 👈 Gunakan User ID
                 status: {
                     in: ["PENDING", "CONFIRMED"]
                 },
                 scheduledAt: {
-                    gte: new Date(new Date().setHours(0,0,0,0))
+                    gte: new Date(new Date().setHours(0, 0, 0, 0))
                 }
             },
             include: {
-                student: {
+                student: { // 👈 Select name langsung dari User model
                     select: {
-                        fullName: true
+                        name: true,
+                        email: true,
+                        image: true
                     }
                 }
             }

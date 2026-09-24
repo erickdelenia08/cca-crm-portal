@@ -2,80 +2,10 @@
 
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/auth";
-import { courseClassSchema } from "@/schemas/course-class.schema";
 import { revalidatePath } from "next/cache";
-import { Department } from "@prisma/client";
+import { courseClassSchema } from "@/schemas/course-class.schema";
 
-export async function getCourseClasses(courseId: string) {
-    const session = await auth();
-    if (!session || session.user.role !== "MANAGEMENT") {
-        throw new Error("UNAUTHORIZED");
-    }
-
-    const classes = await prisma.courseClass.findMany({
-        where: { courseId },
-        include: {
-            teacher: {
-                include: {
-                    user: true
-                }
-            },
-            _count: {
-                select: { enrollments: true }
-            }
-        },
-        orderBy: { startDate: "asc" }
-    });
-
-    return classes.map(c => ({
-        id: c.id,
-        code: c.code,
-        courseId: c.courseId,
-        teacherId: c.teacherId,
-        teacherName: c.teacher.user.name || c.teacher.fullName || "-",
-        schedule: c.schedule || "-",
-        maxCapacity: c.maxCapacity,
-        currentEnrolled: c._count.enrollments,
-        startDate: c.startDate.toISOString().split("T")[0],
-        endDate: c.endDate.toISOString().split("T")[0],
-    }));
-}
-
-export async function getTeachers() {
-    const session = await auth();
-    if (!session || session.user.role !== "MANAGEMENT") {
-        throw new Error("UNAUTHORIZED");
-    }
-
-    return await prisma.staffProfile.findMany({
-        where: {
-            department: Department.ACADEMIC
-        },
-        include: {
-            user: true
-        }
-    });
-}
-
-export async function getCourseById(courseId: string) {
-    const session = await auth();
-    if (!session || session.user.role !== "MANAGEMENT") {
-        throw new Error("UNAUTHORIZED");
-    }
-
-    const course = await prisma.course.findUnique({
-        where: { id: courseId }
-    });
-    
-    if (!course) return null;
-    
-    return {
-        ...course,
-        basePrice: course.basePrice ? Number(course.basePrice) : 0,
-    };
-}
-
-export async function upsertCourseClass(data: unknown) {
+export async function createCourseClass(data: unknown) {
     const session = await auth();
     if (!session || session.user.role !== "MANAGEMENT") {
         throw new Error("UNAUTHORIZED");
@@ -86,53 +16,90 @@ export async function upsertCourseClass(data: unknown) {
         throw new Error("Invalid form data");
     }
 
-    const { id, courseId, ...classData } = result.data;
-    
-    const startDate = new Date(classData.startDate);
-    const endDate = new Date(classData.endDate);
+    const { patterns, ...classData } = result.data;
 
     try {
-        if (id) {
-            await prisma.courseClass.update({
-                where: { id },
+        await prisma.$transaction(async (tx) => {
+            // 1. Create the Operational Batch (CourseClass)
+            const courseClass = await tx.courseClass.create({
                 data: {
-                    ...classData,
-                    startDate,
-                    endDate,
+                    courseId: classData.courseId,
+                    teacherId: classData.teacherId,
+                    code: classData.code,
+                    name: classData.name,
+                    maxCapacity: classData.maxCapacity,
+                    startDate: classData.startDate,
+                    endDate: classData.endDate,
+                    isActive: classData.isActive,
+                    // 2. Create the Schedule Patterns simultaneously
+                    schedulePatterns: {
+                        create: patterns.map(p => ({
+                            dayOfWeek: p.dayOfWeek,
+                            startTime: p.startTime,
+                            endTime: p.endTime,
+                            defaultMode: p.defaultMode,
+                            defaultLocation: p.defaultLocation,
+                        }))
+                    }
                 },
+                include: { schedulePatterns: true }
             });
-        } else {
-            await prisma.courseClass.create({
-                data: {
-                    courseId,
-                    ...classData,
-                    startDate,
-                    endDate,
-                },
-            });
-        }
-        revalidatePath(`/management/courses/${courseId}/classes`);
-        return { success: true };
-    } catch (error: unknown) {
-        const errorMessage = error instanceof Error ? error.message : String(error);
-        throw new Error("Gagal menyimpan kelas: " + errorMessage);
-    }
-}
 
-export async function deleteCourseClass(id: string, courseId: string) {
-    const session = await auth();
-    if (!session || session.user.role !== "MANAGEMENT") {
-        throw new Error("UNAUTHORIZED");
-    }
+            // 3. Auto-generate CourseSessions based on patterns and date range
+            const sessionsToCreate = [];
+            const current = new Date(classData.startDate);
+            const end = new Date(classData.endDate);
 
-    try {
-        await prisma.courseClass.delete({
-            where: { id },
+            let sessionCounter = 1;
+
+            while (current <= end) {
+                const day = current.getDay();
+                
+                // Check if current day matches any pattern
+                const matchingPattern = courseClass.schedulePatterns.find(p => p.dayOfWeek === day);
+                
+                if (matchingPattern) {
+                    const [startHr, startMin] = matchingPattern.startTime.split(":");
+                    const [endHr, endMin] = matchingPattern.endTime.split(":");
+                    
+                    const sessionStart = new Date(current);
+                    sessionStart.setHours(parseInt(startHr), parseInt(startMin), 0);
+                    
+                    const sessionEnd = new Date(current);
+                    sessionEnd.setHours(parseInt(endHr), parseInt(endMin), 0);
+
+                    sessionsToCreate.push({
+                        courseClassId: courseClass.id,
+                        patternId: matchingPattern.id,
+                        origin: "RECURRING" as const, // Cast to the Enum implicitly based on Prisma schema
+                        title: `Session ${sessionCounter}`,
+                        startTime: sessionStart,
+                        endTime: sessionEnd,
+                        mode: matchingPattern.defaultMode,
+                        location: matchingPattern.defaultLocation,
+                    });
+                    
+                    sessionCounter++;
+                }
+                // Move to next day
+                current.setDate(current.getDate() + 1);
+            }
+
+            // Insert all generated sessions
+            if (sessionsToCreate.length > 0) {
+                await tx.courseSession.createMany({
+                    data: sessionsToCreate
+                });
+            }
         });
-        revalidatePath(`/management/courses/${courseId}/classes`);
+
+        // We can't know the exact programId/productId from here easily without extra DB fetch,
+        // but we can revalidate the parent routes.
+        revalidatePath(`/management/programs/[programId]/products/[productId]`, "page");
+        revalidatePath(`/management/programs/[programId]/products/[productId]/courses/[courseId]`, "page");
         return { success: true };
     } catch (error: unknown) {
         const errorMessage = error instanceof Error ? error.message : String(error);
-        throw new Error("Gagal menghapus kelas: " + errorMessage);
+        throw new Error("Gagal membuat Course Class dan Session: " + errorMessage);
     }
 }

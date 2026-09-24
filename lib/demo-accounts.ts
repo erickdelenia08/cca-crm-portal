@@ -3,8 +3,8 @@ import { UserCheck, Shield, FileCheck, GraduationCap } from "lucide-react";
 
 export const DEMO_ACCOUNTS = [
     {
-        role: Role.STUDENT,
-        label: "Student",
+        role: Role.CLIENT,
+        label: "Client",
         email: "student@demo.com",
         password: "password123",
         icon: GraduationCap,

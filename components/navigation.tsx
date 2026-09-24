@@ -36,13 +36,13 @@ export interface NavItem {
 }
 
 const NAV_ITEMS_BY_ROLE: Record<string, NavItem[]> = {
-    STUDENT: [
-        { title: "Dashboard", shortTitle: "Home", href: "/student", icon: LayoutDashboard },
-        { title: "Advisory", shortTitle: "Advisory", href: "/student/advisory", icon: CalendarCheck },
-        { title: "Booking", shortTitle: "Booking", href: "/student/booking", icon: CalendarCheck },
-        // { title: "History", shortTitle: "History", href: "/student/history", icon: History },
-        { title: "Documents", shortTitle: "Docs", href: "/student/documents", icon: FileText },
-        { title: "Classes", shortTitle: "Classes", href: "/student/classes", icon: SquareActivity },
+    CLIENT: [
+        { title: "Dashboard", shortTitle: "Home", href: "/client", icon: LayoutDashboard },
+        { title: "Advisory", shortTitle: "Advisory", href: "/client/advisory", icon: CalendarCheck },
+        { title: "Booking", shortTitle: "Booking", href: "/client/booking", icon: CalendarCheck },
+        // { title: "History", shortTitle: "History", href: "/client/history", icon: History },
+        { title: "Documents", shortTitle: "Docs", href: "/client/documents", icon: FileText },
+        { title: "Classes", shortTitle: "Classes", href: "/client/classes", icon: SquareActivity },
     ],
     TEACHER: [
         { title: "Dashboard", shortTitle: "Home", href: "/teacher", icon: LayoutDashboard },

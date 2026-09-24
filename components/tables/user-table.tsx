@@ -15,15 +15,11 @@ import {
 } from "lucide-react";
 import { CreateUserForm } from "../forms/create-user-form";
 
-export interface UserItem {
-    id: string;
-    autoId: string;
-    name: string;
-    email: string;
-    role: "STUDENT" | "TEACHER" | "CONSULTANT" | "MANAGEMENT";
-    status: "ACTIVE" | "INACTIVE" | "SUSPENDED";
-    createdAt: string;
-}
+import { getUsers } from "@/actions/user.action";
+
+type UsersResponse = Awaited<ReturnType<typeof getUsers>>;
+
+export type UserItem = UsersResponse[number];
 
 interface UserTableProps {
     users: UserItem[];
@@ -43,9 +39,9 @@ export function UserTable({ users, onRefresh }: UserTableProps) {
     // Filter Logic
     const filteredUsers = users.filter((u) => {
         const matchesSearch =
-            u.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            u.autoId.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            u.email.toLowerCase().includes(searchQuery.toLowerCase());
+            (u.name && u.name.toLowerCase().includes(searchQuery.toLowerCase())) ||
+            (u.autoId && u.autoId.toLowerCase().includes(searchQuery.toLowerCase())) ||
+            (u.email && u.email.toLowerCase().includes(searchQuery.toLowerCase()));
         const matchesRole = roleFilter === "ALL" || u.role === roleFilter;
         return matchesSearch && matchesRole;
     });
@@ -159,7 +155,7 @@ export function UserTable({ users, onRefresh }: UserTableProps) {
 
                                     <td className="px-6 py-4">
                                         <span
-                                            className={`inline-block text-[10px] font-bold px-2.5 py-1 rounded-md border ${user.role === "STUDENT"
+                                            className={`inline-block text-[10px] font-bold px-2.5 py-1 rounded-md border ${user.role === "CLIENT"
                                                 ? "bg-emerald-50 text-emerald-700 border-emerald-200"
                                                 : user.role === "TEACHER"
                                                     ? "bg-blue-50 text-blue-700 border-blue-200"

@@ -12,7 +12,8 @@ const createPrismaClient = () => {
         user: process.env.DB_USER || "root",
         password: process.env.DB_PASSWORD || "rootpassword",
         database: process.env.DB_NAME || "crm_db",
-        connectionLimit: 5,
+        connectionLimit: 10,
+        allowPublicKeyRetrieval: true
     });
 
     return new PrismaClient({ adapter });

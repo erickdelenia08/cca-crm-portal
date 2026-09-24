@@ -9,44 +9,71 @@ import { revalidatePath } from "next/cache";
 
 export async function getUsers() {
     const session = await auth();
+
     if (!session || session.user.role !== "MANAGEMENT") {
         throw new Error("UNAUTHORIZED");
     }
 
     const users = await prisma.user.findMany({
-        orderBy: { createdAt: "desc" },
+        orderBy: {
+            createdAt: "desc",
+        },
         include: {
-            studentProfile: {
-                include: {
-                    assignedConsultant: {
-                        include: {
-                            user: true
-                        }
-                    }
-                }
-            },
-            consultantProfile: {
-                include: {
-                    assignedStudents: true
-                }
-            },
+            clientProfile: true,
+            consultantProfile: true,
             staffProfile: true,
+
+            clientAssignments: {
+                where: {
+                    endDate: null,
+                },
+                include: {
+                    consultant: {
+                        select: {
+                            name: true,
+                        },
+                    },
+                },
+                take: 1,
+            },
+
+            consultantAssignments: {
+                where: {
+                    endDate: null,
+                },
+                select: {
+                    id: true,
+                },
+            },
         },
     });
 
-    return users.map(u => {
+    return users.map((u) => {
         let autoId = "UNKNOWN";
-        let assignedMentor = undefined;
-        let assignedClientsCount = undefined;
+        let assignedMentor: string | undefined;
+        let assignedClientsCount: number | undefined;
 
-        if (u.role === "STUDENT" && u.studentProfile) {
-            autoId = u.studentProfile.studentNumber || "UNKNOWN";
-            assignedMentor = u.studentProfile.assignedConsultant?.user.name || undefined;
-        } else if (u.role === "CONSULTANT" && u.consultantProfile) {
-            autoId = u.consultantProfile.employeeNumber || "UNKNOWN";
-            assignedClientsCount = u.consultantProfile.assignedStudents.length;
-        } else if (u.staffProfile) {
-            autoId = u.staffProfile.employeeNumber || "UNKNOWN";
+        if (u.role === "CLIENT") {
+            autoId = u.clientProfile?.clientNumber || "UNKNOWN";
+
+            assignedMentor =
+                u.clientAssignments[0]?.consultant.name || undefined;
+        }
+
+        if (u.role === "CONSULTANT") {
+            autoId =
+                u.consultantProfile?.employeeNumber || "UNKNOWN";
+
+            assignedClientsCount =
+                u.consultantAssignments.length;
+        }
+
+        if (
+            u.role !== "CLIENT" &&
+            u.role !== "CONSULTANT"
+        ) {
+            autoId =
+                u.staffProfile?.employeeNumber || "UNKNOWN";
         }
 
         return {
@@ -57,7 +84,7 @@ export async function getUsers() {
             role: u.role,
             assignedMentor,
             assignedClientsCount,
-            status: "ACTIVE", // Using dummy active state for now
+            status: u.isActive ? "ACTIVE" : "INACTIVE",
         };
     });
 }
@@ -83,6 +110,28 @@ export async function getMentors() {
         id: m.id,
         name: m.user.name,
         role: m.user.role
+    }));
+}
+
+export async function getTeachers() {
+    const session = await auth();
+    if (!session || session.user.role !== "MANAGEMENT") {
+        throw new Error("UNAUTHORIZED");
+    }
+
+    const teachers = await prisma.staffProfile.findMany({
+        include: { user: true },
+        where: {
+            user: {
+                role: "TEACHER"
+            }
+        }
+    });
+
+    return teachers.map(t => ({
+        id: t.id,
+        name: t.user.name,
+        role: t.user.role
     }));
 }
 
@@ -117,11 +166,11 @@ export async function createUser(data: unknown) {
                 }
             });
 
-            if (role === "STUDENT") {
-                await tx.studentProfile.create({
+            if (role === "CLIENT") {
+                await tx.clientProfile.create({
                     data: {
                         userId: id,
-                        studentNumber: `STD-${randomNum}`,
+                        clientNumber: `CLT-${randomNum}`,
                         fullName: name || "",
                     }
                 });
@@ -163,40 +212,121 @@ export async function createUser(data: unknown) {
     }
 }
 
+// export async function assignMentor(data: unknown) {
+//     const session = await auth();
+//     if (!session || session.user.role !== "MANAGEMENT") {
+//         throw new Error("UNAUTHORIZED");
+//     }
+
+//     const result = assignMentorSchema.safeParse(data);
+//     if (!result.success) {
+//         throw new Error("Invalid assignment data");
+//     }
+
+//     const { studentId, consultantId } = result.data;
+
+//     try {
+//         // We need the student profile ID given a User ID
+//         const studentProfile = await prisma.studentProfile.findUnique({
+//             where: { userId: studentId }
+//         });
+
+//         if (!studentProfile) {
+//             throw new Error("Student profile not found");
+//         }
+
+//         await prisma.studentProfile.update({
+//             where: { id: studentProfile.id },
+//             data: {
+//                 assignedConsultantId: consultantId
+//             }
+//         });
+
+//         revalidatePath("/management/users");
+//         return { success: true };
+//     } catch (error: unknown) {
+//         const errorMessage = error instanceof Error ? error.message : String(error);
+//         throw new Error("Failed to assign mentor: " + errorMessage);
+//     }
+// }
+
+
 export async function assignMentor(data: unknown) {
     const session = await auth();
+
     if (!session || session.user.role !== "MANAGEMENT") {
         throw new Error("UNAUTHORIZED");
     }
 
     const result = assignMentorSchema.safeParse(data);
+
     if (!result.success) {
         throw new Error("Invalid assignment data");
     }
 
-    const { studentId, consultantId } = result.data;
+    const { clientId, consultantId } = result.data;
 
     try {
-        // We need the student profile ID given a User ID
-        const studentProfile = await prisma.studentProfile.findUnique({
-            where: { userId: studentId }
+        // Pastikan student benar-benar ada
+        const client = await prisma.user.findUnique({
+            where: {
+                id: clientId,
+            },
+            select: {
+                id: true,
+                role: true,
+            },
         });
 
-        if (!studentProfile) {
-            throw new Error("Student profile not found");
+        if (!client || client.role !== "CLIENT") {
+            throw new Error("Student not found");
         }
 
-        await prisma.studentProfile.update({
-            where: { id: studentProfile.id },
+        // Pastikan consultant benar-benar ada
+        const consultant = await prisma.user.findUnique({
+            where: {
+                id: consultantId,
+            },
+            select: {
+                id: true,
+                role: true,
+            },
+        });
+
+        if (!consultant || consultant.role !== "CONSULTANT") {
+            throw new Error("Consultant not found");
+        }
+
+        // Tutup assignment consultant sebelumnya
+        await prisma.clientConsultantAssignment.updateMany({
+            where: {
+                clientId,
+                endDate: null,
+            },
             data: {
-                assignedConsultantId: consultantId
-            }
+                endDate: new Date(),
+            },
+        });
+
+        // Buat assignment baru
+        await prisma.clientConsultantAssignment.create({
+            data: {
+                clientId,
+                consultantId,
+                startDate: new Date(),
+                isTemporary: false,
+            },
         });
 
         revalidatePath("/management/users");
-        return { success: true };
+
+        return {
+            success: true,
+        };
     } catch (error: unknown) {
-        const errorMessage = error instanceof Error ? error.message : String(error);
+        const errorMessage =
+            error instanceof Error ? error.message : String(error);
+
         throw new Error("Failed to assign mentor: " + errorMessage);
     }
 }

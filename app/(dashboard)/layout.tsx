@@ -17,22 +17,24 @@ export default async function DashboardLayout({
   let hasCourse = false;
   let hasProgram = false;
 
-  if (session.user.role === "STUDENT" && session.user.id) {
-    const student = await prisma.studentProfile.findUnique({
-      where: { userId: session.user.id },
-      include: {
+  if (session.user.role === "CLIENT" && session.user.id) {
+    const user = await prisma.user.findUnique({
+      where: {
+        id: session.user.id,
+      },
+      select: {
         _count: {
           select: {
-            programEnrollments: true,
+            clientEnrollments: true,
             courseEnrollments: true,
-          }
-        }
-      }
+          },
+        },
+      },
     });
 
-    if (student) {
-      hasProgram = student._count.programEnrollments > 0;
-      hasCourse = student._count.courseEnrollments > 0;
+    if (user) {
+      hasProgram = user._count.clientEnrollments > 0;
+      hasCourse = user._count.courseEnrollments > 0;
     }
   }
 

@@ -111,11 +111,7 @@ export async function getDocument(
             id: documentId,
         },
         include: {
-            student: {
-                include: {
-                    user: true,
-                },
-            },
+            student: true,
             history: {
                 orderBy: {
                     createdAt: "desc",

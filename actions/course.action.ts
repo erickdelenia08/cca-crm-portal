@@ -22,6 +22,44 @@ export async function getCourses() {
     }));
 }
 
+export async function getCourseById(id: string) {
+    const session = await auth();
+    if (!session || session.user.role !== "MANAGEMENT") {
+        throw new Error("UNAUTHORIZED");
+    }
+
+    const course = await prisma.course.findUnique({
+        where: { id },
+        include: {
+            programType: {
+                include: {
+                    program: true
+                }
+            },
+            classes: {
+                include: {
+                    teacher: {
+                        include: {
+                            user: true
+                        }
+                    },
+                    _count: {
+                        select: { enrollments: true, sessions: true }
+                    }
+                },
+                orderBy: { startDate: 'desc' }
+            }
+        }
+    });
+
+    if (!course) return null;
+
+    return {
+        ...course,
+        basePrice: course.basePrice ? Number(course.basePrice) : 0,
+    };
+}
+
 export async function upsertCourse(data: unknown) {
     const session = await auth();
     if (!session || session.user.role !== "MANAGEMENT") {

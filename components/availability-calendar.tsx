@@ -18,40 +18,37 @@ import {
     CalendarDays,
 } from "lucide-react";
 import { availabilitySchema, AvailabilityInput } from "@/schemas/availability.schema";
-import { createAvailabilitySlots, deleteAvailabilitySlot } from "@/actions/availability.action";
+// import { createAvailabilitySlots, deleteAvailabilitySlot } from "@/actions/availability.action";
 
-type AvailabilityTemplate = {
-    id: string;
-    dayOfWeek: number;
-    startTime: string;
-    endTime: string;
-};
+import {
+    getAvailabilityTemplates,
+    getAvailabilityOverrides,
+    getBookingsForCalendar,
+    createAvailabilitySlots,
+    deleteAvailabilitySlot
+} from "@/actions/availability.action";
 
-type AvailabilityOverride = {
-    id: string;
-    date: string;
-    startTime: string;
-    endTime: string;
-    isAvailable: boolean;
-};
+// Extract return type dari fungsi Server Action
+type TemplatesResult = Awaited<ReturnType<typeof getAvailabilityTemplates>>;
+type OverridesResult = Awaited<ReturnType<typeof getAvailabilityOverrides>>;
+type BookingsResult = Awaited<ReturnType<typeof getBookingsForCalendar>>;
 
-type BookingItem = {
-    id: string;
-    availabilityTemplateId: string | null;
-    availabilityOverrideId: string | null;
-    scheduledAt: Date;
-    student: { fullName: string };
-};
+// Ambil tipe array dari property `data` (non-nullable)
+type AvailabilityTemplate = NonNullable<TemplatesResult["data"]>[number];
+type AvailabilityOverride = NonNullable<OverridesResult["data"]>[number];
+type BookingItem = NonNullable<BookingsResult["data"]>[number];
+
+interface AvailabilityCalendarProps {
+    templates: AvailabilityTemplate[];
+    overrides: AvailabilityOverride[];
+    bookings: BookingItem[];
+}
 
 export function AvailabilityCalendar({
     templates,
     overrides,
     bookings,
-}: {
-    templates: AvailabilityTemplate[];
-    overrides: AvailabilityOverride[];
-    bookings: BookingItem[];
-}) {
+}: AvailabilityCalendarProps) {
     const [viewMode, setViewMode] = useState<"calendar" | "list">("calendar");
     const [formMode, setFormMode] = useState<"date" | "recurring">("date");
 
@@ -113,7 +110,7 @@ export function AvailabilityCalendar({
                 startTime: template.startTime,
                 endTime: template.endTime,
                 isBooked: !!booking,
-                studentName: booking?.student.fullName || null,
+                studentName: booking?.student.name || null,
             };
         });
 
@@ -127,7 +124,7 @@ export function AvailabilityCalendar({
                 startTime: override.startTime,
                 endTime: override.endTime,
                 isBooked: !!booking,
-                studentName: booking?.student.fullName || null,
+                studentName: booking?.student.name || null,
             };
         });
 
@@ -158,7 +155,7 @@ export function AvailabilityCalendar({
                 startTime: override.startTime,
                 endTime: override.endTime,
                 isBooked: !!booking,
-                studentName: booking?.student.fullName || null,
+                studentName: booking?.student.name || null,
             };
         })
     ].sort((a, b) => a.startTime.localeCompare(b.startTime));
@@ -225,8 +222,8 @@ export function AvailabilityCalendar({
                     key={day}
                     onClick={() => handleDateSelect(dateString)}
                     className={`h-24 p-2 border rounded-xl cursor-pointer transition-all flex flex-col justify-between ${isSelected
-                            ? "border-blue-600 bg-blue-50/40 ring-2 ring-blue-500/20"
-                            : "border-slate-200 bg-white hover:border-blue-300 hover:shadow-xs"
+                        ? "border-blue-600 bg-blue-50/40 ring-2 ring-blue-500/20"
+                        : "border-slate-200 bg-white hover:border-blue-300 hover:shadow-xs"
                         }`}
                 >
                     <div className="flex items-center justify-between">
@@ -245,8 +242,8 @@ export function AvailabilityCalendar({
                             <div
                                 key={`${s.id}-${idx}`}
                                 className={`text-[10px] truncate px-1.5 py-0.5 rounded font-medium ${s.isBooked
-                                        ? "bg-amber-100 text-amber-800 border border-amber-200"
-                                        : "bg-emerald-100 text-emerald-800 border border-emerald-200"
+                                    ? "bg-amber-100 text-amber-800 border border-amber-200"
+                                    : "bg-emerald-100 text-emerald-800 border border-emerald-200"
                                     }`}
                             >
                                 {s.startTime} {s.isBooked ? `(${s.studentName})` : "Tersedia"}
@@ -282,8 +279,8 @@ export function AvailabilityCalendar({
                     <button
                         onClick={() => setViewMode("calendar")}
                         className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold rounded-lg transition-all ${viewMode === "calendar"
-                                ? "bg-white text-blue-600 shadow-xs"
-                                : "text-slate-600 hover:text-slate-900"
+                            ? "bg-white text-blue-600 shadow-xs"
+                            : "text-slate-600 hover:text-slate-900"
                             }`}
                     >
                         <CalendarIcon className="w-4 h-4" /> Kalender
@@ -291,8 +288,8 @@ export function AvailabilityCalendar({
                     <button
                         onClick={() => setViewMode("list")}
                         className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold rounded-lg transition-all ${viewMode === "list"
-                                ? "bg-white text-blue-600 shadow-xs"
-                                : "text-slate-600 hover:text-slate-900"
+                            ? "bg-white text-blue-600 shadow-xs"
+                            : "text-slate-600 hover:text-slate-900"
                             }`}
                     >
                         <List className="w-4 h-4" /> Daftar Semua Slot
@@ -383,8 +380,8 @@ export function AvailabilityCalendar({
                                     <div
                                         key={`${slot.id}-${idx}`}
                                         className={`p-4 rounded-xl border transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-3 ${slot.isBooked
-                                                ? "bg-amber-50/70 border-amber-200"
-                                                : "bg-white border-slate-200 hover:border-blue-300"
+                                            ? "bg-amber-50/70 border-amber-200"
+                                            : "bg-white border-slate-200 hover:border-blue-300"
                                             }`}
                                     >
                                         <div className="space-y-1">
@@ -445,7 +442,7 @@ export function AvailabilityCalendar({
                             <Plus className="w-5 h-5 text-blue-600" />
                             Buka Slot Baru
                         </h2>
-                        
+
                         {error && (
                             <div className="mb-4 p-3 bg-red-50 text-red-700 text-xs rounded border border-red-200">
                                 {error}
