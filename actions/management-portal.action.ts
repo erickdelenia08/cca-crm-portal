@@ -141,3 +141,94 @@ export async function overrideBookingStatus(id: string, status: BookingStatus) {
     }
 }
 
+import { DocumentStatus } from "@prisma/client";
+
+export async function getAllDocuments() {
+    try {
+        const session = await auth();
+        if (!session?.user?.id || session.user.role !== "MANAGEMENT") {
+            return { success: false, error: "Unauthorized" };
+        }
+
+        const documents = await prisma.document.findMany({
+            include: {
+                client: {
+                    select: {
+                        name: true,
+                        clientProfile: {
+                            select: {
+                                clientNumber: true
+                            }
+                        }
+                    }
+                },
+                requirement: {
+                    select: {
+                        name: true
+                    }
+                },
+                clientDocument: {
+                    select: {
+                        fileName: true,
+                        objectKey: true
+                    }
+                },
+                reviewedBy: {
+                    select: {
+                        name: true
+                    }
+                },
+                history: {
+                    include: {
+                        updatedBy: {
+                            select: {
+                                name: true,
+                                role: true
+                            }
+                        }
+                    },
+                    orderBy: {
+                        createdAt: 'desc'
+                    }
+                }
+            },
+            orderBy: {
+                createdAt: "desc"
+            }
+        });
+
+        return { success: true, data: documents };
+    } catch (error: unknown) {
+        return { success: false, error: error instanceof Error ? error.message : String(error) };
+    }
+}
+
+export async function overrideDocumentStatus(id: string, status: DocumentStatus, reason: string) {
+    try {
+        const session = await auth();
+        if (!session?.user?.id || session.user.role !== "MANAGEMENT") {
+            return { success: false, error: "Unauthorized" };
+        }
+
+        await prisma.$transaction(async (tx) => {
+            await tx.document.update({
+                where: { id },
+                data: { status }
+            });
+
+            await tx.documentHistory.create({
+                data: {
+                    documentId: id,
+                    status,
+                    note: reason,
+                    updatedById: session.user.id
+                }
+            });
+        });
+
+        revalidatePath("/management/documents");
+        return { success: true };
+    } catch (error: unknown) {
+        return { success: false, error: error instanceof Error ? error.message : String(error) };
+    }
+}

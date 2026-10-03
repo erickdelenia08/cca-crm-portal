@@ -16,7 +16,7 @@ export default function LoginPage() {
         </div>
 
         {/* Tombol Google OAuth */}
-        <form
+        {/* <form
           action={async () => {
             "use server";
             await signIn("google", { redirectTo: "/" });
@@ -26,7 +26,6 @@ export default function LoginPage() {
             type="submit"
             className="flex w-full items-center justify-center gap-3 rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm font-semibold text-gray-700 shadow-sm transition-all hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
           >
-            {/* SVG Logo Google */}
             <svg className="h-5 w-5" viewBox="0 0 24 24">
               <path
                 fill="#4285F4"
@@ -47,10 +46,10 @@ export default function LoginPage() {
             </svg>
             Lanjutkan dengan Google
           </button>
-        </form>
+        </form> */}
 
         {/* Pemisah (Divider) */}
-        <div className="relative my-6">
+        {/* <div className="relative my-6">
           <div className="absolute inset-0 flex items-center">
             <div className="w-full border-t border-gray-200" />
           </div>
@@ -59,7 +58,7 @@ export default function LoginPage() {
               Atau masuk dengan email
             </span>
           </div>
-        </div>
+        </div> */}
 
         {/* Form Email & Password (Client Component) */}
         <LoginForm />
