@@ -95,3 +95,49 @@ export async function getManagementDashboard() {
         return { success: false, error: errorMessage };
     }
 }
+
+import { BookingStatus } from "@prisma/client";
+import { revalidatePath } from "next/cache";
+
+export async function getAllBookings() {
+    try {
+        const session = await auth();
+        if (!session?.user?.id || session.user.role !== "MANAGEMENT") {
+            return { success: false, error: "Unauthorized" };
+        }
+
+        const bookings = await prisma.clientBooking.findMany({
+            include: {
+                client: { select: { name: true, clientProfile: { select: { fullName: true } } } },
+                consultant: { select: { name: true, consultantProfile: { select: { fullName: true } } } },
+            },
+            orderBy: {
+                scheduledAt: "desc"
+            }
+        });
+
+        return { success: true, data: bookings };
+    } catch (error: unknown) {
+        return { success: false, error: error instanceof Error ? error.message : String(error) };
+    }
+}
+
+export async function overrideBookingStatus(id: string, status: BookingStatus) {
+    try {
+        const session = await auth();
+        if (!session?.user?.id || session.user.role !== "MANAGEMENT") {
+            return { success: false, error: "Unauthorized" };
+        }
+
+        await prisma.clientBooking.update({
+            where: { id },
+            data: { status }
+        });
+
+        revalidatePath("/management/bookings");
+        return { success: true };
+    } catch (error: unknown) {
+        return { success: false, error: error instanceof Error ? error.message : String(error) };
+    }
+}
+

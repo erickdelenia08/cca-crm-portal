@@ -11,84 +11,48 @@ const rolePaths: Record<string, string> = {
 
 export default auth((req) => {
   const { nextUrl } = req;
+  const pathname = nextUrl.pathname;
 
   const isLoggedIn = !!req.auth;
   const role = req.auth?.user?.role;
 
-  console.log("========== PROXY ==========");
-  console.log("PATH:", nextUrl.pathname);
-  console.log("isLoggedIn:", isLoggedIn);
-  console.log("role:", role);
-  console.log("user:", req.auth?.user);
-  console.log("===========================");
-
-  const isHomeRoute = nextUrl.pathname === "/";
-  const isLoginRoute = nextUrl.pathname === "/login";
+  const isHomeRoute = pathname === "/";
+  const isLoginRoute = pathname === "/login";
 
   const allowedPath = role ? rolePaths[role] : undefined;
 
-  const dashboardEntry = Object.values(rolePaths).find(
-    (path) =>
-      nextUrl.pathname === path ||
-      nextUrl.pathname.startsWith(`${path}/`)
-  );
-
   // ==========================================
-  // USER SUDAH LOGIN
+  // BELUM LOGIN → semua halaman kecuali /login diarahkan ke /login
   // ==========================================
-  if (isLoggedIn) {
-    // Role tidak valid
-    if (!allowedPath) {
-      if (!isLoginRoute) {
-        return NextResponse.redirect(
-          new URL("/login", nextUrl)
-        );
-      }
-
-      return NextResponse.next();
-    }
-
-    // "/" → dashboard sesuai role
-    if (isHomeRoute) {
-      return NextResponse.redirect(
-        new URL(allowedPath, nextUrl)
-      );
-    }
-
-    // "/login" → dashboard sesuai role
-    if (isLoginRoute) {
-      return NextResponse.redirect(
-        new URL(allowedPath, nextUrl)
-      );
-    }
-
-    // ==========================================
-    // RBAC
-    // ==========================================
-    if (dashboardEntry) {
-      const isAllowed =
-        nextUrl.pathname === allowedPath ||
-        nextUrl.pathname.startsWith(`${allowedPath}/`);
-
-      if (!isAllowed) {
-        return NextResponse.redirect(
-          new URL(allowedPath, nextUrl)
-        );
-      }
-    }
-
-    return NextResponse.next();
+  if (!isLoggedIn) {
+    if (isLoginRoute) return NextResponse.next();
+    return NextResponse.redirect(new URL("/login", nextUrl));
   }
 
   // ==========================================
-  // USER BELUM LOGIN
+  // SUDAH LOGIN, tapi role tidak valid
   // ==========================================
+  if (!allowedPath) {
+    if (isLoginRoute) return NextResponse.next();
+    return NextResponse.redirect(new URL("/login", nextUrl));
+  }
 
-  // Semua dashboard → login
-  if (dashboardEntry) {
-    return NextResponse.redirect(
-      new URL("/login", nextUrl)
-    );
+  // "/" dan "/login" → portal sesuai role
+  if (isHomeRoute || isLoginRoute) {
+    return NextResponse.redirect(new URL(allowedPath, nextUrl));
+  }
+
+  // ==========================================
+  // RBAC: tidak boleh masuk portal role lain
+  // ==========================================
+  const isOtherPortal = Object.values(rolePaths).some(
+    (path) =>
+      path !== allowedPath &&
+      (pathname === path || pathname.startsWith(`${path}/`))
+  );
+
+  if (isOtherPortal) {
+    return NextResponse.redirect(new URL(allowedPath, nextUrl));
   }
 
   return NextResponse.next();
@@ -96,6 +60,7 @@ export default auth((req) => {
 
 export const config = {
   matcher: [
-    "/((?!api|_next/static|_next/image|favicon.ico).*)",
+    // Lewati api, file statis Next, dan semua file dengan ekstensi (png, svg, ico, dll.)
+    "/((?!api|_next/static|_next/image|favicon.ico|.*\\..*).*)",
   ],
 };

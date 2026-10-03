@@ -15,7 +15,7 @@ import {
 } from "lucide-react";
 import { CreateUserForm } from "../forms/create-user-form";
 
-import { getUsers } from "@/actions/user.action";
+import { getUsers, toggleUserStatus, resetUserPassword, deleteUser } from "@/actions/user.action";
 
 type UsersResponse = Awaited<ReturnType<typeof getUsers>>;
 
@@ -49,25 +49,55 @@ export function UserTable({ users, onRefresh }: UserTableProps) {
     // Action Handlers (Bisa dihubungkan ke Server Action / API Route kamu)
     const handleToggleStatus = async (user: UserItem) => {
         const newStatus = user.status === "ACTIVE" ? "INACTIVE" : "ACTIVE";
-        // TODO: panggil API endpoint patch status (e.g. /api/users/[id]/status)
-        console.log(`Mengubah status ${user.name} ke ${newStatus}`);
-        setActiveMenuId(null);
-        if (onRefresh) onRefresh();
+        
+        try {
+            const res = await toggleUserStatus(user.id, newStatus === "ACTIVE");
+            if (res.success) {
+                console.log(`Mengubah status ${user.name} ke ${newStatus}`);
+                if (onRefresh) onRefresh();
+            } else {
+                alert(`Error: ${res.error}`);
+            }
+        } catch (error) {
+            console.error(error);
+        } finally {
+            setActiveMenuId(null);
+        }
     };
 
     const handleConfirmResetPassword = async () => {
         if (!userToReset) return;
-        // TODO: panggil API endpoint reset password
-        console.log(`Mengirim reset password ke ${userToReset.email}`);
-        setUserToReset(null);
+        
+        try {
+            const res = await resetUserPassword(userToReset.id);
+            if (res.success) {
+                alert(`Password untuk ${userToReset.email} berhasil direset ke "password".`);
+            } else {
+                alert(`Error: ${res.error}`);
+            }
+        } catch (error) {
+            console.error(error);
+        } finally {
+            setUserToReset(null);
+        }
     };
 
     const handleConfirmDelete = async () => {
         if (!userToDelete) return;
-        // TODO: panggil API endpoint delete user (e.g. DELETE /api/users/[id])
-        console.log(`Menghapus user permanen: ${userToDelete.id}`);
-        setUserToDelete(null);
-        if (onRefresh) onRefresh();
+        
+        try {
+            const res = await deleteUser(userToDelete.id);
+            if (res.success) {
+                console.log(`Menghapus user permanen: ${userToDelete.id}`);
+                if (onRefresh) onRefresh();
+            } else {
+                alert(`Error: ${res.error}`);
+            }
+        } catch (error) {
+            console.error(error);
+        } finally {
+            setUserToDelete(null);
+        }
     };
 
     return (
@@ -116,7 +146,7 @@ export function UserTable({ users, onRefresh }: UserTableProps) {
                         <option value="CLIENT">Klien</option>
                         <option value="TEACHER">Pengajar (Teacher)</option>
                         <option value="CONSULTANT">Konsultan</option>
-                        <option value="MANAGEMENT">Management / Admin</option>
+                        <option value="MANAGEMENT">Management</option>
                     </select>
                 </div>
             </div>

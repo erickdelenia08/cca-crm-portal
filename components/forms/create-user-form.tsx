@@ -62,9 +62,9 @@ export function CreateUserForm({ onSuccess, onCancel }: { onSuccess: () => void,
                 >
                     <option value="CLIENT">Klien</option>
                     <option value="TEACHER">Guru (Teacher)</option>
-                    <option value="CONSULTANT">Konsultan Beasiswa/Visa</option>
+                    <option value="CONSULTANT">Konsultan</option>
                     <option value="DOCUMENT_PROCESSOR">Processor Dept.</option>
-                    <option value="ADMIN_MANAGEMENT">Admin Portal</option>
+                    <option value="ADMIN_MANAGEMENT">Management</option>
                 </select>
                 {errors.role && <span className="text-red-500 text-xs mt-1 block">{errors.role.message}</span>}
             </div>

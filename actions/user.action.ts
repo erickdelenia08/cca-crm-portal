@@ -170,6 +170,126 @@ export async function getTeachers() {
     return teachers;
 }
 
+export async function toggleUserStatus(id: string, isActive: boolean) {
+    try {
+        const session = await auth();
+        if (!session || session.user.role !== "MANAGEMENT") {
+            return { success: false, error: "UNAUTHORIZED" };
+        }
+
+        await prisma.user.update({
+            where: { id },
+            data: { isActive },
+        });
+
+        revalidatePath("/management/users");
+        return { success: true };
+    } catch (error: unknown) {
+        const errorMessage = error instanceof Error ? error.message : String(error);
+        return { success: false, error: errorMessage };
+    }
+}
+
+export async function resetUserPassword(id: string) {
+    try {
+        const session = await auth();
+        if (!session || session.user.role !== "MANAGEMENT") {
+            return { success: false, error: "UNAUTHORIZED" };
+        }
+
+        const defaultPassword = "password";
+        const passwordHash = await bcrypt.hash(defaultPassword, 10);
+
+        await prisma.user.update({
+            where: { id },
+            data: { passwordHash },
+        });
+
+        return { success: true };
+    } catch (error: unknown) {
+        const errorMessage = error instanceof Error ? error.message : String(error);
+        return { success: false, error: errorMessage };
+    }
+}
+
+export async function deleteUser(id: string) {
+    try {
+        const session = await auth();
+        if (!session || session.user.role !== "MANAGEMENT") {
+            return { success: false, error: "UNAUTHORIZED" };
+        }
+
+        await prisma.user.delete({
+            where: { id },
+        });
+
+        revalidatePath("/management/users");
+        return { success: true };
+    } catch (error: unknown) {
+        const errorMessage = error instanceof Error ? error.message : String(error);
+        return { success: false, error: errorMessage };
+    }
+}
+
+// Gunakan import yang sudah ada di file actions kamu (auth, prisma, bcrypt,
+// revalidatePath, createUserSchema, dll). Pastikan dua import ini ada:
+import { Prisma } from "@prisma/client";
+
+/**
+ * Format ID:
+ *  - Staf   : CCA-{DIVISI}-{YY}-{URUTAN}  contoh CCA-MGT-26-003
+ *  - Client : CLT-{YY}-{URUTAN}           contoh CLT-26-001
+ *
+ * Nomor urut dibagi antar divisi (staf + konsultan) dan di-reset tiap tahun.
+ */
+
+type Tx = Prisma.TransactionClient;
+
+const DIVISION_CODES: Record<string, string> = {
+    MANAGEMENT: "MGT",
+    CONSULTANT: "CST",
+    TEACHER: "TCH",
+    PROCESSING_DEPARTMENT: "PRC",
+};
+
+function getYearCode() {
+    return new Date().getFullYear().toString().slice(-2);
+}
+
+// Ambil nomor urut tertinggi dari daftar ID, lalu +1 (format 001, 002, ...)
+function getNextSeq(numbers: (string | null)[]) {
+    const max = numbers.reduce((m, n) => {
+        const seq = parseInt(n?.split("-").pop() ?? "", 10);
+        return Number.isNaN(seq) ? m : Math.max(m, seq);
+    }, 0);
+    return String(max + 1).padStart(3, "0");
+}
+
+// Staf / konsultan / teacher: CCA-MGT-26-003
+async function generateEmployeeNumber(tx: Tx, divisionCode: string) {
+    const yy = getYearCode();
+    const where = {
+        employeeNumber: { startsWith: "CCA-", contains: `-${yy}-` },
+    };
+
+    // Urutan dibagi antar tabel karena konsultan & staf sama-sama berawalan CCA
+    const staff = await tx.staffProfile.findMany({ where, select: { employeeNumber: true } });
+    const consultants = await tx.consultantProfile.findMany({ where, select: { employeeNumber: true } });
+
+    const seq = getNextSeq([...staff, ...consultants].map((r) => r.employeeNumber));
+    return `CCA-${divisionCode}-${yy}-${seq}`;
+}
+
+// Client: CLT-26-001
+async function generateClientNumber(tx: Tx) {
+    const yy = getYearCode();
+    const rows = await tx.clientProfile.findMany({
+        where: { clientNumber: { startsWith: `CLT-${yy}-` } },
+        select: { clientNumber: true },
+    });
+    return `CLT-${yy}-${getNextSeq(rows.map((r) => r.clientNumber))}`;
+}
+
 export async function createUser(data: unknown) {
     const session = await auth();
     if (!session || session.user.role !== "MANAGEMENT") {
@@ -187,54 +307,57 @@ export async function createUser(data: unknown) {
     const passwordHash = await bcrypt.hash(defaultPassword, 10);
     const id = crypto.randomUUID();
 
-    const randomNum = Math.floor(1000 + Math.random() * 9000);
-
     try {
         await prisma.$transaction(async (tx) => {
-            const user = await tx.user.create({
+            await tx.user.create({
                 data: {
                     id,
                     name,
                     email,
                     role,
                     passwordHash,
-                }
+                },
             });
 
             if (role === "CLIENT") {
                 await tx.clientProfile.create({
                     data: {
                         userId: id,
-                        clientNumber: `CLT-${randomNum}`,
+                        clientNumber: await generateClientNumber(tx),
                         fullName: name || "",
-                    }
+                    },
                 });
-            } else if (role === "CONSULTANT") {
+                return;
+            }
+
+            const employeeNumber = await generateEmployeeNumber(
+                tx,
+                DIVISION_CODES[role] ?? "PRC"
+            );
+
+            if (role === "CONSULTANT") {
                 await tx.consultantProfile.create({
                     data: {
                         userId: id,
-                        employeeNumber: `CST-${randomNum}`,
+                        employeeNumber,
                         fullName: name || "",
-                    }
+                    },
                 });
             } else {
                 let dept: Department = Department.DOCUMENT_PROCESSING;
-                let prefix = "PRC";
                 if (role === "MANAGEMENT") {
                     dept = Department.MANAGEMENT;
-                    prefix = "MGT";
                 } else if (role === "TEACHER") {
                     dept = Department.ACADEMIC;
-                    prefix = "TCH";
                 }
 
                 await tx.staffProfile.create({
                     data: {
                         userId: id,
                         department: dept,
-                        employeeNumber: `${prefix}-${randomNum}`,
+                        employeeNumber,
                         fullName: name || "",
-                    }
+                    },
                 });
             }
         });
@@ -246,6 +369,84 @@ export async function createUser(data: unknown) {
         throw new Error("Failed to create user: " + errorMessage);
     }
 }
+
+
+// export async function createUser(data: unknown) {
+//     const session = await auth();
+//     if (!session || session.user.role !== "MANAGEMENT") {
+//         throw new Error("UNAUTHORIZED");
+//     }
+
+//     const result = createUserSchema.safeParse(data);
+//     if (!result.success) {
+//         throw new Error("Invalid form data");
+//     }
+
+//     const { name, email, role } = result.data;
+//     // const defaultPassword = "Cca@" + new Date().getFullYear();
+//     const defaultPassword = "password";
+//     const passwordHash = await bcrypt.hash(defaultPassword, 10);
+//     const id = crypto.randomUUID();
+
+//     const randomNum = Math.floor(1000 + Math.random() * 9000);
+
+//     try {
+//         await prisma.$transaction(async (tx) => {
+//             const user = await tx.user.create({
+//                 data: {
+//                     id,
+//                     name,
+//                     email,
+//                     role,
+//                     passwordHash,
+//                 }
+//             });
+
+//             if (role === "CLIENT") {
+//                 await tx.clientProfile.create({
+//                     data: {
+//                         userId: id,
+//                         clientNumber: `CLT-${randomNum}`,
+//                         fullName: name || "",
+//                     }
+//                 });
+//             } else if (role === "CONSULTANT") {
+//                 await tx.consultantProfile.create({
+//                     data: {
+//                         userId: id,
+//                         employeeNumber: `CST-${randomNum}`,
+//                         fullName: name || "",
+//                     }
+//                 });
+//             } else {
+//                 let dept: Department = Department.DOCUMENT_PROCESSING;
+//                 let prefix = "PRC";
+//                 if (role === "MANAGEMENT") {
+//                     dept = Department.MANAGEMENT;
+//                     prefix = "MGT";
+//                 } else if (role === "TEACHER") {
+//                     dept = Department.ACADEMIC;
+//                     prefix = "TCH";
+//                 }
+
+//                 await tx.staffProfile.create({
+//                     data: {
+//                         userId: id,
+//                         department: dept,
+//                         employeeNumber: `${prefix}-${randomNum}`,
+//                         fullName: name || "",
+//                     }
+//                 });
+//             }
+//         });
+
+//         revalidatePath("/management/users");
+//         return { success: true };
+//     } catch (error: unknown) {
+//         const errorMessage = error instanceof Error ? error.message : String(error);
+//         throw new Error("Failed to create user: " + errorMessage);
+//     }
+// }
 
 // export async function assignMentor(data: unknown) {
 //     const session = await auth();
