@@ -13,6 +13,8 @@ const createPrismaClient = () => {
         password: process.env.DB_PASSWORD || "rootpassword",
         database: process.env.DB_NAME || "crm_db",
         connectionLimit: 10,
+        connectTimeout: 15000,   // <- ini kuncinya
+        acquireTimeout: 15000,
         allowPublicKeyRetrieval: true,
         ssl: process.env.DB_SSL === "true" ? { rejectUnauthorized: false } : undefined
     });

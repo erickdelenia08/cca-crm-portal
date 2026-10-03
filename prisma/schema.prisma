@@ -6,9 +6,878 @@ datasource db {
   provider = "mysql"
 }
 
-// ============================================================
-// ENUMS
-// ============================================================
+model User {
+  id                     String                       @id
+  name                   String?
+  email                  String?                      @unique
+  emailVerified          DateTime?
+  image                  String?
+  passwordHash           String?
+  role                   Role                         @default(CLIENT)
+  department             Department?
+  isActive               Boolean                      @default(true)
+  createdAt              DateTime                     @default(now())
+  updatedAt              DateTime                     @updatedAt
+  accounts               Account[]
+  announcements          Announcement[]               @relation("AnnouncementCreatedBy")
+  attendances            Attendance[]                 @relation("AttendanceRecordedBy")
+  availabilityOverrides  AvailabilityOverride[]
+  availabilityTemplates  AvailabilityTemplate[]
+  backupLogs             BackupLog[]                  @relation("BackupTriggeredBy")
+  clientBookings         ClientBooking[]              @relation("ClientBookings")
+  consultantBookings     ClientBooking[]              @relation("ConsultantBookings")
+  clientAssignments      ClientConsultantAssignment[] @relation("ClientAssignments")
+  consultantAssignments  ClientConsultantAssignment[] @relation("ConsultantAssignments")
+  clientHandovers        ClientConsultantHandover[]   @relation("ClientHandovers")
+  handoversCreated       ClientConsultantHandover[]   @relation("HandoverCreatedBy")
+  handoversFrom          ClientConsultantHandover[]   @relation("HandoverFromConsultant")
+  handoversTo            ClientConsultantHandover[]   @relation("HandoverToConsultant")
+  clientDocuments        ClientDocument[]             @relation("ClientMasterDocuments")
+  clientProfile          ClientProfile?
+  consultantProfile      ConsultantProfile?
+  courseAttendances      CourseAttendance[]           @relation("ClientCourseAttendances")
+  courseEnrollments      CourseEnrollment[]           @relation("ClientCourseEnrollments")
+  uploadedMaterials      CourseMaterial[]             @relation("MaterialUploadedBy")
+  documentHistories      DocumentHistory[]            @relation("DocumentHistoryUpdatedBy")
+  documents              Document[]                   @relation("ClientDocuments")
+  reviewedDocuments      Document[]                   @relation("DocumentReviewedBy")
+  uploadedDocuments      Document[]                   @relation("DocumentUploadedBy")
+  invoices               Invoice[]                    @relation("ClientInvoices")
+  createdInvoices        Invoice[]                    @relation("InvoiceCreatedBy")
+  approvedLeaves         LeaveRequest[]               @relation("LeaveApprovedBy")
+  leaveRequests          LeaveRequest[]               @relation("LeaveRequestedBy")
+  clientMeetingNotes     MeetingNote[]                @relation("ClientMeetingNotes")
+  consultantMeetingNotes MeetingNote[]                @relation("ConsultantMeetingNotes")
+  createdMeetingNotes    MeetingNote[]                @relation("MeetingNoteCreatedBy")
+  notifications          Notification[]
+  clientEnrollments      ProgramEnrollment[]          @relation("ClientEnrollments")
+  consultantEnrollments  ProgramEnrollment[]          @relation("ConsultantEnrollments")
+  scheduleChangeRequests ScheduleChangeRequest[]
+  sessions               Session[]
+  staffProfile           StaffProfile?
+
+  @@index([role])
+  @@index([department])
+  @@index([isActive])
+  @@map("users")
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@index([userId])
+  @@map("accounts")
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("sessions")
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+  @@map("verification_tokens")
+}
+
+model ClientProfile {
+  id             String    @id @default(uuid())
+  userId         String    @unique
+  clientNumber   String?   @unique
+  fullName       String
+  email          String?
+  phone          String?
+  whatsapp       String?
+  dateOfBirth    DateTime?
+  gender         String?
+  nationality    String?
+  address        String?   @db.Text
+  city           String?
+  province       String?
+  postalCode     String?
+  country        String?
+  educationLevel String?
+  institution    String?
+  major          String?
+  graduationYear Int?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  user           User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([fullName])
+  @@index([email])
+  @@index([phone])
+  @@map("client_profiles")
+}
+
+model ConsultantProfile {
+  id             String   @id @default(uuid())
+  userId         String   @unique
+  employeeNumber String?  @unique
+  fullName       String
+  phone          String?
+  specialization String?
+  isAvailable    Boolean  @default(true)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([fullName])
+  @@index([isAvailable])
+  @@map("consultant_profiles")
+}
+
+model StaffProfile {
+  id                      String               @id @default(uuid())
+  userId                  String               @unique
+  employeeNumber          String?              @unique
+  fullName                String
+  phone                   String?
+  position                String?
+  department              Department?
+  isActive                Boolean              @default(true)
+  createdAt               DateTime             @default(now())
+  updatedAt               DateTime             @updatedAt
+  attendances             Attendance[]         @relation("TeacherAttendance")
+  classTeacherAssignments CourseClassTeacher[]
+  taughtClasses           CourseClass[]        @relation("PrimaryTeacher")
+  leaveRequests           LeaveRequest[]       @relation("StaffLeaveRequests")
+  payslips                Payslip[]
+  user                    User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([department])
+  @@index([isActive])
+  @@index([fullName])
+  @@map("staff_profiles")
+}
+
+model Program {
+  id           String        @id @default(uuid())
+  code         String        @unique
+  name         String
+  description  String?       @db.Text
+  isActive     Boolean       @default(true)
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  programTypes ProgramType[]
+
+  @@index([isActive])
+  @@map("programs")
+}
+
+model ProgramType {
+  id                   String                @id @default(uuid())
+  programId            String
+  code                 String                @unique
+  name                 String
+  description          String?               @db.Text
+  deliveryType         ServiceDeliveryType   @default(SERVICE)
+  isActive             Boolean               @default(true)
+  createdAt            DateTime              @default(now())
+  updatedAt            DateTime              @updatedAt
+  courses              Course[]
+  documentRequirements DocumentRequirement[]
+  enrollments          ProgramEnrollment[]
+  program              Program               @relation(fields: [programId], references: [id], onDelete: Cascade)
+
+  @@index([programId])
+  @@index([deliveryType])
+  @@index([isActive])
+  @@map("program_types")
+}
+
+model ProgramEnrollment {
+  id                   String                          @id @default(uuid())
+  clientId             String
+  programTypeId        String
+  consultantId         String?
+  status               EnrollmentStatus                @default(ONBOARDING)
+  isPrimary            Boolean                         @default(false)
+  enrolledAt           DateTime                        @default(now())
+  notes                String?                         @db.Text
+  extendedData         Json?
+  createdAt            DateTime                        @default(now())
+  updatedAt            DateTime                        @updatedAt
+  courseEnrollments    CourseEnrollment[]
+  documents            Document[]
+  documentRequirements EnrollmentDocumentRequirement[]
+  invoices             Invoice[]
+  client               User                            @relation("ClientEnrollments", fields: [clientId], references: [id], onDelete: Cascade)
+  consultant           User?                           @relation("ConsultantEnrollments", fields: [consultantId], references: [id])
+  programType          ProgramType                     @relation(fields: [programTypeId], references: [id])
+
+  @@index([clientId])
+  @@index([programTypeId])
+  @@index([consultantId])
+  @@index([status])
+  @@map("program_enrollments")
+}
+
+model DocumentRequirement {
+  id                     String                          @id @default(uuid())
+  programTypeId          String
+  code                   String
+  name                   String
+  description            String?                         @db.Text
+  isRequired             Boolean                         @default(true)
+  isActive               Boolean                         @default(true)
+  createdAt              DateTime                        @default(now())
+  updatedAt              DateTime                        @updatedAt
+  programType            ProgramType                     @relation(fields: [programTypeId], references: [id], onDelete: Cascade)
+  enrollmentRequirements EnrollmentDocumentRequirement[]
+
+  @@unique([programTypeId, code])
+  @@index([programTypeId])
+  @@index([isActive])
+  @@map("document_requirements")
+}
+
+model EnrollmentDocumentRequirement {
+  id            String                              @id @default(uuid())
+  enrollmentId  String
+  requirementId String?
+  code          String
+  name          String
+  description   String?                             @db.Text
+  isRequired    Boolean                             @default(true)
+  isActive      Boolean                             @default(true)
+  createdAt     DateTime                            @default(now())
+  updatedAt     DateTime                            @updatedAt
+  source        EnrollmentDocumentRequirementSource @default(PROGRAM_DEFAULT)
+  documents     Document?
+  enrollment    ProgramEnrollment                   @relation(fields: [enrollmentId], references: [id], onDelete: Cascade)
+  requirement   DocumentRequirement?                @relation(fields: [requirementId], references: [id])
+
+  @@unique([enrollmentId, code])
+  @@index([enrollmentId])
+  @@index([requirementId])
+  @@map("enrollment_document_requirements")
+}
+
+model ClientDocument {
+  id        String     @id @default(uuid())
+  clientId  String
+  title     String
+  category  String?
+  objectKey String
+  fileName  String
+  mimeType  String?
+  fileSize  Int?
+  expiresAt DateTime?
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  client    User       @relation("ClientMasterDocuments", fields: [clientId], references: [id], onDelete: Cascade)
+  usages    Document[]
+
+  @@index([clientId])
+  @@index([category])
+  @@index([expiresAt])
+  @@map("client_documents")
+}
+
+model Document {
+  id                              String                        @id @default(uuid())
+  enrollmentId                    String
+  enrollmentDocumentRequirementId String                        @unique
+  clientId                        String
+  clientDocumentId                String?
+  outcomeObjectKey                String?
+  status                          DocumentStatus                @default(SUBMITTED)
+  revisionNote                    String?                       @db.Text
+  uploadedById                    String?
+  reviewedById                    String?
+  reviewedAt                      DateTime?
+  createdAt                       DateTime                      @default(now())
+  updatedAt                       DateTime                      @updatedAt
+  history                         DocumentHistory[]
+  clientDocument                  ClientDocument?               @relation(fields: [clientDocumentId], references: [id])
+  client                          User                          @relation("ClientDocuments", fields: [clientId], references: [id], onDelete: Cascade)
+  requirement                     EnrollmentDocumentRequirement @relation(fields: [enrollmentDocumentRequirementId], references: [id], onDelete: Cascade)
+  enrollment                      ProgramEnrollment             @relation(fields: [enrollmentId], references: [id], onDelete: Cascade)
+  reviewedBy                      User?                         @relation("DocumentReviewedBy", fields: [reviewedById], references: [id])
+  uploadedBy                      User?                         @relation("DocumentUploadedBy", fields: [uploadedById], references: [id])
+
+  @@index([enrollmentId])
+  @@index([clientDocumentId])
+  @@index([clientId])
+  @@index([uploadedById])
+  @@index([reviewedById])
+  @@index([status])
+  @@map("documents")
+}
+
+model DocumentHistory {
+  id          String         @id @default(uuid())
+  documentId  String
+  status      DocumentStatus
+  note        String?        @db.Text
+  updatedById String
+  createdAt   DateTime       @default(now())
+  document    Document       @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  updatedBy   User           @relation("DocumentHistoryUpdatedBy", fields: [updatedById], references: [id])
+
+  @@index([documentId])
+  @@index([updatedById])
+  @@map("document_histories")
+}
+
+model Course {
+  id            String          @id @default(uuid())
+  programTypeId String
+  code          String          @unique
+  name          String
+  description   String?         @db.Text
+  category      CourseCategory?
+  level         CourseLevel?
+  durationHours Int?
+  totalSessions Int?
+  basePrice     Decimal?        @db.Decimal(12, 2)
+  isActive      Boolean         @default(true)
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  classes       CourseClass[]
+  programType   ProgramType     @relation(fields: [programTypeId], references: [id], onDelete: Cascade)
+
+  @@index([programTypeId])
+  @@index([isActive])
+  @@index([category])
+  @@index([level])
+  @@map("courses")
+}
+
+model CourseClass {
+  id                 String                  @id @default(uuid())
+  courseId           String
+  teacherId          String
+  code               String
+  name               String?
+  schedule           String?
+  maxCapacity        Int
+  startDate          DateTime
+  endDate            DateTime
+  isActive           Boolean                 @default(true)
+  createdAt          DateTime                @default(now())
+  updatedAt          DateTime                @updatedAt
+  teacherAssignments CourseClassTeacher[]
+  course             Course                  @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  teacher            StaffProfile            @relation("PrimaryTeacher", fields: [teacherId], references: [id])
+  enrollments        CourseEnrollment[]
+  materials          CourseMaterial[]
+  schedulePatterns   CourseSchedulePattern[]
+  sessions           CourseSession[]
+
+  @@unique([courseId, code])
+  @@index([courseId])
+  @@index([teacherId])
+  @@index([isActive])
+  @@index([startDate])
+  @@index([endDate])
+  @@map("course_classes")
+}
+
+model CourseSchedulePattern {
+  id              String            @id @default(uuid())
+  courseClassId   String
+  dayOfWeek       Int
+  startTime       String
+  endTime         String
+  defaultMode     CourseSessionMode @default(OFFLINE)
+  defaultLocation String?
+  isActive        Boolean           @default(true)
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+  courseClass     CourseClass       @relation(fields: [courseClassId], references: [id], onDelete: Cascade)
+  sessions        CourseSession[]
+
+  @@index([courseClassId])
+  @@index([isActive])
+  @@map("course_schedule_patterns")
+}
+
+model CourseClassTeacher {
+  id            String       @id @default(uuid())
+  courseClassId String
+  teacherId     String
+  startDate     DateTime
+  endDate       DateTime?
+  isTemporary   Boolean      @default(false)
+  reason        String?      @db.Text
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+  courseClass   CourseClass  @relation(fields: [courseClassId], references: [id], onDelete: Cascade)
+  teacher       StaffProfile @relation(fields: [teacherId], references: [id])
+
+  @@index([courseClassId])
+  @@index([teacherId])
+  @@index([startDate])
+  @@index([endDate])
+  @@map("course_class_teachers")
+}
+
+model CourseEnrollment {
+  id                  String                 @id @default(uuid())
+  clientId            String
+  courseClassId       String
+  programEnrollmentId String
+  status              CourseEnrollmentStatus @default(ACTIVE)
+  startedAt           DateTime               @default(now())
+  endedAt             DateTime?
+  notes               String?                @db.Text
+  createdAt           DateTime               @default(now())
+  updatedAt           DateTime               @updatedAt
+  client              User                   @relation("ClientCourseEnrollments", fields: [clientId], references: [id], onDelete: Cascade)
+  courseClass         CourseClass            @relation(fields: [courseClassId], references: [id])
+  programEnrollment   ProgramEnrollment      @relation(fields: [programEnrollmentId], references: [id], onDelete: Cascade)
+  invoices            Invoice[]
+
+  @@index([clientId])
+  @@index([courseClassId])
+  @@index([programEnrollmentId])
+  @@index([status])
+  @@map("course_enrollments")
+}
+
+model CourseSession {
+  id               String                  @id @default(uuid())
+  courseClassId    String
+  patternId        String?
+  origin           CourseSessionOrigin     @default(RECURRING)
+  title            String
+  startTime        DateTime
+  endTime          DateTime
+  mode             CourseSessionMode       @default(OFFLINE)
+  meetingUrl       String?
+  location         String?
+  createdAt        DateTime                @default(now())
+  updatedAt        DateTime                @updatedAt
+  meetingProvider  MeetingProvider?
+  attendances      CourseAttendance[]
+  materials        CourseMaterial[]
+  courseClass      CourseClass             @relation(fields: [courseClassId], references: [id], onDelete: Cascade)
+  pattern          CourseSchedulePattern?  @relation(fields: [patternId], references: [id])
+  scheduleRequests ScheduleChangeRequest[]
+
+  @@index([courseClassId])
+  @@index([patternId])
+  @@index([startTime])
+  @@index([origin])
+  @@map("course_sessions")
+}
+
+model ScheduleChangeRequest {
+  id                       String            @id @default(uuid())
+  sessionId                String
+  requestedDate            DateTime
+  requestedStartTime       DateTime
+  requestedEndTime         DateTime
+  requestedMode            CourseSessionMode
+  requestedLocation        String?
+  requestedMeetingProvider MeetingProvider?
+  requestedMeetingUrl      String?
+  reason                   String            @db.Text
+  status                   ApprovalStatus    @default(PENDING)
+  reviewedById             String?
+  reviewedAt               DateTime?
+  reviewNote               String?           @db.Text
+  createdAt                DateTime          @default(now())
+  updatedAt                DateTime          @updatedAt
+  reviewer                 User?             @relation(fields: [reviewedById], references: [id])
+  session                  CourseSession     @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+
+  @@index([sessionId])
+  @@index([status])
+  @@index([reviewedById], map: "schedule_change_requests_reviewedById_fkey")
+  @@map("schedule_change_requests")
+}
+
+model CourseAttendance {
+  id            String           @id @default(uuid())
+  sessionId     String
+  clientId      String
+  status        AttendanceStatus @default(ON_TIME)
+  note          String?          @db.Text
+  attachmentUrl String?
+  createdAt     DateTime         @default(now())
+  updatedAt     DateTime         @updatedAt
+  client        User             @relation("ClientCourseAttendances", fields: [clientId], references: [id], onDelete: Cascade)
+  session       CourseSession    @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+
+  @@unique([sessionId, clientId])
+  @@index([sessionId])
+  @@index([clientId])
+  @@map("course_attendances")
+}
+
+model CourseMaterial {
+  id                String         @id @default(uuid())
+  courseClassId     String
+  sessionId         String?
+  title             String
+  description       String?        @db.Text
+  type              MaterialType   @default(DOCUMENT)
+  objectKey         String?
+  fileName          String?
+  mimeType          String?
+  fileSize          Int?
+  externalUrl       String?
+  isVisibleToClient Boolean        @default(true)
+  uploadedById      String
+  createdAt         DateTime       @default(now())
+  updatedAt         DateTime       @updatedAt
+  courseClass       CourseClass    @relation(fields: [courseClassId], references: [id], onDelete: Cascade)
+  session           CourseSession? @relation(fields: [sessionId], references: [id])
+  uploadedBy        User           @relation("MaterialUploadedBy", fields: [uploadedById], references: [id])
+
+  @@index([courseClassId])
+  @@index([sessionId])
+  @@index([type])
+  @@index([isVisibleToClient])
+  @@index([uploadedById], map: "course_materials_uploadedById_fkey")
+  @@map("course_materials")
+}
+
+model ClientConsultantAssignment {
+  id           String    @id @default(uuid())
+  clientId     String
+  consultantId String
+  startDate    DateTime
+  endDate      DateTime?
+  isTemporary  Boolean   @default(false)
+  reason       String?   @db.Text
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  client       User      @relation("ClientAssignments", fields: [clientId], references: [id], onDelete: Cascade)
+  consultant   User      @relation("ConsultantAssignments", fields: [consultantId], references: [id], onDelete: Cascade)
+
+  @@index([clientId])
+  @@index([consultantId])
+  @@index([startDate])
+  @@index([endDate])
+  @@map("client_consultant_assignments")
+}
+
+model AvailabilityTemplate {
+  id           String          @id @default(uuid())
+  consultantId String
+  dayOfWeek    Int
+  startTime    String
+  endTime      String
+  isActive     Boolean         @default(true)
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @updatedAt
+  consultant   User            @relation(fields: [consultantId], references: [id], onDelete: Cascade)
+  bookings     ClientBooking[]
+
+  @@index([consultantId])
+  @@index([dayOfWeek])
+  @@index([isActive])
+  @@map("availability_templates")
+}
+
+model AvailabilityOverride {
+  id           String          @id @default(uuid())
+  consultantId String
+  date         String
+  startTime    String
+  endTime      String
+  isAvailable  Boolean         @default(true)
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @updatedAt
+  consultant   User            @relation(fields: [consultantId], references: [id], onDelete: Cascade)
+  bookings     ClientBooking[]
+
+  @@index([consultantId])
+  @@index([date])
+  @@map("availability_overrides")
+}
+
+model ClientBooking {
+  id                     String                @id @default(uuid())
+  clientId               String
+  consultantId           String
+  availabilityTemplateId String?
+  availabilityOverrideId String?
+  scheduledAt            DateTime
+  durationMinutes        Int                   @default(60)
+  sessionType            BookingSessionType    @default(CONSULTATION)
+  status                 BookingStatus         @default(PENDING)
+  meetingUrl             String?
+  notes                  String?               @db.Text
+  createdAt              DateTime              @default(now())
+  updatedAt              DateTime              @updatedAt
+  availabilityOverride   AvailabilityOverride? @relation(fields: [availabilityOverrideId], references: [id])
+  availabilityTemplate   AvailabilityTemplate? @relation(fields: [availabilityTemplateId], references: [id])
+  client                 User                  @relation("ClientBookings", fields: [clientId], references: [id], onDelete: Cascade)
+  consultant             User                  @relation("ConsultantBookings", fields: [consultantId], references: [id], onDelete: Cascade)
+  meetingNotes           MeetingNote[]
+
+  @@index([clientId])
+  @@index([consultantId])
+  @@index([availabilityTemplateId])
+  @@index([availabilityOverrideId])
+  @@index([scheduledAt])
+  @@index([status])
+  @@map("bookings")
+}
+
+model MeetingNote {
+  id           String         @id @default(uuid())
+  clientId     String
+  consultantId String
+  bookingId    String?
+  title        String
+  content      String         @db.Text
+  createdById  String
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  booking      ClientBooking? @relation(fields: [bookingId], references: [id])
+  client       User           @relation("ClientMeetingNotes", fields: [clientId], references: [id], onDelete: Cascade)
+  consultant   User           @relation("ConsultantMeetingNotes", fields: [consultantId], references: [id], onDelete: Cascade)
+  createdBy    User           @relation("MeetingNoteCreatedBy", fields: [createdById], references: [id])
+
+  @@index([clientId])
+  @@index([consultantId])
+  @@index([bookingId])
+  @@index([createdById])
+  @@map("meeting_notes")
+}
+
+model ClientConsultantHandover {
+  id               String   @id @default(uuid())
+  clientId         String
+  fromConsultantId String?
+  toConsultantId   String
+  reason           String   @db.Text
+  handoverDate     DateTime @default(now())
+  createdById      String
+  createdAt        DateTime @default(now())
+  client           User     @relation("ClientHandovers", fields: [clientId], references: [id], onDelete: Cascade)
+  createdBy        User     @relation("HandoverCreatedBy", fields: [createdById], references: [id])
+  fromConsultant   User?    @relation("HandoverFromConsultant", fields: [fromConsultantId], references: [id])
+  toConsultant     User     @relation("HandoverToConsultant", fields: [toConsultantId], references: [id], onDelete: Cascade)
+
+  @@index([clientId])
+  @@index([fromConsultantId])
+  @@index([toConsultantId])
+  @@index([createdById])
+  @@index([handoverDate])
+  @@map("client_consultant_handovers")
+}
+
+model Invoice {
+  id                  String             @id @default(uuid())
+  invoiceNumber       String             @unique
+  clientId            String
+  programEnrollmentId String?
+  courseEnrollmentId  String?
+  createdById         String
+  subtotal            Decimal            @db.Decimal(12, 2)
+  taxAmount           Decimal            @default(0.00) @db.Decimal(12, 2)
+  discountAmount      Decimal            @default(0.00) @db.Decimal(12, 2)
+  totalAmount         Decimal            @db.Decimal(12, 2)
+  status              InvoiceStatus      @default(DRAFT)
+  dueDate             DateTime
+  paidAt              DateTime?
+  paymentMethod       String?
+  pdfUrl              String?
+  notes               String?            @db.Text
+  createdAt           DateTime           @default(now())
+  updatedAt           DateTime           @updatedAt
+  items               InvoiceItem[]
+  client              User               @relation("ClientInvoices", fields: [clientId], references: [id], onDelete: Cascade)
+  courseEnrollment    CourseEnrollment?  @relation(fields: [courseEnrollmentId], references: [id])
+  createdBy           User               @relation("InvoiceCreatedBy", fields: [createdById], references: [id])
+  programEnrollment   ProgramEnrollment? @relation(fields: [programEnrollmentId], references: [id])
+
+  @@index([clientId])
+  @@index([programEnrollmentId])
+  @@index([courseEnrollmentId])
+  @@index([createdById])
+  @@index([status])
+  @@index([dueDate])
+  @@map("invoices")
+}
+
+model InvoiceItem {
+  id          String   @id @default(uuid())
+  invoiceId   String
+  description String
+  quantity    Decimal  @default(1.00) @db.Decimal(10, 2)
+  unitPrice   Decimal  @db.Decimal(12, 2)
+  amount      Decimal  @db.Decimal(12, 2)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  invoice     Invoice  @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+
+  @@index([invoiceId])
+  @@map("invoice_items")
+}
+
+model Attendance {
+  id           String           @id @default(uuid())
+  staffId      String
+  recordedById String
+  date         DateTime
+  checkIn      DateTime?
+  checkOut     DateTime?
+  status       AttendanceStatus @default(ON_TIME)
+  note         String?          @db.Text
+  createdAt    DateTime         @default(now())
+  updatedAt    DateTime         @updatedAt
+  recordedBy   User             @relation("AttendanceRecordedBy", fields: [recordedById], references: [id])
+  staff        StaffProfile     @relation("TeacherAttendance", fields: [staffId], references: [id], onDelete: Cascade)
+
+  @@unique([staffId, date])
+  @@index([staffId])
+  @@index([recordedById])
+  @@index([date])
+  @@map("attendances")
+}
+
+model LeaveRequest {
+  id                  String         @id @default(uuid())
+  staffId             String
+  requestedById       String
+  type                LeaveType
+  startDate           DateTime
+  endDate             DateTime
+  reason              String?        @db.Text
+  status              ApprovalStatus @default(PENDING)
+  approvedById        String?
+  approvedAt          DateTime?
+  createdAt           DateTime       @default(now())
+  updatedAt           DateTime       @updatedAt
+  attachmentFileName  String?
+  attachmentFileSize  Int?
+  attachmentMimeType  String?
+  attachmentObjectKey String?
+  reviewNote          String?        @db.Text
+  approvedBy          User?          @relation("LeaveApprovedBy", fields: [approvedById], references: [id])
+  requestedBy         User           @relation("LeaveRequestedBy", fields: [requestedById], references: [id])
+  staff               StaffProfile   @relation("StaffLeaveRequests", fields: [staffId], references: [id], onDelete: Cascade)
+
+  @@index([staffId])
+  @@index([requestedById])
+  @@index([approvedById])
+  @@index([status])
+  @@index([startDate])
+  @@map("leave_requests")
+}
+
+model Payslip {
+  id          String       @id @default(uuid())
+  staffId     String
+  periodStart DateTime
+  periodEnd   DateTime
+  baseSalary  Decimal      @db.Decimal(12, 2)
+  allowances  Decimal      @default(0.00) @db.Decimal(12, 2)
+  deductions  Decimal      @default(0.00) @db.Decimal(12, 2)
+  netSalary   Decimal      @db.Decimal(12, 2)
+  pdfUrl      String?
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  staff       StaffProfile @relation(fields: [staffId], references: [id], onDelete: Cascade)
+
+  @@unique([staffId, periodStart, periodEnd])
+  @@index([staffId])
+  @@index([periodStart])
+  @@map("payslips")
+}
+
+model CompanySettings {
+  id          String   @id @default(uuid())
+  companyName String
+  email       String?
+  phone       String?
+  whatsapp    String?
+  address     String?  @db.Text
+  logoUrl     String?
+  website     String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("company_settings")
+}
+
+model Announcement {
+  id            String                 @id @default(uuid())
+  title         String
+  content       String                 @db.Text
+  targetRole    AnnouncementTargetRole @default(ALL)
+  isPublished   Boolean                @default(false)
+  publishedAt   DateTime?
+  createdById   String
+  createdAt     DateTime               @default(now())
+  updatedAt     DateTime               @updatedAt
+  createdBy     User                   @relation("AnnouncementCreatedBy", fields: [createdById], references: [id])
+  notifications Notification[]
+
+  @@index([targetRole])
+  @@index([isPublished])
+  @@index([publishedAt])
+  @@index([createdById])
+  @@map("announcements")
+}
+
+model Notification {
+  id             String              @id @default(uuid())
+  userId         String
+  announcementId String?
+  title          String
+  message        String              @db.Text
+  channel        NotificationChannel @default(IN_APP)
+  isRead         Boolean             @default(false)
+  readAt         DateTime?
+  createdAt      DateTime            @default(now())
+  announcement   Announcement?       @relation(fields: [announcementId], references: [id], onDelete: Cascade)
+  user           User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([announcementId])
+  @@index([isRead])
+  @@index([createdAt])
+  @@map("notifications")
+}
+
+model BackupLog {
+  id              String       @id @default(uuid())
+  backupName      String
+  cloudStorageUrl String?
+  googleDriveId   String?
+  fileSizeBytes   BigInt?
+  status          BackupStatus @default(PENDING)
+  errorMessage    String?      @db.Text
+  triggeredById   String?
+  createdAt       DateTime     @default(now())
+  triggeredBy     User?        @relation("BackupTriggeredBy", fields: [triggeredById], references: [id])
+
+  @@index([triggeredById])
+  @@index([status])
+  @@index([createdAt])
+  @@map("backup_logs")
+}
 
 enum Role {
   CLIENT
@@ -25,10 +894,6 @@ enum Department {
   ACADEMIC
   FINANCE
 }
-
-// ============================================================
-// PROGRAM / SERVICE
-// ============================================================
 
 enum ServiceDeliveryType {
   SERVICE
@@ -49,10 +914,6 @@ enum CourseEnrollmentStatus {
   CANCELLED
 }
 
-// ============================================================
-// DOCUMENT
-// ============================================================
-
 enum DocumentStatus {
   SUBMITTED
   UNDER_REVIEW
@@ -65,10 +926,6 @@ enum EnrollmentDocumentRequirementSource {
   PROGRAM_DEFAULT
   PROCESSOR_ADDED
 }
-
-// ============================================================
-// BOOKING
-// ============================================================
 
 enum BookingStatus {
   PENDING
@@ -89,10 +946,6 @@ enum BookingSessionType {
   CAREER
   OTHER
 }
-
-// ============================================================
-// COURSE
-// ============================================================
 
 enum CourseLevel {
   BASIC
@@ -140,10 +993,6 @@ enum MaterialType {
   ASSIGNMENT
 }
 
-// ============================================================
-// HR
-// ============================================================
-
 enum LeaveType {
   ANNUAL
   SICK
@@ -157,10 +1006,6 @@ enum ApprovalStatus {
   APPROVED
   REJECTED
 }
-
-// ============================================================
-// SYSTEM
-// ============================================================
 
 enum NotificationChannel {
   IN_APP
@@ -191,1569 +1036,4 @@ enum InvoiceStatus {
   PAID
   OVERDUE
   CANCELLED
-}
-
-// ============================================================
-// AUTH.JS / CORE USER
-// ============================================================
-
-model User {
-  id            String      @id
-  name          String?
-  email         String?     @unique
-  emailVerified DateTime?
-  image         String?
-  passwordHash  String?
-  role          Role        @default(CLIENT)
-  department    Department?
-  isActive      Boolean     @default(true)
-
-  accounts Account[]
-  sessions Session[]
-
-  // ==========================================================
-  // PROFILES
-  // ==========================================================
-
-  clientProfile     ClientProfile?
-  consultantProfile ConsultantProfile?
-  staffProfile      StaffProfile?
-
-  // ==========================================================
-  // CLIENT TRANSACTIONS
-  // ==========================================================
-
-  clientEnrollments ProgramEnrollment[] @relation("ClientEnrollments")
-
-  consultantEnrollments ProgramEnrollment[] @relation("ConsultantEnrollments")
-
-  courseEnrollments CourseEnrollment[] @relation("ClientCourseEnrollments")
-
-  courseAttendances CourseAttendance[] @relation("ClientCourseAttendances")
-
-  // ==========================================================
-  // DOCUMENTS
-  // ==========================================================
-
-  clientDocuments ClientDocument[] @relation("ClientMasterDocuments")
-
-  documents Document[] @relation("ClientDocuments")
-
-  uploadedDocuments Document[] @relation("DocumentUploadedBy")
-
-  reviewedDocuments Document[] @relation("DocumentReviewedBy")
-
-  documentHistories DocumentHistory[] @relation("DocumentHistoryUpdatedBy")
-
-  // ==========================================================
-  // BOOKINGS
-  // ==========================================================
-
-  clientBookings ClientBooking[] @relation("ClientBookings")
-
-  consultantBookings ClientBooking[] @relation("ConsultantBookings")
-
-  // ==========================================================
-  // MEETING NOTES
-  // ==========================================================
-
-  clientMeetingNotes MeetingNote[] @relation("ClientMeetingNotes")
-
-  consultantMeetingNotes MeetingNote[] @relation("ConsultantMeetingNotes")
-
-  createdMeetingNotes MeetingNote[] @relation("MeetingNoteCreatedBy")
-
-  // ==========================================================
-  // CONSULTANT HANDOVER / ASSIGNMENT
-  // ==========================================================
-
-  clientHandovers ClientConsultantHandover[] @relation("ClientHandovers")
-
-  handoversFrom ClientConsultantHandover[] @relation("HandoverFromConsultant")
-
-  handoversTo ClientConsultantHandover[] @relation("HandoverToConsultant")
-
-  handoversCreated ClientConsultantHandover[] @relation("HandoverCreatedBy")
-
-  clientAssignments ClientConsultantAssignment[] @relation("ClientAssignments")
-
-  consultantAssignments ClientConsultantAssignment[] @relation("ConsultantAssignments")
-
-  // ==========================================================
-  // INVOICES
-  // ==========================================================
-
-  invoices Invoice[] @relation("ClientInvoices")
-
-  createdInvoices Invoice[] @relation("InvoiceCreatedBy")
-
-  // ==========================================================
-  // HR
-  // ==========================================================
-
-  attendances Attendance[] @relation("AttendanceRecordedBy")
-
-  leaveRequests LeaveRequest[] @relation("LeaveRequestedBy")
-
-  approvedLeaves LeaveRequest[] @relation("LeaveApprovedBy")
-
-  // ==========================================================
-  // SYSTEM
-  // ==========================================================
-
-  announcements Announcement[] @relation("AnnouncementCreatedBy")
-
-  notifications Notification[]
-
-  availabilityTemplates AvailabilityTemplate[]
-
-  availabilityOverrides AvailabilityOverride[]
-
-  backupLogs BackupLog[] @relation("BackupTriggeredBy")
-
-  uploadedMaterials CourseMaterial[] @relation("MaterialUploadedBy")
-
-  createdAt              DateTime                @default(now())
-  updatedAt              DateTime                @updatedAt
-  scheduleChangeRequests ScheduleChangeRequest[]
-
-  @@index([role])
-  @@index([department])
-  @@index([isActive])
-  @@map("users")
-}
-
-// ============================================================
-// AUTH.JS
-// ============================================================
-
-model Account {
-  id                String @id @default(cuid())
-  userId            String
-  type              String
-  provider          String
-  providerAccountId String
-
-  refresh_token String? @db.Text
-  access_token  String? @db.Text
-  expires_at    Int?
-  token_type    String?
-  scope         String?
-  id_token      String? @db.Text
-  session_state String?
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@unique([provider, providerAccountId])
-  @@index([userId])
-  @@map("accounts")
-}
-
-model Session {
-  id           String   @id @default(cuid())
-  sessionToken String   @unique
-  userId       String
-  expires      DateTime
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@index([userId])
-  @@map("sessions")
-}
-
-model VerificationToken {
-  identifier String
-  token      String   @unique
-  expires    DateTime
-
-  @@unique([identifier, token])
-  @@map("verification_tokens")
-}
-
-// ============================================================
-// CLIENT PROFILE
-// ============================================================
-
-model ClientProfile {
-  id String @id @default(uuid())
-
-  userId String @unique
-
-  clientNumber String? @unique
-
-  fullName String
-
-  email    String?
-  phone    String?
-  whatsapp String?
-
-  dateOfBirth DateTime?
-  gender      String?
-  nationality String?
-
-  address    String? @db.Text
-  city       String?
-  province   String?
-  postalCode String?
-  country    String?
-
-  educationLevel String?
-  institution    String?
-  major          String?
-  graduationYear Int?
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@index([fullName])
-  @@index([email])
-  @@index([phone])
-  @@map("client_profiles")
-}
-
-// ============================================================
-// CONSULTANT PROFILE
-// ============================================================
-
-model ConsultantProfile {
-  id String @id @default(uuid())
-
-  userId String @unique
-
-  employeeNumber String? @unique
-
-  fullName String
-
-  phone          String?
-  specialization String?
-
-  isAvailable Boolean @default(true)
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@index([fullName])
-  @@index([isAvailable])
-  @@map("consultant_profiles")
-}
-
-// ============================================================
-// STAFF PROFILE
-// ============================================================
-
-model StaffProfile {
-  id String @id @default(uuid())
-
-  userId String @unique
-
-  employeeNumber String? @unique
-
-  fullName String
-
-  phone      String?
-  position   String?
-  department Department?
-  isActive   Boolean     @default(true)
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  taughtClasses CourseClass[] @relation("PrimaryTeacher")
-
-  classTeacherAssignments CourseClassTeacher[]
-
-  attendances Attendance[] @relation("TeacherAttendance")
-
-  leaveRequests LeaveRequest[] @relation("StaffLeaveRequests")
-
-  payslips Payslip[]
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@index([department])
-  @@index([isActive])
-  @@index([fullName])
-  @@map("staff_profiles")
-}
-
-// ============================================================
-// PROGRAM / BUSINESS LINE
-// ============================================================
-
-model Program {
-  id String @id @default(uuid())
-
-  code String @unique
-  // CCABROAD
-  // CCACADEMY
-  // CCADVISORY
-
-  name String
-
-  description String? @db.Text
-
-  isActive Boolean @default(true)
-
-  programTypes ProgramType[]
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@index([isActive])
-  @@map("programs")
-}
-
-// ============================================================
-// PROGRAM TYPE / SELLABLE SERVICE
-// ============================================================
-
-model ProgramType {
-  id String @id @default(uuid())
-
-  programId String
-
-  code String @unique
-  // STUDY_OVERSEAS
-  // VISITOR_VISA
-  // STUDY_TOUR
-  // ENGLISH_COURSE
-  // MANDARIN_COURSE
-  // FINANCE_PROTECTION
-
-  name String
-
-  description String? @db.Text
-
-  deliveryType ServiceDeliveryType @default(SERVICE)
-
-  isActive Boolean @default(true)
-
-  program Program @relation(fields: [programId], references: [id], onDelete: Cascade)
-
-  // Hanya digunakan apabila deliveryType = COURSE
-  courses Course[]
-
-  // Client yang membeli service ini
-  enrollments ProgramEnrollment[]
-
-  // Default document requirements
-  documentRequirements DocumentRequirement[]
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@index([programId])
-  @@index([deliveryType])
-  @@index([isActive])
-  @@map("program_types")
-}
-
-// ============================================================
-// PROGRAM ENROLLMENT
-// ============================================================
-
-model ProgramEnrollment {
-  id String @id @default(uuid())
-
-  clientId String
-
-  programTypeId String
-
-  consultantId String?
-
-  status EnrollmentStatus @default(ONBOARDING)
-
-  isPrimary Boolean @default(false)
-
-  enrolledAt DateTime @default(now())
-
-  notes String? @db.Text
-
-  // Data khusus service.
-  //
-  // Contoh:
-  // Study Overseas:
-  // { "targetCountry": "Australia", "targetUniversity": "..." }
-  //
-  // Finance & Protection:
-  // { "financialGoal": "...", ... }
-  extendedData Json?
-
-  client User @relation("ClientEnrollments", fields: [clientId], references: [id], onDelete: Cascade)
-
-  consultant User? @relation("ConsultantEnrollments", fields: [consultantId], references: [id], onDelete: SetNull)
-
-  programType ProgramType @relation(fields: [programTypeId], references: [id])
-
-  documentRequirements EnrollmentDocumentRequirement[]
-
-  documents Document[]
-
-  invoices Invoice[]
-
-  courseEnrollments CourseEnrollment[]
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@index([clientId])
-  @@index([programTypeId])
-  @@index([consultantId])
-  @@index([status])
-  @@map("program_enrollments")
-}
-
-// ============================================================
-// DOCUMENT REQUIREMENT TEMPLATE
-// ============================================================
-//
-// Requirement default berada di level SERVICE / ProgramType.
-//
-// Contoh:
-//
-// Visitor Visa
-// ├── Passport
-// ├── KTP
-// ├── Bank Statement
-// └── Photo
-//
-// English Course
-// └── Tidak harus punya requirement
-//
-// Study Tour
-// ├── Passport
-// └── Parent Consent
-//
-// ============================================================
-
-model DocumentRequirement {
-  id String @id @default(uuid())
-
-  programTypeId String
-
-  code String
-
-  name String
-
-  description String? @db.Text
-
-  isRequired Boolean @default(true)
-
-  isActive Boolean @default(true)
-
-  programType ProgramType @relation(fields: [programTypeId], references: [id], onDelete: Cascade)
-
-  enrollmentRequirements EnrollmentDocumentRequirement[]
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@unique([programTypeId, code])
-  @@index([programTypeId])
-  @@index([isActive])
-  @@map("document_requirements")
-}
-
-// ============================================================
-// ENROLLMENT DOCUMENT REQUIREMENT
-// ============================================================
-//
-// Snapshot dari DocumentRequirement ketika enrollment dibuat.
-//
-// Jadi jika requirement service berubah di masa depan,
-// enrollment lama tidak ikut berubah.
-// ============================================================
-
-model EnrollmentDocumentRequirement {
-  id String @id @default(uuid())
-
-  enrollmentId String
-
-  requirementId String?
-
-  code String
-
-  name String
-
-  description String? @db.Text
-
-  isRequired Boolean @default(true)
-
-  isActive Boolean @default(true)
-
-  source EnrollmentDocumentRequirementSource @default(PROGRAM_DEFAULT)
-
-  enrollment ProgramEnrollment @relation(fields: [enrollmentId], references: [id], onDelete: Cascade)
-
-  requirement DocumentRequirement? @relation(fields: [requirementId], references: [id], onDelete: SetNull)
-
-  documents Document[]
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@unique([enrollmentId, code])
-  @@index([enrollmentId])
-  @@index([requirementId])
-  @@map("enrollment_document_requirements")
-}
-
-// ============================================================
-// CLIENT MASTER DOCUMENT
-// ============================================================
-//
-// File fisik milik client.
-//
-// Contoh:
-// Passport Erick hanya upload sekali.
-// Bisa digunakan untuk beberapa enrollment.
-// ============================================================
-
-model ClientDocument {
-  id String @id @default(uuid())
-
-  clientId String
-
-  title String
-
-  category String?
-
-  objectKey String
-
-  fileName String
-
-  mimeType String?
-
-  fileSize Int?
-
-  expiresAt DateTime?
-
-  client User @relation("ClientMasterDocuments", fields: [clientId], references: [id], onDelete: Cascade)
-
-  usages Document[]
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@index([clientId])
-  @@index([category])
-  @@index([expiresAt])
-  @@map("client_documents")
-}
-
-// ============================================================
-// DOCUMENT USAGE PER ENROLLMENT
-// ============================================================
-
-model Document {
-  id String @id @default(uuid())
-
-  enrollmentId String
-
-  enrollmentDocumentRequirementId String
-
-  clientId String
-
-  clientDocumentId String?
-
-  // Hasil proses internal.
-  // Contoh:
-  // translated passport
-  // stamped document
-  // processed document
-  outcomeObjectKey String?
-
-  status DocumentStatus @default(SUBMITTED)
-
-  revisionNote String? @db.Text
-
-  uploadedById String?
-
-  reviewedById String?
-
-  reviewedAt DateTime?
-
-  enrollment ProgramEnrollment @relation(fields: [enrollmentId], references: [id], onDelete: Cascade)
-
-  requirement EnrollmentDocumentRequirement @relation(fields: [enrollmentDocumentRequirementId], references: [id], onDelete: Cascade)
-
-  clientDocument ClientDocument? @relation(fields: [clientDocumentId], references: [id], onDelete: SetNull)
-
-  client User @relation("ClientDocuments", fields: [clientId], references: [id], onDelete: Cascade)
-
-  uploadedBy User? @relation("DocumentUploadedBy", fields: [uploadedById], references: [id], onDelete: SetNull)
-
-  reviewedBy User? @relation("DocumentReviewedBy", fields: [reviewedById], references: [id], onDelete: SetNull)
-
-  history DocumentHistory[]
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  // Satu requirement hanya memiliki satu slot document aktif
-  @@unique([enrollmentDocumentRequirementId])
-  @@index([enrollmentId])
-  @@index([clientDocumentId])
-  @@index([clientId])
-  @@index([uploadedById])
-  @@index([reviewedById])
-  @@index([status])
-  @@map("documents")
-}
-
-// ============================================================
-// DOCUMENT HISTORY
-// ============================================================
-
-model DocumentHistory {
-  id String @id @default(uuid())
-
-  documentId String
-
-  status DocumentStatus
-
-  note String? @db.Text
-
-  updatedById String
-
-  document Document @relation(fields: [documentId], references: [id], onDelete: Cascade)
-
-  updatedBy User @relation("DocumentHistoryUpdatedBy", fields: [updatedById], references: [id])
-
-  createdAt DateTime @default(now())
-
-  @@index([documentId])
-  @@index([updatedById])
-  @@map("document_histories")
-}
-
-// ============================================================
-// COURSES
-// ============================================================
-//
-// Hanya digunakan untuk ProgramType dengan deliveryType = COURSE.
-//
-// Contoh:
-//
-// English Course
-// ├── English Basic
-// ├── English Intermediate
-// └── English Preparation
-//
-// ============================================================
-
-model Course {
-  id String @id @default(uuid())
-
-  programTypeId String
-
-  code String @unique
-
-  name String
-
-  description String? @db.Text
-
-  category CourseCategory?
-
-  level CourseLevel?
-
-  durationHours Int?
-
-  // Jumlah pertemuan standar.
-  //
-  // Contoh:
-  // English Basic = 12 pertemuan
-  //
-  // CourseSession tetap menjadi sumber data
-  // untuk pertemuan aktual.
-  totalSessions Int?
-
-  basePrice Decimal? @db.Decimal(12, 2)
-
-  isActive Boolean @default(true)
-
-  programType ProgramType @relation(fields: [programTypeId], references: [id], onDelete: Cascade)
-
-  classes CourseClass[]
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@index([programTypeId])
-  @@index([isActive])
-  @@index([category])
-  @@index([level])
-  @@map("courses")
-}
-
-// ============================================================
-// COURSE CLASS / BATCH
-// ============================================================
-
-model CourseClass {
-  id String @id @default(uuid())
-
-  courseId String
-
-  teacherId String
-
-  code String
-
-  name String?
-
-  schedule String?
-
-  maxCapacity Int
-
-  startDate DateTime
-
-  endDate DateTime
-
-  isActive Boolean @default(true)
-
-  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
-
-  teacher StaffProfile @relation("PrimaryTeacher", fields: [teacherId], references: [id])
-
-  teacherAssignments CourseClassTeacher[]
-
-  enrollments CourseEnrollment[]
-
-  sessions CourseSession[]
-
-  schedulePatterns CourseSchedulePattern[]
-
-  materials CourseMaterial[]
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@unique([courseId, code])
-  @@index([courseId])
-  @@index([teacherId])
-  @@index([isActive])
-  @@index([startDate])
-  @@index([endDate])
-  @@map("course_classes")
-}
-
-// ============================================================
-// COURSE SCHEDULE PATTERN
-// ============================================================
-
-model CourseSchedulePattern {
-  id String @id @default(uuid())
-
-  courseClassId String
-
-  // 0 = Sunday
-  // 1 = Monday
-  // ...
-  // 6 = Saturday
-  dayOfWeek Int
-
-  startTime String
-
-  endTime String
-
-  defaultMode CourseSessionMode @default(OFFLINE)
-
-  defaultLocation String?
-
-  isActive Boolean @default(true)
-
-  courseClass CourseClass @relation(fields: [courseClassId], references: [id], onDelete: Cascade)
-
-  sessions CourseSession[]
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@index([courseClassId])
-  @@index([isActive])
-  @@map("course_schedule_patterns")
-}
-
-// ============================================================
-// COURSE CLASS TEACHER
-// ============================================================
-
-model CourseClassTeacher {
-  id String @id @default(uuid())
-
-  courseClassId String
-
-  teacherId String
-
-  startDate DateTime
-
-  endDate DateTime?
-
-  isTemporary Boolean @default(false)
-
-  reason String? @db.Text
-
-  courseClass CourseClass @relation(fields: [courseClassId], references: [id], onDelete: Cascade)
-
-  teacher StaffProfile @relation(fields: [teacherId], references: [id])
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@index([courseClassId])
-  @@index([teacherId])
-  @@index([startDate])
-  @@index([endDate])
-  @@map("course_class_teachers")
-}
-
-// ============================================================
-// COURSE ENROLLMENT
-// ============================================================
-//
-// CourseEnrollment menunjukkan client masuk ke CourseClass.
-//
-// ProgramEnrollment menjadi enrollment utama atas service.
-// ============================================================
-
-model CourseEnrollment {
-  id String @id @default(uuid())
-
-  clientId String
-
-  courseClassId String
-
-  programEnrollmentId String
-
-  status CourseEnrollmentStatus @default(ACTIVE)
-
-  startedAt DateTime @default(now())
-
-  endedAt DateTime?
-
-  notes String? @db.Text
-
-  client User @relation("ClientCourseEnrollments", fields: [clientId], references: [id], onDelete: Cascade)
-
-  courseClass CourseClass @relation(fields: [courseClassId], references: [id])
-
-  programEnrollment ProgramEnrollment @relation(fields: [programEnrollmentId], references: [id], onDelete: Cascade)
-
-  invoices Invoice[]
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@index([clientId])
-  @@index([courseClassId])
-  @@index([programEnrollmentId])
-  @@index([status])
-  @@map("course_enrollments")
-}
-
-// ============================================================
-// COURSE SESSION
-// ============================================================
-//
-// Satu record = satu pertemuan aktual.
-// ============================================================
-
-model CourseSession {
-  id String @id @default(uuid())
-
-  courseClassId String
-
-  // Null untuk EXTRA / MAKEUP
-  patternId String?
-
-  origin CourseSessionOrigin @default(RECURRING)
-
-  title String
-
-  startTime DateTime
-
-  endTime DateTime
-
-  mode CourseSessionMode @default(OFFLINE)
-
-  meetingProvider MeetingProvider?
-
-  meetingUrl String?
-
-  location String?
-
-  courseClass CourseClass @relation(fields: [courseClassId], references: [id], onDelete: Cascade)
-
-  pattern CourseSchedulePattern? @relation(fields: [patternId], references: [id], onDelete: SetNull)
-
-  attendances CourseAttendance[]
-
-  materials CourseMaterial[]
-
-  scheduleRequests ScheduleChangeRequest[]
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@index([courseClassId])
-  @@index([patternId])
-  @@index([startTime])
-  @@index([origin])
-  @@map("course_sessions")
-}
-
-// ============================================================
-// SCHEDULE CHANGE REQUEST
-// ============================================================
-
-model ScheduleChangeRequest {
-  id String @id @default(uuid())
-
-  sessionId String
-
-  requestedDate      DateTime
-  requestedStartTime DateTime
-  requestedEndTime   DateTime
-
-  requestedMode            CourseSessionMode
-  requestedLocation        String?
-  requestedMeetingProvider MeetingProvider?
-  requestedMeetingUrl      String?
-
-  reason String @db.Text
-
-  status ApprovalStatus @default(PENDING)
-
-  reviewedById String?
-  reviewedAt   DateTime?
-  reviewNote   String?   @db.Text
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  session  CourseSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
-  reviewer User?         @relation(fields: [reviewedById], references: [id], onDelete: SetNull)
-
-  @@index([sessionId])
-  @@index([status])
-  @@map("schedule_change_requests")
-}
-
-// ============================================================
-// COURSE ATTENDANCE
-// ============================================================
-
-model CourseAttendance {
-  id String @id @default(uuid())
-
-  sessionId String
-
-  clientId String
-
-  status AttendanceStatus @default(ON_TIME)
-
-  note String? @db.Text
-
-  attachmentUrl String?
-
-  session CourseSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
-
-  client User @relation("ClientCourseAttendances", fields: [clientId], references: [id], onDelete: Cascade)
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@unique([sessionId, clientId])
-  @@index([sessionId])
-  @@index([clientId])
-  @@map("course_attendances")
-}
-
-// ============================================================
-// COURSE MATERIAL
-// ============================================================
-
-model CourseMaterial {
-  id String @id @default(uuid())
-
-  courseClassId String
-
-  sessionId String?
-
-  title String
-
-  description String? @db.Text
-
-  type MaterialType @default(DOCUMENT)
-
-  objectKey String?
-
-  fileName String?
-
-  mimeType String?
-
-  fileSize Int?
-
-  externalUrl String?
-
-  isVisibleToClient Boolean @default(true)
-
-  uploadedById String
-
-  courseClass CourseClass @relation(fields: [courseClassId], references: [id], onDelete: Cascade)
-
-  session CourseSession? @relation(fields: [sessionId], references: [id], onDelete: SetNull)
-
-  uploadedBy User @relation("MaterialUploadedBy", fields: [uploadedById], references: [id])
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@index([courseClassId])
-  @@index([sessionId])
-  @@index([type])
-  @@index([isVisibleToClient])
-  @@map("course_materials")
-}
-
-// ============================================================
-// CONSULTANT ASSIGNMENT HISTORY
-// ============================================================
-
-model ClientConsultantAssignment {
-  id String @id @default(uuid())
-
-  clientId String
-
-  consultantId String
-
-  startDate DateTime
-
-  endDate DateTime?
-
-  isTemporary Boolean @default(false)
-
-  reason String? @db.Text
-
-  client User @relation("ClientAssignments", fields: [clientId], references: [id], onDelete: Cascade)
-
-  consultant User @relation("ConsultantAssignments", fields: [consultantId], references: [id], onDelete: Cascade)
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@index([clientId])
-  @@index([consultantId])
-  @@index([startDate])
-  @@index([endDate])
-  @@map("client_consultant_assignments")
-}
-
-// ============================================================
-// AVAILABILITY
-// ============================================================
-
-model AvailabilityTemplate {
-  id String @id @default(uuid())
-
-  consultantId String
-
-  dayOfWeek Int
-
-  startTime String
-
-  endTime String
-
-  isActive Boolean @default(true)
-
-  consultant User @relation(fields: [consultantId], references: [id], onDelete: Cascade)
-
-  bookings ClientBooking[]
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@index([consultantId])
-  @@index([dayOfWeek])
-  @@index([isActive])
-  @@map("availability_templates")
-}
-
-model AvailabilityOverride {
-  id String @id @default(uuid())
-
-  consultantId String
-
-  date String
-  // YYYY-MM-DD
-
-  startTime String
-
-  endTime String
-
-  isAvailable Boolean @default(true)
-
-  consultant User @relation(fields: [consultantId], references: [id], onDelete: Cascade)
-
-  bookings ClientBooking[]
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@index([consultantId])
-  @@index([date])
-  @@map("availability_overrides")
-}
-
-// ============================================================
-// BOOKING
-// ============================================================
-
-model ClientBooking {
-  id String @id @default(uuid())
-
-  clientId String
-
-  consultantId String
-
-  availabilityTemplateId String?
-
-  availabilityOverrideId String?
-
-  scheduledAt DateTime
-
-  durationMinutes Int @default(60)
-
-  sessionType BookingSessionType @default(CONSULTATION)
-
-  status BookingStatus @default(PENDING)
-
-  meetingUrl String?
-
-  notes String? @db.Text
-
-  client User @relation("ClientBookings", fields: [clientId], references: [id], onDelete: Cascade)
-
-  consultant User @relation("ConsultantBookings", fields: [consultantId], references: [id], onDelete: Cascade)
-
-  availabilityTemplate AvailabilityTemplate? @relation(fields: [availabilityTemplateId], references: [id], onDelete: SetNull)
-
-  availabilityOverride AvailabilityOverride? @relation(fields: [availabilityOverrideId], references: [id], onDelete: SetNull)
-
-  meetingNotes MeetingNote[]
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@index([clientId])
-  @@index([consultantId])
-  @@index([availabilityTemplateId])
-  @@index([availabilityOverrideId])
-  @@index([scheduledAt])
-  @@index([status])
-  @@map("bookings")
-}
-
-// ============================================================
-// MEETING NOTE
-// ============================================================
-
-model MeetingNote {
-  id String @id @default(uuid())
-
-  clientId String
-
-  consultantId String
-
-  bookingId String?
-
-  title String
-
-  content String @db.Text
-
-  createdById String
-
-  client User @relation("ClientMeetingNotes", fields: [clientId], references: [id], onDelete: Cascade)
-
-  consultant User @relation("ConsultantMeetingNotes", fields: [consultantId], references: [id], onDelete: Cascade)
-
-  booking ClientBooking? @relation(fields: [bookingId], references: [id], onDelete: SetNull)
-
-  createdBy User @relation("MeetingNoteCreatedBy", fields: [createdById], references: [id])
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@index([clientId])
-  @@index([consultantId])
-  @@index([bookingId])
-  @@index([createdById])
-  @@map("meeting_notes")
-}
-
-// ============================================================
-// CONSULTANT HANDOVER
-// ============================================================
-
-model ClientConsultantHandover {
-  id String @id @default(uuid())
-
-  clientId String
-
-  fromConsultantId String?
-
-  toConsultantId String
-
-  reason String @db.Text
-
-  handoverDate DateTime @default(now())
-
-  createdById String
-
-  client User @relation("ClientHandovers", fields: [clientId], references: [id], onDelete: Cascade)
-
-  fromConsultant User? @relation("HandoverFromConsultant", fields: [fromConsultantId], references: [id], onDelete: SetNull)
-
-  toConsultant User @relation("HandoverToConsultant", fields: [toConsultantId], references: [id], onDelete: Cascade)
-
-  createdBy User @relation("HandoverCreatedBy", fields: [createdById], references: [id])
-
-  createdAt DateTime @default(now())
-
-  @@index([clientId])
-  @@index([fromConsultantId])
-  @@index([toConsultantId])
-  @@index([createdById])
-  @@index([handoverDate])
-  @@map("client_consultant_handovers")
-}
-
-// ============================================================
-// INVOICE
-// ============================================================
-
-model Invoice {
-  id String @id @default(uuid())
-
-  invoiceNumber String @unique
-
-  clientId String
-
-  programEnrollmentId String?
-
-  courseEnrollmentId String?
-
-  createdById String
-
-  subtotal Decimal @db.Decimal(12, 2)
-
-  taxAmount Decimal @default(0.00) @db.Decimal(12, 2)
-
-  discountAmount Decimal @default(0.00) @db.Decimal(12, 2)
-
-  totalAmount Decimal @db.Decimal(12, 2)
-
-  status InvoiceStatus @default(DRAFT)
-
-  dueDate DateTime
-
-  paidAt DateTime?
-
-  paymentMethod String?
-
-  pdfUrl String?
-
-  notes String? @db.Text
-
-  client User @relation("ClientInvoices", fields: [clientId], references: [id], onDelete: Cascade)
-
-  programEnrollment ProgramEnrollment? @relation(fields: [programEnrollmentId], references: [id], onDelete: SetNull)
-
-  courseEnrollment CourseEnrollment? @relation(fields: [courseEnrollmentId], references: [id], onDelete: SetNull)
-
-  createdBy User @relation("InvoiceCreatedBy", fields: [createdById], references: [id])
-
-  items InvoiceItem[]
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@index([clientId])
-  @@index([programEnrollmentId])
-  @@index([courseEnrollmentId])
-  @@index([createdById])
-  @@index([status])
-  @@index([dueDate])
-  @@map("invoices")
-}
-
-// ============================================================
-// INVOICE ITEM
-// ============================================================
-
-model InvoiceItem {
-  id String @id @default(uuid())
-
-  invoiceId String
-
-  description String
-
-  quantity Decimal @default(1.00) @db.Decimal(10, 2)
-
-  unitPrice Decimal @db.Decimal(12, 2)
-
-  amount Decimal @db.Decimal(12, 2)
-
-  invoice Invoice @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@index([invoiceId])
-  @@map("invoice_items")
-}
-
-// ============================================================
-// HR - ATTENDANCE
-// ============================================================
-
-model Attendance {
-  id String @id @default(uuid())
-
-  staffId String
-
-  recordedById String
-
-  date DateTime
-
-  checkIn DateTime?
-
-  checkOut DateTime?
-
-  status AttendanceStatus @default(ON_TIME)
-
-  note String? @db.Text
-
-  staff StaffProfile @relation("TeacherAttendance", fields: [staffId], references: [id], onDelete: Cascade)
-
-  recordedBy User @relation("AttendanceRecordedBy", fields: [recordedById], references: [id])
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@unique([staffId, date])
-  @@index([staffId])
-  @@index([recordedById])
-  @@index([date])
-  @@map("attendances")
-}
-
-// ============================================================
-// HR - LEAVE
-// ============================================================
-
-model LeaveRequest {
-  id String @id @default(uuid())
-
-  staffId String
-
-  requestedById String
-
-  type LeaveType
-
-  startDate DateTime
-
-  endDate DateTime
-
-  reason String? @db.Text
-
-  attachmentObjectKey String?
-  attachmentFileName  String?
-  attachmentMimeType  String?
-  attachmentFileSize  Int?
-
-  status ApprovalStatus @default(PENDING)
-
-  approvedById String?
-  approvedAt DateTime?
-  reviewNote String? @db.Text
-
-  staff StaffProfile @relation("StaffLeaveRequests", fields: [staffId], references: [id], onDelete: Cascade)
-
-  requestedBy User @relation("LeaveRequestedBy", fields: [requestedById], references: [id])
-
-  approvedBy User? @relation("LeaveApprovedBy", fields: [approvedById], references: [id], onDelete: SetNull)
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@index([staffId])
-  @@index([requestedById])
-  @@index([approvedById])
-  @@index([status])
-  @@index([startDate])
-  @@map("leave_requests")
-}
-
-// ============================================================
-// HR - PAYSLIP
-// ============================================================
-
-model Payslip {
-  id String @id @default(uuid())
-
-  staffId String
-
-  periodStart DateTime
-
-  periodEnd DateTime
-
-  baseSalary Decimal @db.Decimal(12, 2)
-
-  allowances Decimal @default(0.00) @db.Decimal(12, 2)
-
-  deductions Decimal @default(0.00) @db.Decimal(12, 2)
-
-  netSalary Decimal @db.Decimal(12, 2)
-
-  pdfUrl String?
-
-  staff StaffProfile @relation(fields: [staffId], references: [id], onDelete: Cascade)
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@unique([staffId, periodStart, periodEnd])
-  @@index([staffId])
-  @@index([periodStart])
-  @@map("payslips")
-}
-
-// ============================================================
-// COMPANY SETTINGS
-// ============================================================
-
-model CompanySettings {
-  id String @id @default(uuid())
-
-  companyName String
-
-  email String?
-
-  phone String?
-
-  whatsapp String?
-
-  address String? @db.Text
-
-  logoUrl String?
-
-  website String?
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@map("company_settings")
-}
-
-// ============================================================
-// ANNOUNCEMENT
-// ============================================================
-
-model Announcement {
-  id String @id @default(uuid())
-
-  title String
-
-  content String @db.Text
-
-  targetRole AnnouncementTargetRole @default(ALL)
-
-  isPublished Boolean @default(false)
-
-  publishedAt DateTime?
-
-  createdById String
-
-  createdBy User @relation("AnnouncementCreatedBy", fields: [createdById], references: [id])
-
-  notifications Notification[]
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@index([targetRole])
-  @@index([isPublished])
-  @@index([publishedAt])
-  @@index([createdById])
-  @@map("announcements")
-}
-
-// ============================================================
-// NOTIFICATION
-// ============================================================
-
-model Notification {
-  id String @id @default(uuid())
-
-  userId String
-
-  announcementId String?
-
-  title String
-
-  message String @db.Text
-
-  channel NotificationChannel @default(IN_APP)
-
-  isRead Boolean @default(false)
-
-  readAt DateTime?
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  announcement Announcement? @relation(fields: [announcementId], references: [id], onDelete: Cascade)
-
-  createdAt DateTime @default(now())
-
-  @@index([userId])
-  @@index([announcementId])
-  @@index([isRead])
-  @@index([createdAt])
-  @@map("notifications")
-}
-
-// ============================================================
-// BACKUP LOG
-// ============================================================
-
-model BackupLog {
-  id String @id @default(uuid())
-
-  backupName String
-
-  cloudStorageUrl String?
-
-  googleDriveId String?
-
-  fileSizeBytes BigInt?
-
-  status BackupStatus @default(PENDING)
-
-  errorMessage String? @db.Text
-
-  triggeredById String?
-
-  triggeredBy User? @relation("BackupTriggeredBy", fields: [triggeredById], references: [id], onDelete: SetNull)
-
-  createdAt DateTime @default(now())
-
-  @@index([triggeredById])
-  @@index([status])
-  @@index([createdAt])
-  @@map("backup_logs")
 }
