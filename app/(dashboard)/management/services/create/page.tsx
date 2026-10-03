@@ -104,7 +104,7 @@ export default function CreateServicePage() {
         }));
     };
 
-    const handleDocChange = (id: string, field: keyof DocumentRequirementInput, value: any) => {
+    const handleDocChange = <K extends keyof DocumentRequirementInput>(id: string, field: K, value: DocumentRequirementInput[K]) => {
         setForm((prev) => ({
             ...prev,
             documentRequirements: prev.documentRequirements.map((doc) => {

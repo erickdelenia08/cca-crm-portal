@@ -3,18 +3,19 @@
 import React, { useState, useTransition } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { createProgram } from "@/actions/program.action";
+import { createProgram, updateProgram } from "@/actions/program.action";
+import { ProgramInput } from "@/schemas/program.schema";
 
-export function ProgramForm() {
+export function ProgramForm({ initialData }: { initialData?: ProgramInput & { id?: string } }) {
     const router = useRouter();
     const [isPending, startTransition] = useTransition();
     const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
 
     const [form, setForm] = useState({
-        name: "",
-        code: "",
-        description: "",
-        isActive: true,
+        name: initialData?.name || "",
+        code: initialData?.code || "",
+        description: initialData?.description || "",
+        isActive: initialData?.isActive ?? true,
     });
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -28,8 +29,13 @@ export function ProgramForm() {
 
         startTransition(async () => {
             try {
-                await createProgram(form);
-                setMessage({ type: "success", text: "Program / Business Line berhasil dibuat!" });
+                if (initialData?.id) {
+                    await updateProgram(initialData.id, form);
+                    setMessage({ type: "success", text: "Program / Business Line berhasil diupdate!" });
+                } else {
+                    await createProgram(form);
+                    setMessage({ type: "success", text: "Program / Business Line berhasil dibuat!" });
+                }
                 setTimeout(() => {
                     router.push("/management/programs");
                 }, 1000);
@@ -115,7 +121,7 @@ export function ProgramForm() {
                     disabled={isPending}
                     className="px-4 py-2 bg-blue-600 text-white rounded text-xs font-semibold hover:bg-blue-700 disabled:opacity-50"
                 >
-                    {isPending ? "Creating..." : "Create Program"}
+                    {isPending ? "Saving..." : initialData?.id ? "Update Program" : "Create Program"}
                 </button>
             </div>
         </form>

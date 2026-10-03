@@ -12,13 +12,13 @@ export default async function SessionDetailPage({ params }: { params: Promise<{ 
         redirect("/login");
     }
 
-    const booking = await prisma.booking.findUnique({
+    const booking = await prisma.clientBooking.findUnique({
         where: {
             id: (await params).id,
             consultantId: session.user.id,
         },
         include: {
-            student: true,
+            client: true,
             meetingNotes: {
                 orderBy: {
                     createdAt: "desc",
@@ -54,9 +54,9 @@ export default async function SessionDetailPage({ params }: { params: Promise<{ 
 
     const sessionData: SessionDetailData = {
         id: booking.id,
-        studentName: booking.student.name || "Student",
-        studentEmail: booking.student.email || "",
-        studentId: booking.studentId,
+        studentName: booking.client.name || "Student",
+        studentEmail: booking.client.email || "",
+        studentId: booking.clientId,
         program: booking.sessionType === "CONSULTATION" ? "Konsultasi" : "Lainnya",
         topic: "Konsultasi Umum",
         date: dateObj.toISOString().split("T")[0],

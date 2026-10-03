@@ -9,7 +9,7 @@ export async function getAdvisoryData() {
     try {
         const session = await auth();
 
-        if (!session?.user?.id || session.user.role !== "STUDENT") {
+        if (!session?.user?.id || session.user.role !== "CLIENT") {
             return { success: false, error: "Unauthorized" };
         }
 
@@ -20,8 +20,8 @@ export async function getAdvisoryData() {
         const consultant = consultantRes.success ? consultantRes.data : null;
 
         // 2. Get Bookings / Sessions for the student
-        const sessions = await prisma.booking.findMany({
-            where: { studentId },
+        const sessions = await prisma.clientBooking.findMany({
+            where: { clientId: studentId },
             include: {
                 consultant: {
                     select: {
@@ -34,7 +34,7 @@ export async function getAdvisoryData() {
 
         // 3. Get Meeting Notes
         const meetingNotes = await prisma.meetingNote.findMany({
-            where: { studentId },
+            where: { clientId: studentId },
             include: {
                 consultant: {
                     select: { name: true }
@@ -62,15 +62,15 @@ export async function cancelAdvisorySession(bookingId: string) {
     try {
         const session = await auth();
 
-        if (!session?.user?.id || session.user.role !== "STUDENT") {
+        if (!session?.user?.id || session.user.role !== "CLIENT") {
             return { success: false, error: "Unauthorized" };
         }
 
-        const booking = await prisma.booking.findUnique({
+        const booking = await prisma.clientBooking.findUnique({
             where: { id: bookingId }
         });
 
-        if (!booking || booking.studentId !== session.user.id) {
+        if (!booking || booking.clientId !== session.user.id) {
             return { success: false, error: "Booking not found or not authorized." };
         }
 
@@ -78,7 +78,7 @@ export async function cancelAdvisorySession(bookingId: string) {
              return { success: false, error: "Hanya sesi PENDING yang dapat dibatalkan." };
         }
 
-        await prisma.booking.update({
+        await prisma.clientBooking.update({
             where: { id: bookingId },
             data: { status: "CANCELLED" }
         });

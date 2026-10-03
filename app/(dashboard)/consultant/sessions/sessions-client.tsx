@@ -14,7 +14,7 @@ import {
     Search,
     FileText
 } from "lucide-react";
-import { updateBookingStatus } from "@/actions/booking.action";
+import { updateClientBookingStatus } from "@/actions/booking.action";
 
 export interface SessionItem {
     id: string;
@@ -43,7 +43,7 @@ export function SessionsClient({ initialSessions }: SessionsClientProps) {
     const handleUpdateStatus = async (id: string, newStatus: "CONFIRMED" | "CANCELLED") => {
         setIsLoading(id);
         try {
-            const res = await updateBookingStatus(id, newStatus);
+            const res = await updateClientBookingStatus(id, newStatus as any);
             if (res?.success) {
                 setSessions((prev) =>
                     prev.map((session) =>

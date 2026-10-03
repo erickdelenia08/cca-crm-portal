@@ -12,12 +12,12 @@ export default async function SessionsPage() {
         redirect("/login");
     }
 
-    const bookings = await prisma.booking.findMany({
+    const bookings = await prisma.clientBooking.findMany({
         where: {
             consultantId: session.user.id,
         },
         include: {
-            student: true,
+            client: true,
         },
         orderBy: {
             scheduledAt: "asc",
@@ -30,14 +30,14 @@ export default async function SessionsPage() {
         
         return {
             id: b.id,
-            studentName: b.student.name || "Student",
-            studentEmail: b.student.email || "",
+            studentName: b.client?.name || "Client",
+            studentEmail: b.client?.email || "",
             program: b.sessionType === "CONSULTATION" ? "Konsultasi" : "Lainnya",
             topic: "Konsultasi Umum",
             date: dateObj.toISOString().split("T")[0],
             startTime: dateObj.toTimeString().substring(0, 5),
             endTime: endDateObj.toTimeString().substring(0, 5),
-            status: b.status as any,
+            status: b.status as SessionItem["status"],
             meetingUrl: b.meetingUrl,
             notes: b.notes,
         };

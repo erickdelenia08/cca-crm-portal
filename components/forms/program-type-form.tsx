@@ -26,6 +26,8 @@ export function ProgramTypeForm() {
             code: '',
             description: '',
             isActive: true,
+            programId: '',
+            deliveryType: 'SERVICE',
         },
     });
 
@@ -54,7 +56,7 @@ export function ProgramTypeForm() {
         setError(null);
         setIsSubmitting(true);
         try {
-            await upsertProgramType(data);
+            await upsertProgramType(data.id, data);
             router.push('/management/program-types');
         } catch (err: unknown) {
             const errorMessage = err instanceof Error ? err.message : String(err);

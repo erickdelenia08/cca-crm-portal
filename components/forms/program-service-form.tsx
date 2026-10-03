@@ -36,8 +36,8 @@ export function ProgramServiceForm({
         description: initialData?.description || "",
         deliveryType: (initialData?.deliveryType as ServiceDeliveryType) || "SERVICE",
         isActive: initialData?.isActive ?? true,
-        documentRequirements: initialData?.documentRequirements?.length ? initialData.documentRequirements.map(d => ({
-            id: d.id || Date.now().toString() + Math.random(),
+        documentRequirements: initialData?.documentRequirements?.length ? initialData.documentRequirements.map((d, idx) => ({
+            id: d.id || `doc-${crypto.randomUUID()}`,
             code: d.code,
             name: d.name,
             description: d.description || "",
@@ -69,7 +69,7 @@ export function ProgramServiceForm({
         }));
     };
 
-    const handleDocChange = (id: string, field: keyof DocReq, value: any) => {
+    const handleDocChange = (id: string, field: keyof DocReq, value: unknown) => {
         setForm((prev) => ({
             ...prev,
             documentRequirements: prev.documentRequirements.map((d) => (d.id === id ? { ...d, [field]: value } : d)),

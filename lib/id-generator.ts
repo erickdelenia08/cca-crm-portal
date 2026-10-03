@@ -4,14 +4,14 @@ import { prisma } from "@/lib/prisma";
 // Generator ID Kustom untuk Student/Klien
 export async function generateStudentId(): Promise<string> {
     const year = new Date().getFullYear();
-    const count = await prisma.studentProfile.count();
+    const count = await prisma.clientProfile.count();
     const sequence = String(count + 1).padStart(6, "0");
     return `CCA-${year}-${sequence}`; // Output: CCA-2026-000001
 }
 
 // Generator ID Kustom untuk Staff / Founders / Teacher
 export async function generateEmployeeId(prefix: "DIR" | "STF" | "TCH" | "CNS"): Promise<string> {
-    const count = await prisma.staffProfile.count();
+    const count = await prisma.user.count();
     const sequence = String(count + 1).padStart(3, "0");
     return `EMP-${prefix}-${sequence}`; // Output: EMP-DIR-001 atau EMP-TCH-001
 }

@@ -21,7 +21,16 @@ export default async function ManagementInvoicesPage() {
 
     return (
         <div className="p-6 max-w-7xl mx-auto space-y-6 bg-slate-50 min-h-screen">
-            <InvoiceTable invoices={res.data || []} />
+            <InvoiceTable invoices={res.data?.map(inv => ({
+                ...inv,
+                subtotal: Number(inv.subtotal),
+                items: inv.items.map(item => ({
+                    ...item,
+                    quantity: Number(item.quantity),
+                    unitPrice: Number(item.unitPrice),
+                    amount: Number(item.amount)
+                }))
+            })) || []} />
         </div>
     );
 }

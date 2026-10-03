@@ -66,6 +66,17 @@ export async function createProgramType(data: unknown) {
     }
 
     const { id, documentRequirements, ...typeData } = result.data;
+    
+    typeData.code = typeData.code.trim().toUpperCase();
+    typeData.name = typeData.name.trim();
+
+    const existing = await prisma.programType.findUnique({
+        where: { code: typeData.code }
+    });
+
+    if (existing) {
+        throw new Error("Program Type code already exists");
+    }
 
     try {
         await prisma.programType.create({
@@ -73,8 +84,8 @@ export async function createProgramType(data: unknown) {
                 ...typeData,
                 documentRequirements: {
                     create: (documentRequirements || []).map((req) => ({
-                        name: req.name,
-                        code: req.code,
+                        name: req.name.trim(),
+                        code: req.code.trim().toUpperCase(),
                         description: req.description,
                         isRequired: req.isRequired,
                     })),
@@ -102,6 +113,17 @@ export async function updateProgramType(id: string, data: unknown) {
     }
 
     const { id: _, documentRequirements, ...typeData } = result.data;
+    
+    typeData.code = typeData.code.trim().toUpperCase();
+    typeData.name = typeData.name.trim();
+
+    const existing = await prisma.programType.findUnique({
+        where: { code: typeData.code }
+    });
+
+    if (existing && existing.id !== id) {
+        throw new Error("Program Type code already exists");
+    }
 
     try {
         await prisma.$transaction(async (tx) => {
@@ -121,8 +143,8 @@ export async function updateProgramType(id: string, data: unknown) {
                 await tx.documentRequirement.createMany({
                     data: documentRequirements.map((req) => ({
                         programTypeId: id,
-                        name: req.name,
-                        code: req.code,
+                        name: req.name.trim(),
+                        code: req.code.trim().toUpperCase(),
                         description: req.description,
                         isRequired: req.isRequired,
                     })),
@@ -165,5 +187,32 @@ export async function deleteProgramType(id: string) {
     } catch (error: unknown) {
         const errorMessage = error instanceof Error ? error.message : String(error);
         throw new Error(errorMessage);
+    }
+}
+
+export async function upsertProgramType(id: string | null | undefined, data: unknown) {
+    if (id) {
+        return updateProgramType(id, data);
+    } else {
+        return createProgramType(data);
+    }
+}
+
+export async function toggleProgramTypeStatus(id: string, isActive: boolean) {
+    const session = await auth();
+    if (!session || session.user.role !== "MANAGEMENT") {
+        throw new Error("UNAUTHORIZED");
+    }
+
+    try {
+        await prisma.programType.update({
+            where: { id },
+            data: { isActive },
+        });
+
+        revalidatePath("/management/program-types");
+    } catch (error: unknown) {
+        const errorMessage = error instanceof Error ? error.message : String(error);
+        throw new Error("Gagal mengubah status Program Type: " + errorMessage);
     }
 }

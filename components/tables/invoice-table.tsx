@@ -9,13 +9,13 @@ import { InvoiceStatus } from "@prisma/client";
 export type InvoiceWithRelations = {
     id: string;
     invoiceNumber: string;
-    studentId: string;
-    subtotal: number | any;
+    clientId: string;
+    subtotal: number | string;
     status: InvoiceStatus;
     dueDate: Date;
     createdAt: Date;
     notes: string | null;
-    student: {
+    client: {
         id: string;
         name: string | null;
         email: string | null;
@@ -23,9 +23,9 @@ export type InvoiceWithRelations = {
     items: {
         id: string;
         description: string;
-        quantity: number | any;
-        unitPrice: number | any;
-        amount: number | any;
+        quantity: number | string;
+        unitPrice: number | string;
+        amount: number | string;
     }[];
 };
 
@@ -54,7 +54,7 @@ export function InvoiceTable({ invoices }: InvoiceTableProps) {
 
     // Filter Logic
     const filteredInvoices = invoices.filter((inv) => {
-        const matchesSearch = (inv.student.name && inv.student.name.toLowerCase().includes(searchTerm.toLowerCase())) ||
+        const matchesSearch = (inv.client.name && inv.client.name.toLowerCase().includes(searchTerm.toLowerCase())) ||
             inv.invoiceNumber.toLowerCase().includes(searchTerm.toLowerCase());
         const matchesTab = activeTab === "ALL" || inv.status === activeTab;
         return matchesSearch && matchesTab;
@@ -176,8 +176,8 @@ export function InvoiceTable({ invoices }: InvoiceTableProps) {
                                     <tr key={inv.id} className="hover:bg-slate-50/50 transition-colors">
                                         <td className="py-3 px-4 font-mono font-bold text-blue-900">{inv.invoiceNumber}</td>
                                         <td className="py-3 px-4">
-                                            <div className="font-medium text-slate-900">{inv.student.name || "Unknown"}</div>
-                                            <div className="text-xs text-slate-400">{inv.student.email}</div>
+                                            <div className="font-medium text-slate-900">{inv.client.name || "Unknown"}</div>
+                                            <div className="text-xs text-slate-400">{inv.client.email}</div>
                                         </td>
                                         <td className="py-3 px-4 text-slate-500">{new Date(inv.createdAt).toLocaleDateString("id-ID")}</td>
                                         <td className="py-3 px-4 text-slate-500">{new Date(inv.dueDate).toLocaleDateString("id-ID")}</td>
@@ -264,9 +264,9 @@ export function InvoiceTable({ invoices }: InvoiceTableProps) {
                             <div className="grid grid-cols-2 gap-6 text-xs mb-6">
                                 <div>
                                     <span className="text-slate-400 font-semibold uppercase block mb-1">Ditujukan Kepada:</span>
-                                    <p className="font-bold text-slate-800 text-sm">{selectedInvoice.student.name || "Unknown"}</p>
-                                    <p className="text-slate-600">{selectedInvoice.student.email}</p>
-                                    <p className="text-slate-600">ID Siswa: {selectedInvoice.student.id.substring(0, 8)}</p>
+                                    <p className="font-bold text-slate-800 text-sm">{selectedInvoice.client.name || "Unknown"}</p>
+                                    <p className="text-slate-600">{selectedInvoice.client.email}</p>
+                                    <p className="text-slate-600">ID Siswa: {selectedInvoice.client.id.substring(0, 8)}</p>
                                 </div>
                                 <div className="space-y-1 text-right">
                                     <div className="flex justify-end gap-2">

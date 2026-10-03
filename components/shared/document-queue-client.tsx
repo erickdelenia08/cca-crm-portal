@@ -44,7 +44,7 @@ export function DocumentQueueClient({
     // Filter Logic
     const filteredDocuments = documents.filter((doc) => {
         const matchesSearch =
-            (doc.student.name && doc.student.name.toLowerCase().includes(searchQuery.toLowerCase())) ||
+            (doc.client.name && doc.client.name.toLowerCase().includes(searchQuery.toLowerCase())) ||
             doc.id.toLowerCase().includes(searchQuery.toLowerCase());
         const matchesStatus = selectedStatus === "All" || doc.status === selectedStatus;
         return matchesSearch && matchesStatus;
@@ -94,7 +94,7 @@ export function DocumentQueueClient({
 
             // Optimistic update
             const updatedHistoryEntry = {
-                id: Math.random().toString(36).substring(7),
+                id: `opt-${crypto.randomUUID()}`,
                 status: newStatus,
                 note: revisionNote || null,
                 createdAt: new Date(),
@@ -111,8 +111,8 @@ export function DocumentQueueClient({
                 history: [updatedHistoryEntry, ...selectedDoc.history]
             };
 
-            setDocuments(docs => docs.map(doc => doc.id === selectedDoc.id ? (updatedDoc as any) : doc));
-            setSelectedDoc(updatedDoc as any);
+            setDocuments(docs => docs.map(doc => doc.id === selectedDoc.id ? (updatedDoc as unknown as typeof selectedDoc) : doc));
+            setSelectedDoc(updatedDoc as unknown as typeof selectedDoc);
             if (newStatus !== "REVISION_REQUIRED") setRevisionNote("");
         } else {
             alert(res.error || "Gagal memperbarui status dokumen");
@@ -189,11 +189,11 @@ export function DocumentQueueClient({
                             ) : filteredDocuments.map((doc) => (
                                 <tr key={doc.id} className="hover:bg-slate-50/50 transition-colors">
                                     <td className="p-4">
-                                        <p className="font-bold text-slate-900">{doc.student.name}</p>
+                                        <p className="font-bold text-slate-900">{doc.client.name}</p>
                                         <p className="text-[10px] text-slate-400 font-medium">{doc.id}</p>
                                     </td>
                                     <td className="p-4 font-medium text-slate-800">{doc.requirement.name}</td>
-                                    <td className="p-4 text-blue-600 underline truncate max-w-[200px]">{doc.fileName}</td>
+                                    <td className="p-4 text-blue-600 underline truncate max-w-[200px]">{doc.clientDocument?.fileName || "-"}</td>
                                     <td className="p-4 text-slate-500">{formatDate(doc.createdAt)}</td>
                                     <td className="p-4">
                                         <span
@@ -226,7 +226,7 @@ export function DocumentQueueClient({
                                     {selectedDoc.id}
                                 </span>
                                 <h2 className="text-lg font-bold text-slate-900 mt-2">{selectedDoc.requirement.name}</h2>
-                                <p className="text-xs text-slate-500">Siswa: {selectedDoc.student.name}</p>
+                                <p className="text-xs text-slate-500">Siswa: {selectedDoc.client.name}</p>
                             </div>
                             <button
                                 onClick={() => setSelectedDoc(null)}
@@ -268,7 +268,7 @@ export function DocumentQueueClient({
                                 <div className="flex items-center gap-3">
                                     <FileText className="w-8 h-8 text-blue-600" />
                                     <div>
-                                        <p className="text-xs font-bold text-slate-900">{selectedDoc.fileName}</p>
+                                        <p className="text-xs font-bold text-slate-900">{selectedDoc.clientDocument?.fileName || "-"}</p>
                                         <p className="text-[10px] text-slate-400">Diupload: {formatDate(selectedDoc.createdAt)}</p>
                                     </div>
                                 </div>

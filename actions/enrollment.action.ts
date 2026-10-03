@@ -1,8 +1,10 @@
 "use server";
 
 import { prisma } from "@/lib/prisma";
+import { Prisma } from "@prisma/client";
 import { revalidatePath } from "next/cache";
-import { EnrollmentStatus, CourseEnrollmentStatus } from "@prisma/client";
+import { EnrollmentStatus, CourseEnrollmentStatus, Role } from "@prisma/client";
+import { auth } from "@/auth";
 import {
     CourseEnrollmentInput,
     courseEnrollmentSchema,
@@ -10,119 +12,64 @@ import {
     programEnrollmentSchema,
 } from "@/schemas/enrollment.schema";
 
-/**
- * ========================================================
- * UNIFIED TYPES
- * ========================================================
- */
-export interface UnifiedEnrollmentRecord {
-    id: string;
-    type: "PROGRAM" | "COURSE";
-
-    clientName: string;
-    clientEmail: string;
-
-    programTitle?: string;
-    consultantName?: string;
-
-    courseTitle?: string;
-    className?: string;
-    teacherName?: string;
-
-    totalPayment: number;
-    status: string;
-    createdAt: string;
-}
-
-/**
- * ========================================================
- * LOOKUP DATA (FOR FORMS)
- * ========================================================
- */
-
-export async function getStudentsLookup() {
-    const students = await prisma.studentProfile.findMany({
-        include: { user: true },
-        where: { user: { role: "STUDENT" } },
-        orderBy: { user: { name: "asc" } },
+export async function getClientsLookup() {
+    const clients = await prisma.user.findMany({
+        where: { role: Role.CLIENT, isActive: true },
+        include: { clientProfile: true },
+        orderBy: { name: "asc" },
     });
 
-    return students.map((s) => ({
-        id: s.user.id,
-        profileId: s.id,
-        name: s.user.name,
-        email: s.user.email || "",
+    return clients.map((c) => ({
+        id: c.id,
+        name: c.name || "Unknown",
+        email: c.email || "",
+        clientNumber: c.clientProfile?.clientNumber || "-",
     }));
 }
 
 export async function getConsultantsLookup() {
-    const consultants = await prisma.consultantProfile.findMany({
-        include: { user: true },
-        where: { user: { role: "CONSULTANT" } },
-        orderBy: { user: { name: "asc" } },
+    const consultants = await prisma.user.findMany({
+        where: { role: Role.CONSULTANT, isActive: true },
+        orderBy: { name: "asc" },
     });
 
     return consultants.map((c) => ({
-        id: c.user.id,
-        profileId: c.id,
-        name: c.user.name,
-        email: c.user.email,
+        id: c.id,
+        name: c.name || "Unknown",
+        email: c.email || "",
     }));
 }
 
 export async function getProgramsLookup() {
-    // Note: Enrollments now point to ProgramType instead of Program.
-    // This function now returns ProgramTypes that act as "Programs" for enrollments.
-    const programTypes = await prisma.programType.findMany({
-        include: { program: true },
+    const programs = await prisma.program.findMany({
         where: { isActive: true },
         orderBy: { name: "asc" },
     });
-
-    return programTypes.map((pt) => ({
-        id: pt.id,
-        code: pt.code || "-",
-        name: pt.name,
-        typeId: pt.programId,
-        typeName: pt.program.name,
-        destination: "-",
-        basePrice: 0,
-        description: pt.description || "",
-    }));
+    return programs;
 }
 
-export async function getProgramTypesLookup() {
+export async function getProgramTypesLookup(programId?: string) {
     const types = await prisma.programType.findMany({
+        where: { 
+            isActive: true,
+            ...(programId ? { programId } : {})
+        },
         orderBy: { name: "asc" },
     });
-
-    return types.map((t) => ({
-        id: t.id,
-        name: t.name,
-        code: t.code,
-    }));
+    return types;
 }
 
-export async function getCoursesLookup() {
+export async function getCoursesLookup(programTypeId: string) {
     const courses = await prisma.course.findMany({
-        where: { isActive: true },
-        include: { programType: true },
+        where: { programTypeId, isActive: true },
         orderBy: { name: "asc" },
     });
-
-    return courses.map((c) => ({
-        id: c.id,
-        code: c.code,
-        title: c.name,
-        category: c.category || "LANGUAGE",
-        level: c.level || "BASIC",
-        price: Number(c.basePrice) || 0,
-    }));
+    return courses;
 }
 
-export async function getCourseClassesLookup() {
+export async function getCourseClassesLookup(courseId: string) {
     const classes = await prisma.courseClass.findMany({
-        where: { isActive: true },
+        where: { courseId, isActive: true },
         include: {
             teacher: { include: { user: true } },
             _count: { select: { enrollments: true } },
@@ -132,207 +79,256 @@ export async function getCourseClassesLookup() {
 
     return classes.map((c) => ({
         id: c.id,
-        courseId: c.courseId,
         code: c.code,
+        name: c.name || c.code,
         teacherName: c.teacher?.user?.name ?? "N/A",
         schedule: c.schedule || "-",
         maxCapacity: c.maxCapacity,
         currentEnrolled: c._count.enrollments,
-        startDate: c.startDate ? c.startDate.toISOString() : "",
-        endDate: c.endDate ? c.endDate.toISOString() : "",
+        startDate: c.startDate,
+        endDate: c.endDate,
     }));
 }
 
-/**
- * ========================================================
- * LIST (COMBINED)
- * ========================================================
- */
-export async function getEnrollments(): Promise<UnifiedEnrollmentRecord[]> {
-    const [programEnrollments, courseEnrollments] = await Promise.all([
-        prisma.programEnrollment.findMany({
-            include: {
-                student: true,
-                programType: { include: { program: true } },
-                consultant: true,
-            },
-            orderBy: { createdAt: "desc" },
-        }),
-        prisma.courseEnrollment.findMany({
-            // Jika relasi `student` & `courseClass` di CourseEnrollment belum didefinisikan/di-generate,
-            // kita hilangkan include yang error.
-            orderBy: { createdAt: "desc" },
-        }),
-    ]);
-
-    const records: UnifiedEnrollmentRecord[] = [];
-
-    // Map Program Enrollments
-    programEnrollments.forEach((pe) => {
-        records.push({
-            id: pe.id,
-            type: "PROGRAM",
-            clientName: pe.student?.name ?? "Unknown",
-            clientEmail: pe.student?.email ?? "N/A",
-            programTitle: pe.programType?.program?.name ? `${pe.programType.program.name} - ${pe.programType.name}` : pe.programType?.name ?? "N/A",
-            consultantName: pe.consultant?.name ?? "N/A",
-            totalPayment: 0,
-            status: pe.status,
-            createdAt: pe.createdAt.toISOString(),
-        });
-    });
-
-    // Map Course Enrollments
-    courseEnrollments.forEach((ce) => {
-        records.push({
-            id: ce.id,
-            type: "COURSE",
-            clientName: "Student", // Sesuaikan jika relasi sudah diperbaiki di Prisma
-            clientEmail: "N/A",
-            courseTitle: "Course Class",
-            className: ce.courseClassId,
-            teacherName: "N/A",
-            totalPayment: 0,
-            status: ce.status,
-            createdAt: ce.createdAt.toISOString(),
-        });
-    });
-
-    records.sort(
-        (a, b) =>
-            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-    );
-
-    return records;
-}
-
-/**
- * ========================================================
- * GET BY ID
- * ========================================================
- */
-export async function getProgramEnrollmentById(id: string) {
-    try {
-        const enrollment = await prisma.programEnrollment.findUnique({
-            where: { id },
-            include: {
-                student: true,
-                programType: { include: { program: true } },
-                consultant: true,
-                documentRequirements: true,
-                invoices: true,
-            },
-        });
-        return enrollment;
-    } catch (error) {
-        console.error("Error fetching program enrollment:", error);
-        return null;
+export async function getEnrollments() {
+    const session = await auth();
+    if (!session || (session.user.role !== "MANAGEMENT" && session.user.role !== "PROCESSING_DEPARTMENT")) {
+        throw new Error("UNAUTHORIZED");
     }
+
+    const programEnrollments = await prisma.programEnrollment.findMany({
+        include: {
+            client: true,
+            programType: { include: { program: true } },
+            consultant: true,
+            invoices: true
+        },
+        orderBy: { createdAt: "desc" },
+    });
+
+    return programEnrollments.map((pe) => ({
+        id: pe.id,
+        clientName: pe.client?.name ?? "Unknown",
+        clientEmail: pe.client?.email ?? "N/A",
+        programTitle: pe.programType?.program?.name,
+        serviceTitle: pe.programType?.name,
+        deliveryType: pe.programType?.deliveryType,
+        consultantName: pe.programType?.deliveryType === "COURSE" ? "—" : (pe.consultant?.name ?? "—"),
+        totalPayment: pe.invoices.reduce((sum, inv) => sum + Number(inv.totalAmount), 0),
+        status: pe.status,
+        createdAt: pe.createdAt.toISOString(),
+    }));
 }
 
-export async function getCourseEnrollmentById(id: string) {
-    const enrollment = await prisma.courseEnrollment.findUnique({
+export async function getEnrollmentById(id: string) {
+    const session = await auth();
+    if (!session || (session.user.role !== "MANAGEMENT" && session.user.role !== "PROCESSING_DEPARTMENT")) {
+        throw new Error("UNAUTHORIZED");
+    }
+
+    const enrollment = await prisma.programEnrollment.findUnique({
         where: { id },
         include: {
-            invoices: true,
+            client: true,
+            programType: { include: { program: true } },
+            consultant: true,
+            documentRequirements: {
+                include: {
+                    documents: true,
+                }
+            },
+            invoices: {
+                include: { items: true }
+            },
+            courseEnrollments: {
+                include: {
+                    courseClass: {
+                        include: {
+                            course: true,
+                            teacher: { include: { user: true } }
+                        }
+                    }
+                }
+            }
         },
     });
     return enrollment;
 }
 
-/**
- * ========================================================
- * CREATE, UPDATE & DELETE
- * ========================================================
- */
-export async function createProgramEnrollment(data: ProgramEnrollmentInput) {
-    const validatedData = programEnrollmentSchema.parse(data);
+export async function createFullEnrollment(data: {
+    programData: ProgramEnrollmentInput,
+    courseData?: Omit<CourseEnrollmentInput, 'programEnrollmentId' | 'clientId'>,
+    invoiceData?: { totalAmount: number; discount: number; items: { description: string, amount: number, quantity: number, unitPrice: number }[] }
+}) {
+    const session = await auth();
+    if (!session || session.user.role !== "MANAGEMENT") {
+        throw new Error("UNAUTHORIZED");
+    }
+
+    const validatedProgramData = programEnrollmentSchema.parse(data.programData);
 
     const requirements = await prisma.documentRequirement.findMany({
-        where: { programTypeId: validatedData.programTypeId, isActive: true },
+        where: { programTypeId: validatedProgramData.programTypeId, isActive: true },
     });
 
-    const result = await prisma.$transaction(async (tx) => {
-        const enrollment = await tx.programEnrollment.create({
-            data: {
-                studentId: validatedData.studentId,
-                programTypeId: validatedData.programTypeId,
-                consultantId: validatedData.consultantId || null,
-                status: validatedData.status,
-                notes: validatedData.notes,
-                documentRequirements: {
-                    create: requirements.map((req) => ({
-                        requirementId: req.id,
-                        code: req.code,
-                        name: req.name,
-                        description: req.description,
-                        isRequired: req.isRequired,
-                        isActive: true,
-                    })),
-                },
-            },
-        });
+    const programType = await prisma.programType.findUnique({
+        where: { id: validatedProgramData.programTypeId }
+    });
 
-        if (validatedData.consultantId) {
-            await tx.studentConsultantAssignment.create({
+    if (!programType) throw new Error("Program Type not found");
+    const deliveryType = programType.deliveryType;
+
+    if (deliveryType === "COURSE") {
+        validatedProgramData.consultantId = null;
+        if (!data.courseData) throw new Error("Course data is required for COURSE enrollments");
+    }
+
+    if (deliveryType === "SERVICE" && data.courseData) {
+        throw new Error("Cannot create CourseEnrollment for a SERVICE delivery type");
+    }
+
+    try {
+        const result = await prisma.$transaction(async (tx) => {
+            // Check Capacity if COURSE
+            if (deliveryType === "COURSE" && data.courseData) {
+                const courseClass = await tx.courseClass.findUnique({
+                    where: { id: data.courseData.courseClassId },
+                    include: { _count: { select: { enrollments: true } }, course: { include: { programType: true } } }
+                });
+                if (!courseClass) throw new Error("Course Class not found");
+                if (courseClass.course.programTypeId !== validatedProgramData.programTypeId) {
+                    throw new Error("Course does not match selected Program Type");
+                }
+                const availableSeats = courseClass.maxCapacity - courseClass._count.enrollments;
+                if (availableSeats <= 0) throw new Error("This class is full. Please select another class.");
+            }
+            // 1. Create ProgramEnrollment
+            const enrollment = await tx.programEnrollment.create({
                 data: {
-                    studentId: validatedData.studentId,
-                    consultantId: validatedData.consultantId,
-                    startDate: new Date(),
-                    isTemporary: false,
-                    reason: `Initial assignment via Program Enrollment (${enrollment.id})`,
+                    clientId: validatedProgramData.clientId,
+                    programTypeId: validatedProgramData.programTypeId,
+                    consultantId: validatedProgramData.consultantId || null,
+                    status: validatedProgramData.status,
+                    notes: validatedProgramData.notes,
+                    extendedData: validatedProgramData.extendedData ? (validatedProgramData.extendedData as unknown as Prisma.InputJsonValue) : undefined,
+                    // Create document requirements snapshots
+                    documentRequirements: {
+                        create: requirements.map((req) => ({
+                            requirementId: req.id,
+                            code: req.code,
+                            name: req.name,
+                            description: req.description,
+                            isRequired: req.isRequired,
+                            isActive: true,
+                        })),
+                    },
                 },
             });
-        }
 
-        return enrollment;
-    });
+            // 2. If it's a course, create CourseEnrollment
+            if (data.courseData) {
+                await tx.courseEnrollment.create({
+                    data: {
+                        clientId: validatedProgramData.clientId,
+                        programEnrollmentId: enrollment.id,
+                        courseClassId: data.courseData.courseClassId,
+                        status: data.courseData.status || "ACTIVE",
+                        notes: data.courseData.notes,
+                    }
+                });
+            }
 
-    revalidatePath("/management/enrollments");
-    return result;
+            // 3. Create invoice if provided
+            if (data.invoiceData) {
+                const invoiceNumber = `INV-${new Date().getFullYear()}-${Math.floor(Math.random() * 10000).toString().padStart(4, '0')}`;
+                
+                await tx.invoice.create({
+                    data: {
+                        invoiceNumber,
+                        clientId: validatedProgramData.clientId,
+                        programEnrollmentId: enrollment.id,
+                        createdById: session.user.id,
+                        subtotal: data.invoiceData.totalAmount + data.invoiceData.discount,
+                        discountAmount: data.invoiceData.discount,
+                        totalAmount: data.invoiceData.totalAmount,
+                        status: "DRAFT",
+                        dueDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days from now
+                        items: {
+                            create: data.invoiceData.items.map(item => ({
+                                description: item.description,
+                                quantity: item.quantity,
+                                unitPrice: item.unitPrice,
+                                amount: item.amount
+                            }))
+                        }
+                    }
+                });
+            }
+
+            // Optional: If consultant is assigned, create assignment record (only for SERVICE)
+            if (deliveryType === "SERVICE" && validatedProgramData.consultantId) {
+                await tx.clientConsultantAssignment.create({
+                    data: {
+                        clientId: validatedProgramData.clientId,
+                        consultantId: validatedProgramData.consultantId,
+                        startDate: new Date(),
+                        isTemporary: false,
+                        reason: `Assigned during enrollment ${enrollment.id}`
+                    }
+                });
+            }
+
+            return enrollment;
+        });
+
+        revalidatePath("/management/enrollments");
+        return { success: true, id: result.id };
+    } catch (error: unknown) {
+        const errorMessage = error instanceof Error ? error.message : String(error);
+        throw new Error("Gagal membuat enrollment: " + errorMessage);
+    }
 }
 
-export async function createCourseEnrollment(data: CourseEnrollmentInput) {
-    const validatedData = courseEnrollmentSchema.parse(data);
+export async function updateEnrollmentStatus(id: string, status: EnrollmentStatus, notes?: string) {
+    const session = await auth();
+    if (!session || session.user.role !== "MANAGEMENT") {
+        throw new Error("UNAUTHORIZED");
+    }
 
-    const enrollment = await prisma.courseEnrollment.create({
-        data: {
-            studentId: validatedData.studentId,
-            courseClassId: validatedData.courseClassId,
-            status: validatedData.status,
-            notes: validatedData.notes,
-        },
-    });
-
-    revalidatePath("/management/enrollments");
-    return enrollment;
-}
-
-export async function updateEnrollmentStatus(
-    id: string,
-    type: "PROGRAM" | "COURSE",
-    status: EnrollmentStatus | CourseEnrollmentStatus
-) {
-    if (type === "PROGRAM") {
+    try {
         await prisma.programEnrollment.update({
             where: { id },
-            data: { status: status as EnrollmentStatus },
+            data: { 
+                status,
+                ...(notes !== undefined && { notes })
+            }
         });
-    } else {
-        await prisma.courseEnrollment.update({
-            where: { id },
-            data: { status: status as CourseEnrollmentStatus },
-        });
+        revalidatePath(`/management/enrollments/${id}`);
+        revalidatePath("/management/enrollments");
+        return { success: true };
+    } catch (error: unknown) {
+        throw new Error("Gagal mengupdate status: " + (error instanceof Error ? error.message : String(error)));
     }
-    revalidatePath(`/management/enrollments/${id}`);
-    revalidatePath("/management/enrollments");
 }
 
-export async function deleteEnrollment(id: string, type: "PROGRAM" | "COURSE") {
-    if (type === "PROGRAM") {
-        await prisma.programEnrollment.delete({ where: { id } });
-    } else {
-        await prisma.courseEnrollment.delete({ where: { id } });
+export async function cancelEnrollment(id: string, reason: string) {
+    const session = await auth();
+    if (!session || session.user.role !== "MANAGEMENT") {
+        throw new Error("UNAUTHORIZED");
     }
-    revalidatePath("/management/enrollments");
+
+    try {
+        await prisma.programEnrollment.update({
+            where: { id },
+            data: { 
+                status: "CANCELLED",
+                notes: reason
+            }
+        });
+        revalidatePath(`/management/enrollments/${id}`);
+        revalidatePath("/management/enrollments");
+        return { success: true };
+    } catch (error: unknown) {
+        throw new Error("Gagal membatalkan enrollment: " + (error instanceof Error ? error.message : String(error)));
+    }
 }

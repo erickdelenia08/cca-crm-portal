@@ -113,7 +113,7 @@ export function UserTable({ users, onRefresh }: UserTableProps) {
                         className="bg-slate-50 border border-slate-300 text-xs text-slate-900 rounded-lg p-2 font-bold w-full sm:w-auto focus:ring-blue-500"
                     >
                         <option value="ALL">Semua Peran</option>
-                        <option value="STUDENT">Siswa / Klien</option>
+                        <option value="CLIENT">Klien</option>
                         <option value="TEACHER">Pengajar (Teacher)</option>
                         <option value="CONSULTANT">Konsultan</option>
                         <option value="MANAGEMENT">Management / Admin</option>

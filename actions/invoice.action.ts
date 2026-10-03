@@ -14,7 +14,7 @@ export async function getInvoices() {
     try {
         const invoices = await prisma.invoice.findMany({
             include: {
-                student: true,
+                client: true,
                 items: true,
             },
             orderBy: { createdAt: "desc" }
@@ -27,17 +27,17 @@ export async function getInvoices() {
     }
 }
 
-export async function getStudentsForInvoice() {
+export async function getClientsForInvoice() {
     const session = await auth();
     if (!session || session.user.role !== "MANAGEMENT") {
         throw new Error("UNAUTHORIZED");
     }
 
     try {
-        const students = await prisma.studentProfile.findMany({
+        const students = await prisma.clientProfile.findMany({
             select: {
                 id: true,
-                studentNumber: true,
+                clientNumber: true,
                 fullName: true,
                 email: true,
             },
@@ -105,7 +105,7 @@ export async function createInvoice(data: InvoiceInput) {
         const invoice = await prisma.invoice.create({
             data: {
                 invoiceNumber,
-                studentId: parsed.studentId,
+                clientId: parsed.clientId,
                 createdById: session.user.id,
                 subtotal: subtotal,
                 taxAmount: 0, // Implement if needed

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 import { auth } from "@/auth";
 import { createDocument } from "@/services/file.service";
+import { prisma } from "@/lib/prisma";
 
 export async function POST(req: NextRequest) {
     try {
@@ -38,6 +39,34 @@ export async function POST(req: NextRequest) {
                 {
                     message: "Data file tidak lengkap",
                 },
+                { status: 400 }
+            );
+        }
+
+        const enrollment = await prisma.programEnrollment.findFirst({
+            where: {
+                id: enrollmentId,
+                clientId: session.user.id
+            }
+        });
+
+        if (!enrollment) {
+            return NextResponse.json(
+                { message: "Enrollment tidak ditemukan atau tidak diizinkan" },
+                { status: 403 }
+            );
+        }
+
+        const requirement = await prisma.enrollmentDocumentRequirement.findFirst({
+            where: {
+                id: enrollmentDocumentRequirementId,
+                enrollmentId
+            }
+        });
+
+        if (!requirement) {
+            return NextResponse.json(
+                { message: "Requirement tidak ditemukan pada enrollment ini" },
                 { status: 400 }
             );
         }

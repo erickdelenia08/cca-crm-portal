@@ -61,6 +61,11 @@ enum DocumentStatus {
   REVISION_REQUIRED
 }
 
+enum EnrollmentDocumentRequirementSource {
+  PROGRAM_DEFAULT
+  PROCESSOR_ADDED
+}
+
 // ============================================================
 // BOOKING
 // ============================================================
@@ -80,6 +85,8 @@ enum BookingSessionType {
   DOCUMENT_REVIEW
   INTERVIEW
   ORIENTATION
+  ACADEMIC
+  CAREER
   OTHER
 }
 
@@ -105,6 +112,12 @@ enum CourseSessionMode {
   ONLINE
   OFFLINE
   HYBRID
+}
+
+enum MeetingProvider {
+  ZOOM
+  GOOGLE_MEET
+  OTHER
 }
 
 enum AttendanceStatus {
@@ -300,8 +313,9 @@ model User {
 
   uploadedMaterials CourseMaterial[] @relation("MaterialUploadedBy")
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt              DateTime                @default(now())
+  updatedAt              DateTime                @updatedAt
+  scheduleChangeRequests ScheduleChangeRequest[]
 
   @@index([role])
   @@index([department])
@@ -670,6 +684,8 @@ model EnrollmentDocumentRequirement {
   isRequired Boolean @default(true)
 
   isActive Boolean @default(true)
+
+  source EnrollmentDocumentRequirementSource @default(PROGRAM_DEFAULT)
 
   enrollment ProgramEnrollment @relation(fields: [enrollmentId], references: [id], onDelete: Cascade)
 
@@ -1064,6 +1080,8 @@ model CourseSession {
 
   mode CourseSessionMode @default(OFFLINE)
 
+  meetingProvider MeetingProvider?
+
   meetingUrl String?
 
   location String?
@@ -1076,6 +1094,8 @@ model CourseSession {
 
   materials CourseMaterial[]
 
+  scheduleRequests ScheduleChangeRequest[]
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -1084,6 +1104,43 @@ model CourseSession {
   @@index([startTime])
   @@index([origin])
   @@map("course_sessions")
+}
+
+// ============================================================
+// SCHEDULE CHANGE REQUEST
+// ============================================================
+
+model ScheduleChangeRequest {
+  id String @id @default(uuid())
+
+  sessionId String
+
+  requestedDate      DateTime
+  requestedStartTime DateTime
+  requestedEndTime   DateTime
+
+  requestedMode            CourseSessionMode
+  requestedLocation        String?
+  requestedMeetingProvider MeetingProvider?
+  requestedMeetingUrl      String?
+
+  reason String @db.Text
+
+  status ApprovalStatus @default(PENDING)
+
+  reviewedById String?
+  reviewedAt   DateTime?
+  reviewNote   String?   @db.Text
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  session  CourseSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  reviewer User?         @relation(fields: [reviewedById], references: [id], onDelete: SetNull)
+
+  @@index([sessionId])
+  @@index([status])
+  @@map("schedule_change_requests")
 }
 
 // ============================================================
@@ -1514,11 +1571,16 @@ model LeaveRequest {
 
   reason String? @db.Text
 
+  attachmentObjectKey String?
+  attachmentFileName  String?
+  attachmentMimeType  String?
+  attachmentFileSize  Int?
+
   status ApprovalStatus @default(PENDING)
 
   approvedById String?
-
   approvedAt DateTime?
+  reviewNote String? @db.Text
 
   staff StaffProfile @relation("StaffLeaveRequests", fields: [staffId], references: [id], onDelete: Cascade)
 

@@ -5,21 +5,21 @@ import { auth } from "@/auth";
 import { revalidatePath } from "next/cache";
 import { bookingSchema, BookingInput } from "@/schemas/booking.schema";
 
-export async function getStudentProfile() {
+export async function getClientProfile() {
     const session = await auth();
-    if (!session || session.user.role !== "STUDENT") {
+    if (!session || session.user.role !== "CLIENT") {
         throw new Error("UNAUTHORIZED");
     }
 
-    const student = await prisma.studentProfile.findUnique({
+    const client = await prisma.clientProfile.findUnique({
         where: { userId: session.user.id }
     });
 
-    if (!student) {
+    if (!client) {
         throw new Error("Profil Siswa tidak ditemukan.");
     }
 
-    return student;
+    return client;
 }
 export async function getAssignedConsultant() {
     try {
@@ -29,9 +29,9 @@ export async function getAssignedConsultant() {
             return { success: false, error: "Unauthorized" };
         }
 
-        const assignment = await prisma.studentConsultantAssignment.findFirst({
+        const assignment = await prisma.clientConsultantAssignment.findFirst({
             where: {
-                studentId: session.user.id, // 👈 Langsung gunakan User ID dari session
+                clientId: session.user.id, // 👈 Langsung gunakan User ID dari session
                 endDate: null,              // Hanya ambil assignment yang masih aktif
             },
             include: {
@@ -92,7 +92,7 @@ export async function getConsultantAvailability(consultantId: string) {
         });
 
         // Fetch bookings (from today onwards) to mark slots as booked
-        const bookings = await prisma.booking.findMany({
+        const bookings = await prisma.clientBooking.findMany({
             where: {
                 consultantId,
                 status: { in: ["PENDING", "CONFIRMED"] },
@@ -113,66 +113,67 @@ export async function getConsultantAvailability(consultantId: string) {
     }
 }
 
-export async function createStudentBooking(data: BookingInput) {
+import { checkScheduleConflict } from "@/services/schedule.service";
+
+export async function createClientBooking(data: BookingInput) {
     try {
-        // 1. Ambil session langsung untuk mendapatkan User ID
         const session = await auth();
         if (!session?.user?.id) {
             return { success: false, error: "Unauthorized" };
         }
 
         const parsed = bookingSchema.parse(data);
-
-        // 2. Parse scheduledAt
         const scheduledAt = new Date(`${parsed.date}T${parsed.startTime}:00`);
 
-        // 3. Cek slot yang bentrok
-        const existing = await prisma.booking.findFirst({
-            where: {
-                consultantId: parsed.consultantId,
-                scheduledAt,
-                status: { in: ["PENDING", "CONFIRMED"] },
-            },
-        });
-
-        if (existing) {
-            return {
-                success: false,
-                error: "Slot ini sudah dipesan. Silakan pilih slot lain.",
-            };
-        }
-
-        // 4. Hitung durasi menit
-        const start = new Date(`${parsed.date}T${parsed.startTime}:00`);
+        const start = scheduledAt;
         const end = new Date(`${parsed.date}T${parsed.endTime}:00`);
-        const durationMinutes = Math.round(
-            (end.getTime() - start.getTime()) / 60000
-        );
+        const durationMinutes = Math.round((end.getTime() - start.getTime()) / 60000);
 
         if (durationMinutes <= 0) {
-            return {
-                success: false,
-                error: "Waktu selesai harus lebih besar dari waktu mulai.",
-            };
+            return { success: false, error: "Waktu selesai harus lebih besar dari waktu mulai." };
         }
 
-        // 5. Simpan booking dengan studentId = User ID (session.user.id)
-        await prisma.booking.create({
-            data: {
-                studentId: session.user.id, // ✅ SEKARANG SUDAH BENAR (Menggunakan User.id)
-                consultantId: parsed.consultantId,
-                availabilityTemplateId: parsed.availabilityTemplateId,
-                availabilityOverrideId: parsed.availabilityOverrideId,
-                scheduledAt,
-                durationMinutes,
-                sessionType: parsed.sessionType,
-                status: "PENDING",
-                notes: parsed.topic,
-            },
+        // Run transaction safely
+        const result = await prisma.$transaction(async (tx) => {
+            const conflictResult = await checkScheduleConflict(tx, {
+                clientId: session.user.id,
+                staffId: parsed.consultantId,
+                startTime: start,
+                endTime: end
+            });
+
+            if (conflictResult.hasConflict) {
+                // Determine user-friendly error message without leaking personal data
+                const firstConflict = conflictResult.conflicts[0];
+                let msg = "Terjadi bentrok jadwal.";
+                if (firstConflict.type === "CLIENT") {
+                    msg = `Anda sudah memiliki jadwal lain pada waktu ini: ${firstConflict.title}.`;
+                } else if (firstConflict.type === "STAFF") {
+                    msg = "Konsultan/Teacher tidak tersedia pada waktu tersebut.";
+                }
+                
+                throw new Error(msg);
+            }
+
+            return await tx.clientBooking.create({
+                data: {
+                    clientId: session.user.id,
+                    consultantId: parsed.consultantId,
+                    availabilityTemplateId: parsed.availabilityTemplateId,
+                    availabilityOverrideId: parsed.availabilityOverrideId,
+                    scheduledAt,
+                    durationMinutes,
+                    sessionType: parsed.sessionType,
+                    status: "PENDING",
+                    notes: parsed.topic,
+                },
+            });
+        }, {
+            isolationLevel: "Serializable" // Enforce atomic checks for double bookings
         });
 
-        revalidatePath("/student/booking");
-        return { success: true };
+        revalidatePath("/client/bookings");
+        return { success: true, data: result };
     } catch (error: unknown) {
         const errorMessage =
             error instanceof Error ? error.message : String(error);
@@ -184,12 +185,12 @@ export async function createStudentBooking(data: BookingInput) {
 
 import { BookingStatus } from "@prisma/client";
 
-export async function updateBookingStatus(id: string, status: BookingStatus) {
+export async function updateClientBookingStatus(id: string, status: BookingStatus) {
     try {
         const session = await auth();
         if (!session?.user?.id) throw new Error("Unauthorized");
 
-        await prisma.booking.update({
+        await prisma.clientBooking.update({
             where: { id },
             data: { status }
         });
@@ -201,21 +202,21 @@ export async function updateBookingStatus(id: string, status: BookingStatus) {
     }
 }
 
-export async function saveSessionNotes(id: string, notes: string, actionItems: any[]) {
+export async function saveSessionNotes(id: string, notes: string, actionItems: { id: string; text: string; done: boolean }[]) {
     try {
         const session = await auth();
         if (!session?.user?.id || session.user.role !== "CONSULTANT") throw new Error("Unauthorized");
 
-        const booking = await prisma.booking.findUnique({
+        const booking = await prisma.clientBooking.findUnique({
             where: { id },
         });
 
-        if (!booking) throw new Error("Booking not found");
+        if (!booking) throw new Error("ClientBooking not found");
 
         await prisma.$transaction([
             prisma.meetingNote.create({
                 data: {
-                    studentId: booking.studentId,
+                    clientId: booking.clientId,
                     consultantId: booking.consultantId,
                     bookingId: id,
                     title: `Notes for Session ${id}`,
@@ -223,7 +224,7 @@ export async function saveSessionNotes(id: string, notes: string, actionItems: a
                     createdById: session.user.id,
                 }
             }),
-            prisma.booking.update({
+            prisma.clientBooking.update({
                 where: { id },
                 data: { status: "COMPLETED" }
             })
@@ -237,14 +238,14 @@ export async function saveSessionNotes(id: string, notes: string, actionItems: a
     }
 }
 
-export async function addStudentNote(studentId: string, content: string) {
+export async function addClientNote(clientId: string, content: string) {
     try {
         const session = await auth();
         if (!session?.user?.id || session.user.role !== "CONSULTANT") throw new Error("Unauthorized");
 
         await prisma.meetingNote.create({
             data: {
-                studentId,
+                clientId,
                 consultantId: session.user.id,
                 title: "Catatan Konsultan",
                 content,
@@ -252,7 +253,117 @@ export async function addStudentNote(studentId: string, content: string) {
             }
         });
 
-        revalidatePath(`/consultant/students/${studentId}`);
+        revalidatePath(`/consultant/clients/${clientId}`);
+        return { success: true };
+    } catch (error: unknown) {
+        return { success: false, error: error instanceof Error ? error.message : String(error) };
+    }
+}
+
+export async function rescheduleClientBooking(bookingId: string, data: BookingInput) {
+    try {
+        const session = await auth();
+        if (!session?.user?.id) throw new Error("Unauthorized");
+
+        const booking = await prisma.clientBooking.findUnique({
+            where: { id: bookingId }
+        });
+
+        if (!booking || booking.clientId !== session.user.id) {
+            throw new Error("Booking not found or you do not have permission.");
+        }
+
+        // 24-hour limit rule: Reschedule is allowed only when there are at least 24 hours before the session start.
+        const now = new Date();
+        const timeDiff = booking.scheduledAt.getTime() - now.getTime();
+        const hoursDiff = timeDiff / (1000 * 60 * 60);
+
+        if (hoursDiff < 24) {
+            throw new Error("Reschedule is only allowed at least 24 hours before the session starts.");
+        }
+
+        const parsed = bookingSchema.parse(data);
+        const scheduledAt = new Date(`${parsed.date}T${parsed.startTime}:00`);
+        const start = scheduledAt;
+        const end = new Date(`${parsed.date}T${parsed.endTime}:00`);
+        const durationMinutes = Math.round((end.getTime() - start.getTime()) / 60000);
+
+        if (durationMinutes <= 0) {
+            throw new Error("Waktu selesai harus lebih besar dari waktu mulai.");
+        }
+
+        const result = await prisma.$transaction(async (tx) => {
+            const conflictResult = await checkScheduleConflict(tx, {
+                clientId: session.user.id,
+                staffId: parsed.consultantId,
+                startTime: start,
+                endTime: end,
+                excludeBookingId: booking.id
+            });
+
+            if (conflictResult.hasConflict) {
+                const firstConflict = conflictResult.conflicts[0];
+                let msg = "Terjadi bentrok jadwal.";
+                if (firstConflict.type === "CLIENT") {
+                    msg = `Anda sudah memiliki jadwal lain pada waktu ini: ${firstConflict.title}.`;
+                } else if (firstConflict.type === "STAFF") {
+                    msg = "Konsultan/Teacher tidak tersedia pada waktu tersebut.";
+                }
+                throw new Error(msg);
+            }
+
+            return await tx.clientBooking.update({
+                where: { id: bookingId },
+                data: {
+                    scheduledAt,
+                    durationMinutes,
+                    availabilityTemplateId: parsed.availabilityTemplateId,
+                    availabilityOverrideId: parsed.availabilityOverrideId,
+                    notes: parsed.topic
+                }
+            });
+        }, {
+            isolationLevel: "Serializable"
+        });
+
+        revalidatePath("/client/bookings");
+        return { success: true, data: result };
+    } catch (error: unknown) {
+        return { success: false, error: error instanceof Error ? error.message : String(error) };
+    }
+}
+
+export async function cancelClientBooking(bookingId: string, reason?: string) {
+    try {
+        const session = await auth();
+        if (!session?.user?.id) throw new Error("Unauthorized");
+
+        const booking = await prisma.clientBooking.findUnique({
+            where: { id: bookingId }
+        });
+
+        if (!booking || booking.clientId !== session.user.id) {
+            throw new Error("Booking not found or you do not have permission.");
+        }
+
+        // Cancel allowed only if at least 24 hours before
+        const now = new Date();
+        const timeDiff = booking.scheduledAt.getTime() - now.getTime();
+        const hoursDiff = timeDiff / (1000 * 60 * 60);
+
+        if (hoursDiff < 24) {
+            throw new Error("Cancellation is only allowed at least 24 hours before the session starts.");
+        }
+
+        await prisma.clientBooking.update({
+            where: { id: bookingId },
+            data: {
+                status: "CANCELLED",
+                notes: reason ? `${booking.notes}\n\n[Cancelled: ${reason}]` : booking.notes
+            }
+        });
+
+        revalidatePath("/client/bookings");
         return { success: true };
     } catch (error: unknown) {
         return { success: false, error: error instanceof Error ? error.message : String(error) };

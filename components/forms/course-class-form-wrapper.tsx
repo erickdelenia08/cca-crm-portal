@@ -12,16 +12,18 @@ export function CourseClassFormWrapper({
     programId: string;
     productId: string;
     courseId: string;
-    teachers: { id: string; name: string }[];
+    teachers: { id: string; fullName: string }[];
 }) {
     const router = useRouter();
 
     return (
         <CourseClassForm
             courseId={courseId}
-            teachers={teachers}
+            teachers={teachers.map(t => ({
+                id: t.id,
+                name: t.fullName || "Unknown"
+            }))}
             onSuccess={() => {
-                // Navigate back to the course details (or product details)
                 router.push(`/management/programs/${programId}/products/${productId}`);
                 router.refresh();
             }}

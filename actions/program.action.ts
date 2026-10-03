@@ -64,12 +64,21 @@ export async function createProgram(data: unknown) {
     }
 
     const payload = result.data;
+    const code = payload.code.trim().toUpperCase();
+
+    const existing = await prisma.program.findUnique({
+        where: { code }
+    });
+
+    if (existing) {
+        throw new Error("Program code already exists");
+    }
 
     try {
         await prisma.program.create({
             data: {
-                name: payload.name,
-                code: payload.code,
+                name: payload.name.trim(),
+                code,
                 description: payload.description,
                 isActive: payload.isActive,
             },
@@ -80,5 +89,67 @@ export async function createProgram(data: unknown) {
     } catch (error: unknown) {
         const errorMessage = error instanceof Error ? error.message : String(error);
         throw new Error("Gagal menyimpan program: " + errorMessage);
+    }
+}
+
+export async function updateProgram(id: string, data: unknown) {
+    const session = await auth();
+    if (!session || session.user.role !== "MANAGEMENT") {
+        throw new Error("UNAUTHORIZED");
+    }
+
+    const result = programSchema.safeParse(data);
+    if (!result.success) {
+        throw new Error("Invalid form data");
+    }
+
+    const payload = result.data;
+    const code = payload.code.trim().toUpperCase();
+
+    const existing = await prisma.program.findUnique({
+        where: { code }
+    });
+
+    if (existing && existing.id !== id) {
+        throw new Error("Program code already exists");
+    }
+
+    try {
+        await prisma.program.update({
+            where: { id },
+            data: {
+                name: payload.name.trim(),
+                code,
+                description: payload.description,
+                isActive: payload.isActive,
+            },
+        });
+
+        revalidatePath("/management/programs");
+        revalidatePath(`/management/programs/${id}`);
+        return { success: true };
+    } catch (error: unknown) {
+        const errorMessage = error instanceof Error ? error.message : String(error);
+        throw new Error("Gagal mengupdate program: " + errorMessage);
+    }
+}
+
+export async function toggleProgramStatus(id: string, isActive: boolean) {
+    const session = await auth();
+    if (!session || session.user.role !== "MANAGEMENT") {
+        throw new Error("UNAUTHORIZED");
+    }
+    
+    try {
+        await prisma.program.update({
+            where: { id },
+            data: { isActive }
+        });
+        revalidatePath("/management/programs");
+        revalidatePath(`/management/programs/${id}`);
+        return { success: true };
+    } catch (error: unknown) {
+        const errorMessage = error instanceof Error ? error.message : String(error);
+        throw new Error("Gagal mengupdate status program: " + errorMessage);
     }
 }

@@ -9,9 +9,9 @@ import { createInvoice } from "@/actions/invoice.action";
 import { useRouter } from "next/navigation";
 
 export function InvoiceForm({
-    students,
+    clients,
 }: {
-    students: { id: string; fullName: string; email: string | null; studentNumber: string | null }[];
+    clients: { id: string; fullName: string; email: string | null; clientNumber: string | null }[];
 }) {
     const router = useRouter();
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -30,7 +30,7 @@ export function InvoiceForm({
             date: new Date().toISOString().split("T")[0],
             dueDate: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString().split("T")[0],
             rate: "-",
-            studentId: "",
+            clientId: "",
             items: [{ description: "", qty: 1, discount: 0, unitPrice: 0 }],
         },
     });
@@ -40,10 +40,10 @@ export function InvoiceForm({
         name: "items",
     });
 
-    const selectedStudentId = watch("studentId");
+    const selectedClientId = watch("clientId");
     const items = watch("items");
 
-    const selectedStudent = students.find((s) => s.id === selectedStudentId);
+    const selectedClient = clients.find((s) => s.id === selectedClientId);
 
     const calculateItemAmount = (qty: number, unitPrice: number, discount: number) => {
         const total = qty * unitPrice - discount;
@@ -150,17 +150,17 @@ export function InvoiceForm({
                             </label>
                             <div className="col-span-2">
                                 <select
-                                    {...register("studentId")}
+                                    {...register("clientId")}
                                     className="w-full border border-slate-300 rounded px-2 py-1.5 text-sm bg-white focus:ring-2 focus:ring-indigo-500 font-medium text-slate-800 outline-none"
                                 >
                                     <option value="">-- Pilih Client / Siswa --</option>
-                                    {students.map((student) => (
-                                        <option key={student.id} value={student.id}>
-                                            {student.fullName} ({student.studentNumber || "N/A"})
+                                    {clients.map((client) => (
+                                        <option key={client.id} value={client.id}>
+                                            {client.fullName} ({client.clientNumber || "N/A"})
                                         </option>
                                     ))}
                                 </select>
-                                {errors.studentId && <p className="text-red-500 text-xs mt-1">{errors.studentId.message}</p>}
+                                {errors.clientId && <p className="text-red-500 text-xs mt-1">{errors.clientId.message}</p>}
                             </div>
                         </div>
 
@@ -171,7 +171,7 @@ export function InvoiceForm({
                                 type="text"
                                 readOnly
                                 placeholder="Pilih client terlebih dahulu"
-                                value={selectedStudent?.fullName || ""}
+                                value={selectedClient?.fullName || ""}
                                 className="col-span-2 border border-slate-200 bg-slate-100/80 text-slate-700 font-medium rounded px-2 py-1 text-sm cursor-not-allowed outline-none select-none"
                             />
                         </div>
@@ -183,7 +183,7 @@ export function InvoiceForm({
                                 type="email"
                                 readOnly
                                 placeholder="Pilih client terlebih dahulu"
-                                value={selectedStudent?.email || ""}
+                                value={selectedClient?.email || ""}
                                 className="col-span-2 border border-slate-200 bg-slate-100/80 text-slate-700 font-medium rounded px-2 py-1 text-sm cursor-not-allowed outline-none select-none"
                             />
                         </div>
@@ -195,7 +195,7 @@ export function InvoiceForm({
                                 type="text"
                                 readOnly
                                 placeholder="Pilih client terlebih dahulu"
-                                value={selectedStudent?.studentNumber || ""}
+                                value={selectedClient?.clientNumber || ""}
                                 className="col-span-2 border border-slate-200 bg-slate-100/80 text-indigo-700 font-mono font-bold rounded px-2 py-1 text-sm cursor-not-allowed outline-none select-none"
                             />
                         </div>

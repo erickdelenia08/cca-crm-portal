@@ -41,7 +41,6 @@ export function CourseClassList({ courseId, classes, teachers }: CourseClassList
             courseId: item.courseId,
             code: item.code,
             teacherId: item.teacherId,
-            schedule: item.schedule,
             maxCapacity: item.maxCapacity,
             startDate: item.startDate,
             endDate: item.endDate,
@@ -53,7 +52,7 @@ export function CourseClassList({ courseId, classes, teachers }: CourseClassList
         if (!confirm("Apakah Anda yakin ingin menghapus kelas ini?")) return;
         setIsDeleting(id);
         try {
-            await deleteCourseClass(id, courseId);
+            await deleteCourseClass(id);
         } catch (error) {
             alert("Gagal menghapus kelas");
         } finally {

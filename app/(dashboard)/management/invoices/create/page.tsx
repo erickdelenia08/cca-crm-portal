@@ -1,10 +1,10 @@
 import React from "react";
-import { getStudentsForInvoice } from "@/actions/invoice.action";
+import { getClientsForInvoice } from "@/actions/invoice.action";
 import { InvoiceForm } from "@/components/forms/invoice-form";
 import { redirect } from "next/navigation";
 
 export default async function InvoiceCreatePage() {
-    const res = await getStudentsForInvoice();
+    const res = await getClientsForInvoice();
 
     if (!res.success) {
         if (res.error === "UNAUTHORIZED") {
@@ -21,7 +21,7 @@ export default async function InvoiceCreatePage() {
 
     return (
         <div className="p-6 max-w-5xl mx-auto bg-slate-50 min-h-screen space-y-6">
-            <InvoiceForm students={res.data || []} />
+            <InvoiceForm clients={res.data || []} />
         </div>
     );
 }

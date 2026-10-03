@@ -14,6 +14,7 @@ import {
   ArrowUpRight,
   MessageSquare
 } from "lucide-react";
+import { AttendanceCard } from "@/components/attendance/attendance-card";
 
 // Types eksplisit tanpa `any`
 type ProgramType = "STUDY_ABROAD" | "VISA_HOLIDAY" | "ENGLISH_COURSE" | "MANDARIN_COURSE";
@@ -125,159 +126,174 @@ export default function ConsultantDashboardPage() {
   };
 
   return (
-    <div className="max-w-6xl mx-auto p-6 space-y-6 text-slate-800">
+    <div className="max-w-7xl mx-auto p-8 md:p-12 space-y-10 font-sans selection:bg-[#3b82f6] selection:text-white">
       {/* Header Portal Konsultan */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-        <div>
-          <h1 className="text-xl font-bold text-slate-900">Dashboard Konsultan</h1>
-          <p className="text-xs text-slate-500 mt-0.5">
-            Kelola pendampingan program siswa, verifikasi berkas, dan sesi bimbingan.
+      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 pb-6 border-b border-[#e2e8f0]">
+        <div className="space-y-2">
+          <h1 className="text-3xl font-bold text-[#0f172a] tracking-tight">Consultant Workspace</h1>
+          <p className="text-[15px] text-[#475569] font-normal">
+            Manage your student sessions, verify documents, and track progress.
           </p>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-3">
           <a
             href="/consultant/schedules"
-            className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-slate-900 hover:bg-slate-800 text-white font-semibold text-xs rounded-lg transition-colors"
+            className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#1e293b] hover:bg-[#0f172a] text-white font-semibold text-sm rounded-full transition-all shadow-sm hover:shadow-md"
           >
-            <Calendar className="w-3.5 h-3.5" />
-            <span>Atur Availability Jam</span>
+            <Calendar className="w-4 h-4" />
+            <span>Manage Availability</span>
           </a>
         </div>
       </div>
 
-      {/* Metric Cards Summary */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="bg-white p-4 rounded-xl border border-slate-200 space-y-1">
-          <div className="flex items-center justify-between text-slate-500">
-            <span className="text-xs font-semibold">Siswa Aktif</span>
-            <Users className="w-4 h-4 text-blue-600" />
-          </div>
-          <p className="text-2xl font-bold text-slate-900">{stats.activeStudents}</p>
-          <p className="text-[11px] text-slate-400">Di bawah pendampingan Anda</p>
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+        {/* Attendance Widget */}
+        <div className="lg:col-span-1">
+          <AttendanceCard />
         </div>
 
-        <div className="bg-white p-4 rounded-xl border border-slate-200 space-y-1">
-          <div className="flex items-center justify-between text-slate-500">
-            <span className="text-xs font-semibold">Dokumen Butuh Review</span>
-            <FileSearch className="w-4 h-4 text-amber-600" />
+        {/* Metric Cards Summary */}
+        <div className="lg:col-span-3 grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="bg-white p-6 rounded-2xl border border-[#e2e8f0] shadow-sm hover:shadow-md transition-shadow">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-10 h-10 rounded-lg bg-[#e0f2fe] flex items-center justify-center">
+                <Users className="w-5 h-5 text-[#0284c7]" />
+              </div>
+            </div>
+            <p className="text-3xl font-bold text-[#0f172a] tracking-tight">{stats.activeStudents}</p>
+            <p className="text-sm font-semibold text-[#475569] mt-1">Active Students</p>
+            <p className="text-[12px] text-[#64748b] mt-1">Under your guidance</p>
           </div>
-          <p className="text-2xl font-bold text-slate-900">{pendingDocs.length}</p>
-          <p className="text-[11px] text-amber-600 font-medium">Perlu tindakan verifikasi</p>
-        </div>
 
-        <div className="bg-white p-4 rounded-xl border border-slate-200 space-y-1">
-          <div className="flex items-center justify-between text-slate-500">
-            <span className="text-xs font-semibold">Bimbingan Hari Ini</span>
-            <Calendar className="w-4 h-4 text-emerald-600" />
+          <div className="bg-white p-6 rounded-2xl border border-[#e2e8f0] shadow-sm hover:shadow-md transition-shadow">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-10 h-10 rounded-lg bg-[#fef3c7] flex items-center justify-center">
+                <FileSearch className="w-5 h-5 text-[#d97706]" />
+              </div>
+            </div>
+            <p className="text-3xl font-bold text-[#0f172a] tracking-tight">{pendingDocs.length}</p>
+            <p className="text-sm font-semibold text-[#475569] mt-1">Docs for Review</p>
+            <p className="text-[12px] text-[#d97706] font-medium mt-1">Requires action</p>
           </div>
-          <p className="text-2xl font-bold text-slate-900">{stats.upcomingSessionsToday}</p>
-          <p className="text-[11px] text-slate-400">Sesi terkonfirmasi</p>
-        </div>
 
-        <div className="bg-white p-4 rounded-xl border border-slate-200 space-y-1">
-          <div className="flex items-center justify-between text-slate-500">
-            <span className="text-xs font-semibold">Selesai Bulan Ini</span>
-            <CheckCircle2 className="w-4 h-4 text-indigo-600" />
+          <div className="bg-white p-6 rounded-2xl border border-[#e2e8f0] shadow-sm hover:shadow-md transition-shadow">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-10 h-10 rounded-lg bg-[#d1fae5] flex items-center justify-center">
+                <Calendar className="w-5 h-5 text-[#059669]" />
+              </div>
+            </div>
+            <p className="text-3xl font-bold text-[#0f172a] tracking-tight">{stats.upcomingSessionsToday}</p>
+            <p className="text-sm font-semibold text-[#475569] mt-1">Sessions Today</p>
+            <p className="text-[12px] text-[#64748b] mt-1">Confirmed</p>
           </div>
-          <p className="text-2xl font-bold text-slate-900">{stats.completedThisMonth}</p>
-          <p className="text-[11px] text-slate-400">Aplikasi/Visa berhasil submit</p>
+
+          <div className="bg-white p-6 rounded-2xl border border-[#e2e8f0] shadow-sm hover:shadow-md transition-shadow">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-10 h-10 rounded-lg bg-[#e0e7ff] flex items-center justify-center">
+                <CheckCircle2 className="w-5 h-5 text-[#4f46e5]" />
+              </div>
+            </div>
+            <p className="text-3xl font-bold text-[#0f172a] tracking-tight">{stats.completedThisMonth}</p>
+            <p className="text-sm font-semibold text-[#475569] mt-1">Completed</p>
+            <p className="text-[12px] text-[#64748b] mt-1">This month</p>
+          </div>
         </div>
       </div>
 
       {/* Segmented Control Navigasi Workarea */}
-      <div className="flex items-center justify-between gap-4">
-        <div className="inline-flex p-1 bg-slate-100 rounded-lg border border-slate-200/80">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div className="inline-flex p-1.5 bg-[#f1f5f9] rounded-xl border border-[#e2e8f0]">
           <button
             type="button"
             onClick={() => setActiveTab("DOC_QUEUE")}
-            className={`px-3.5 py-1.5 text-xs font-semibold rounded-md transition-all ${activeTab === "DOC_QUEUE"
-                ? "bg-white text-slate-900 shadow-xs"
-                : "text-slate-500 hover:text-slate-800"
+            className={`px-5 py-2 text-[13px] font-bold rounded-lg transition-all ${activeTab === "DOC_QUEUE"
+                ? "bg-white text-[#0f172a] shadow-sm"
+                : "text-[#64748b] hover:text-[#0f172a]"
               }`}
           >
-            Antrean Review Dokumen ({pendingDocs.length})
+            Document Queue ({pendingDocs.length})
           </button>
           <button
             type="button"
             onClick={() => setActiveTab("STUDENTS_LIST")}
-            className={`px-3.5 py-1.5 text-xs font-semibold rounded-md transition-all ${activeTab === "STUDENTS_LIST"
-                ? "bg-white text-slate-900 shadow-xs"
-                : "text-slate-500 hover:text-slate-800"
+            className={`px-5 py-2 text-[13px] font-bold rounded-lg transition-all ${activeTab === "STUDENTS_LIST"
+                ? "bg-white text-[#0f172a] shadow-sm"
+                : "text-[#64748b] hover:text-[#0f172a]"
               }`}
           >
-            Daftar Siswa Pendampingan ({assignedStudents.length})
+            Assigned Students ({assignedStudents.length})
           </button>
         </div>
 
         {/* Quick Search */}
-        <div className="relative w-48 sm:w-64">
-          <Search className="w-3.5 h-3.5 absolute left-3 top-2.5 text-slate-400" />
+        <div className="relative w-full sm:w-72">
+          <Search className="w-4 h-4 absolute left-4 top-3 text-[#94a3b8]" />
           <input
             type="text"
-            placeholder="Cari siswa atau dokumen..."
+            placeholder="Search students or docs..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-8 pr-3 py-1.5 bg-white border border-slate-200 rounded-lg text-xs text-slate-800 focus:outline-none focus:border-blue-600"
+            className="w-full pl-10 pr-4 py-2.5 bg-white border border-[#e2e8f0] rounded-xl text-[14px] text-[#0f172a] focus:outline-none focus:border-[#3b82f6] focus:ring-1 focus:ring-[#3b82f6] shadow-sm transition-all"
           />
         </div>
       </div>
 
       {/* WORKAREA 1: ANTREAN REVIEW DOKUMEN */}
       {activeTab === "DOC_QUEUE" && (
-        <div className="space-y-3">
+        <div className="space-y-4">
           {pendingDocs.length === 0 ? (
-            <div className="bg-white p-8 rounded-xl border border-slate-200 text-center space-y-2">
-              <CheckCircle2 className="w-8 h-8 text-emerald-600 mx-auto" />
-              <p className="text-xs font-bold text-slate-900">Semua Dokumen Telah Diverifikasi</p>
-              <p className="text-[11px] text-slate-500">Tidak ada antrean dokumen siswa yang menunggu review saat ini.</p>
+            <div className="bg-white py-16 px-6 rounded-2xl border border-[#e2e8f0] text-center space-y-3">
+              <CheckCircle2 className="w-10 h-10 text-[#10b981] mx-auto" />
+              <p className="text-lg font-bold text-[#0f172a]">All Caught Up!</p>
+              <p className="text-[14px] text-[#64748b]">There are no documents waiting in your queue.</p>
             </div>
           ) : (
             pendingDocs.map((doc) => (
               <div
                 key={doc.id}
-                className="bg-white p-4 rounded-xl border border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:border-slate-300 transition-colors"
+                className="bg-white p-6 rounded-2xl border border-[#e2e8f0] flex flex-col md:flex-row md:items-center justify-between gap-6 hover:shadow-md transition-all duration-200"
               >
-                <div className="space-y-1">
-                  <div className="flex items-center gap-2">
-                    <span className="text-[10px] font-bold text-blue-700 bg-blue-50 border border-blue-100 px-2 py-0.5 rounded">
+                <div className="space-y-2">
+                  <div className="flex flex-wrap items-center gap-3">
+                    <span className="text-[11px] font-bold text-[#0369a1] bg-[#e0f2fe] px-2.5 py-1 rounded-full uppercase tracking-wider">
                       {doc.program.replace("_", " ")}
                     </span>
-                    <span className="text-xs font-bold text-slate-900">{doc.studentName}</span>
+                    <span className="text-[15px] font-bold text-[#0f172a]">{doc.studentName}</span>
                   </div>
 
-                  <p className="text-xs font-semibold text-slate-800">{doc.documentTitle}</p>
+                  <p className="text-[16px] font-semibold text-[#1e293b]">{doc.documentTitle}</p>
 
-                  <div className="flex items-center gap-2 text-[11px] text-slate-400">
-                    <Clock className="w-3 h-3" />
-                    <span>Diunggah: {doc.uploadedAt}</span>
+                  <div className="flex items-center gap-2 text-[13px] text-[#64748b] font-medium">
+                    <Clock className="w-4 h-4" />
+                    <span>Uploaded: {doc.uploadedAt}</span>
                   </div>
                 </div>
 
-                <div className="flex items-center gap-2 shrink-0 border-t sm:border-t-0 pt-3 sm:pt-0">
+                <div className="flex items-center gap-3 shrink-0 pt-4 md:pt-0">
                   <a
                     href={doc.fileUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="px-3 py-1.5 border border-slate-200 text-slate-700 hover:bg-slate-50 text-xs font-semibold rounded-lg inline-flex items-center gap-1"
+                    className="px-4 py-2 border border-[#e2e8f0] text-[#475569] hover:bg-[#f8fafc] text-[13px] font-bold rounded-lg inline-flex items-center gap-2 transition-colors"
                   >
-                    <span>Lihat Berkas</span>
-                    <ExternalLink className="w-3 h-3" />
+                    <span>View File</span>
+                    <ExternalLink className="w-4 h-4" />
                   </a>
 
                   <button
                     type="button"
                     onClick={() => handleRequestRevision(doc.id)}
-                    className="px-3 py-1.5 border border-rose-200 text-rose-700 hover:bg-rose-50 text-xs font-semibold rounded-lg"
+                    className="px-4 py-2 border border-[#fecdd3] text-[#be123c] hover:bg-[#fff1f2] text-[13px] font-bold rounded-lg transition-colors"
                   >
-                    Minta Revisi
+                    Request Revision
                   </button>
 
                   <button
                     type="button"
                     onClick={() => handleApproveDocument(doc.id)}
-                    className="px-3 py-1.5 bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-semibold rounded-lg"
+                    className="px-4 py-2 bg-[#10b981] hover:bg-[#059669] text-white text-[13px] font-bold rounded-lg transition-colors shadow-sm"
                   >
-                    Setujui (Approve)
+                    Approve
                   </button>
                 </div>
               </div>
@@ -288,40 +304,45 @@ export default function ConsultantDashboardPage() {
 
       {/* WORKAREA 2: DAFTAR SISWA PENDAMPINGAN */}
       {activeTab === "STUDENTS_LIST" && (
-        <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
-          <div className="divide-y divide-slate-100">
+        <div className="bg-white rounded-2xl border border-[#e2e8f0] overflow-hidden shadow-sm">
+          <div className="divide-y divide-[#f1f5f9]">
             {assignedStudents.map((student) => (
               <div
                 key={student.id}
-                className="p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:bg-slate-50/50 transition-colors"
+                className="p-6 flex flex-col md:flex-row md:items-center justify-between gap-6 hover:bg-[#f8fafc] transition-colors"
               >
-                <div className="space-y-1">
-                  <div className="flex items-center gap-2">
-                    <p className="text-xs font-bold text-slate-900">{student.name}</p>
-                    <span className="text-[10px] font-semibold text-slate-600 bg-slate-100 px-2 py-0.5 rounded">
+                <div className="space-y-2">
+                  <div className="flex items-center gap-3">
+                    <p className="text-[16px] font-bold text-[#0f172a]">{student.name}</p>
+                    <span className="text-[10px] font-bold text-[#475569] bg-[#f1f5f9] px-2.5 py-1 rounded-full uppercase tracking-wider">
                       {student.program.replace("_", " ")}
                     </span>
                   </div>
 
-                  <p className="text-[11px] text-slate-500">
-                    Target: <span className="font-medium text-slate-700">{student.targetCountry ?? "Sesuai Program"}</span>
-                    {student.nextSessionDate && ` • Bimbingan Berikutnya: ${student.nextSessionDate}`}
+                  <p className="text-[13px] font-medium text-[#64748b]">
+                    Target: <span className="font-semibold text-[#1e293b]">{student.targetCountry ?? "Sesuai Program"}</span>
+                    {student.nextSessionDate && (
+                      <>
+                        <span className="mx-2">•</span>
+                        Next Session: {student.nextSessionDate}
+                      </>
+                    )}
                   </p>
                 </div>
 
-                <div className="flex items-center gap-4 shrink-0">
+                <div className="flex flex-row md:flex-col lg:flex-row items-center gap-6 shrink-0">
                   {/* Progress Indicator */}
-                  <div className="text-right hidden md:block">
-                    <span className="text-[11px] font-semibold text-slate-500">Progres Berkas</span>
-                    <p className="text-xs font-bold text-slate-900">{student.progressPercent}%</p>
+                  <div className="text-right">
+                    <span className="text-[12px] font-semibold text-[#64748b] uppercase tracking-wider">Progress</span>
+                    <p className="text-[18px] font-bold text-[#0f172a]">{student.progressPercent}%</p>
                   </div>
 
                   <a
                     href={`/consultant/students/${student.id}`}
-                    className="inline-flex items-center gap-1 text-xs font-bold text-blue-600 hover:text-blue-800 border border-slate-200 px-3 py-1.5 rounded-lg hover:bg-white"
+                    className="inline-flex items-center gap-2 text-[14px] font-bold text-[#3b82f6] hover:text-white bg-white hover:bg-[#3b82f6] border border-[#e2e8f0] hover:border-[#3b82f6] px-5 py-2.5 rounded-xl transition-all"
                   >
-                    <span>Detail Siswa</span>
-                    <ArrowUpRight className="w-3.5 h-3.5" />
+                    <span>View Details</span>
+                    <ArrowUpRight className="w-4 h-4" />
                   </a>
                 </div>
               </div>

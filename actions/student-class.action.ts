@@ -8,16 +8,16 @@ export async function getStudentClasses() {
     try {
         const session = await auth();
 
-        if (!session?.user?.id || session.user.role !== "STUDENT") {
+        if (!session?.user?.id || session.user.role !== "CLIENT") {
             return { success: false, error: "Unauthorized" };
         }
 
-        const studentId = session.user.id;
+        const clientId = session.user.id;
 
         // Fetch active enrollments with related class and sessions
         const enrollments = await prisma.courseEnrollment.findMany({
             where: {
-                studentId,
+                clientId,
                 status: "ACTIVE",
             },
             include: {
@@ -29,7 +29,7 @@ export async function getStudentClasses() {
                             orderBy: { startTime: 'asc' },
                             include: {
                                 attendances: {
-                                    where: { studentId }
+                                    where: { clientId }
                                 }
                             }
                         }
@@ -63,11 +63,11 @@ export async function submitAbsenceRequest(sessionId: string, reason: string, fi
     try {
         const session = await auth();
 
-        if (!session?.user?.id || session.user.role !== "STUDENT") {
+        if (!session?.user?.id || session.user.role !== "CLIENT") {
             return { success: false, error: "Unauthorized" };
         }
 
-        const studentId = session.user.id;
+        const clientId = session.user.id;
 
         // Verify that the session belongs to a class the student is enrolled in
         const courseSession = await prisma.courseSession.findUnique({
@@ -76,7 +76,7 @@ export async function submitAbsenceRequest(sessionId: string, reason: string, fi
                 courseClass: {
                     include: {
                         enrollments: {
-                            where: { studentId }
+                            where: { clientId }
                         }
                     }
                 }
@@ -90,14 +90,14 @@ export async function submitAbsenceRequest(sessionId: string, reason: string, fi
         // Upsert the attendance record
         await prisma.courseAttendance.upsert({
             where: {
-                sessionId_studentId: {
+                sessionId_clientId: {
                     sessionId,
-                    studentId
+                    clientId
                 }
             },
             create: {
                 sessionId,
-                studentId,
+                clientId,
                 status: "EXCUSED",
                 note: reason,
                 attachmentUrl: fileUrl

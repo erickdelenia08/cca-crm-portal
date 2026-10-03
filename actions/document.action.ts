@@ -3,6 +3,7 @@
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/auth";
 import { revalidatePath } from "next/cache";
+import { canReviewDocument } from "@/lib/auth-helpers";
 
 export async function getProcessorDocuments() {
     try {
@@ -14,12 +15,13 @@ export async function getProcessorDocuments() {
 
         const documents = await prisma.document.findMany({
             include: {
-                student: {
+                client: {
                     select: { name: true }
                 },
                 requirement: {
                     select: { name: true }
                 },
+                clientDocument: true,
                 history: {
                     orderBy: { createdAt: 'asc' },
                     include: {
@@ -48,7 +50,12 @@ export async function updateDocumentStatus(
     try {
         const session = await auth();
 
-        if (!session?.user?.id || (session.user.role !== "PROCESSING_DEPARTMENT" && session.user.role !== "MANAGEMENT")) {
+        if (!session?.user?.id) {
+            return { success: false, error: "Unauthorized" };
+        }
+        
+        const canReview = await canReviewDocument(documentId);
+        if (!canReview) {
             return { success: false, error: "Unauthorized" };
         }
 
@@ -70,7 +77,7 @@ export async function updateDocumentStatus(
 
         // Transaction to update document and insert history
         await prisma.$transaction(async (tx) => {
-            await tx.document.update({
+            const doc = await tx.document.update({
                 where: { id: documentId },
                 data: updateData
             });
@@ -83,6 +90,27 @@ export async function updateDocumentStatus(
                     updatedById: userId
                 }
             });
+            
+            // Send Notification to Client
+            if (status === "APPROVED") {
+                await tx.notification.create({
+                    data: {
+                        userId: doc.clientId,
+                        title: "Dokumen Disetujui",
+                        message: "Dokumen Anda telah berhasil diverifikasi dan disetujui.",
+                        channel: "IN_APP"
+                    }
+                });
+            } else if (status === "REVISION_REQUIRED" || status === "REJECTED") {
+                await tx.notification.create({
+                    data: {
+                        userId: doc.clientId,
+                        title: `Dokumen ${status === "REVISION_REQUIRED" ? "Perlu Revisi" : "Ditolak"}`,
+                        message: `Dokumen Anda memerlukan perhatian. Alasan: ${revisionNote || "Tidak ada alasan spesifik."}`,
+                        channel: "IN_APP"
+                    }
+                });
+            }
         });
 
         revalidatePath("/processor/documents");
@@ -123,7 +151,7 @@ export async function getProcessorDashboardData() {
                 }
             },
             include: {
-                student: { select: { name: true } },
+                client: { select: { name: true } },
                 requirement: { select: { name: true } },
                 reviewedBy: { select: { name: true } }
             },

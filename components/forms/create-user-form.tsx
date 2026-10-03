@@ -21,16 +21,16 @@ export function CreateUserForm({ onSuccess, onCancel }: { onSuccess: () => void,
     } = useForm<CreateUserInput>({
         resolver: zodResolver(createUserSchema),
         defaultValues: {
-            role: "STUDENT",
+            role: "CLIENT",
             name: "",
             email: "",
         }
     });
 
     const role = watch("role");
-    
+
     // Auto generate mock ID for display
-    const prefix = role === "STUDENT" ? "STD" : role === "TEACHER" ? "TCH" : role === "CONSULTANT" ? "CST" : "STF";
+    const prefix = role === "CLIENT" ? "CLI" : role === "TEACHER" ? "TCH" : role === "CONSULTANT" ? "CST" : "STF";
     const generatedId = `CCA-2026-${prefix}-XXXX`;
 
     const onSubmit = async (data: CreateUserInput) => {
@@ -39,8 +39,8 @@ export function CreateUserForm({ onSuccess, onCancel }: { onSuccess: () => void,
         try {
             await createUser(data);
             onSuccess();
-        } catch (err: any) {
-            setError(err.message || "Terjadi kesalahan");
+        } catch (err: unknown) {
+            setError(err instanceof Error ? err.message : String(err));
         } finally {
             setIsSubmitting(false);
         }
@@ -53,14 +53,14 @@ export function CreateUserForm({ onSuccess, onCancel }: { onSuccess: () => void,
                     {error}
                 </div>
             )}
-            
+
             <div>
                 <label className="block text-xs font-semibold text-slate-600 mb-1">Peran Akses (Role)</label>
                 <select
                     {...register("role")}
                     className="bg-slate-50 border border-slate-300 text-slate-900 text-xs rounded-lg p-2.5 w-full focus:ring-blue-500 font-bold"
                 >
-                    <option value="STUDENT">Siswa / Klien</option>
+                    <option value="CLIENT">Klien</option>
                     <option value="TEACHER">Guru (Teacher)</option>
                     <option value="CONSULTANT">Konsultan Beasiswa/Visa</option>
                     <option value="DOCUMENT_PROCESSOR">Processor Dept.</option>
@@ -118,7 +118,7 @@ export function CreateUserForm({ onSuccess, onCancel }: { onSuccess: () => void,
                     className="inline-flex items-center gap-1.5 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-lg"
                     disabled={isSubmitting}
                 >
-                    <CheckCircle2 className="w-3.5 h-3.5" /> 
+                    <CheckCircle2 className="w-3.5 h-3.5" />
                     {isSubmitting ? "Menyimpan..." : "Simpan Akun"}
                 </button>
             </div>

@@ -47,13 +47,22 @@ export function ProgramDetailsTable({ program }: { program: ProgramWithTypes }) 
                     </div>
                 </div>
 
-                <button
-                    onClick={() => router.push(`/management/programs/${program.id}/products/create`)}
-                    className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-xs font-bold transition-colors shadow-sm cursor-pointer"
-                >
-                    <Plus className="w-4 h-4" />
-                    Tambah Service Baru
-                </button>
+                <div className="flex gap-2">
+                    <button
+                        onClick={() => router.push(`/management/programs/${program.id}/edit`)}
+                        className="inline-flex items-center gap-2 bg-white border border-gray-300 hover:bg-gray-50 text-slate-700 px-4 py-2 rounded-lg text-xs font-bold transition-colors shadow-sm cursor-pointer"
+                    >
+                        <Edit3 className="w-4 h-4" />
+                        Edit Program
+                    </button>
+                    <button
+                        onClick={() => router.push(`/management/programs/${program.id}/products/create`)}
+                        className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-xs font-bold transition-colors shadow-sm cursor-pointer"
+                    >
+                        <Plus className="w-4 h-4" />
+                        Tambah Service Baru
+                    </button>
+                </div>
             </div>
 
             <div className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm">

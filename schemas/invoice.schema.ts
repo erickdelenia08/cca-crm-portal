@@ -12,7 +12,7 @@ export const invoiceSchema = z.object({
   date: z.string().min(1, "Tanggal wajib diisi"),
   dueDate: z.string().min(1, "Tenggat waktu wajib diisi"),
   rate: z.string().optional(),
-  studentId: z.string().min(1, "Klien wajib dipilih"),
+  clientId: z.string().min(1, "Klien wajib dipilih"),
   items: z.array(invoiceItemSchema).min(1, "Minimal 1 item layanan harus ditambahkan"),
 });
 

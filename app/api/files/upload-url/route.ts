@@ -1,7 +1,7 @@
-// api/files/upload-url/route.ts
 import { NextRequest, NextResponse } from "next/server";
 import { createDocumentUploadUrl } from "@/services/file.service";
 import { auth } from "@/auth";
+import { prisma } from "@/lib/prisma";
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB dalam Bytes
 
@@ -20,12 +20,12 @@ export async function POST(req: NextRequest) {
     }
 
     const body = await req.json();
-    const { fileName, contentType, size } = body;
+    const { fileName, contentType, size, enrollmentId } = body;
 
     // 1. Validasi Keberadaan Field
-    if (!fileName || !contentType || typeof size !== "number") {
+    if (!fileName || !contentType || typeof size !== "number" || !enrollmentId) {
       return NextResponse.json(
-        { message: "fileName, contentType, dan size wajib diisi" },
+        { message: "fileName, contentType, size, dan enrollmentId wajib diisi" },
         { status: 400 }
       );
     }
@@ -38,7 +38,22 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // 3. Panggil Service
+    // 3. Validasi Akses Klien ke Enrollment
+    const enrollment = await prisma.programEnrollment.findFirst({
+      where: {
+        id: enrollmentId,
+        clientId: session.user.id
+      }
+    });
+
+    if (!enrollment) {
+      return NextResponse.json(
+        { message: "Enrollment tidak ditemukan atau tidak diizinkan" },
+        { status: 403 }
+      );
+    }
+
+    // 4. Panggil Service
     const result = await createDocumentUploadUrl({
       studentId: session.user.id,
       fileName,

@@ -12,7 +12,7 @@ import {
     AlertCircle,
 } from "lucide-react";
 import { BookingInput, bookingSchema } from "@/schemas/booking.schema";
-import { createStudentBooking } from "@/actions/booking.action";
+import { createClientBooking } from "@/actions/booking.action";
 
 type AssignedConsultant = {
     id: string; // User ID
@@ -142,7 +142,7 @@ export function BookingForm({
         setIsSubmitting(true);
         setSubmitError(null);
 
-        const res = await createStudentBooking(data);
+        const res = await createClientBooking(data);
 
         if (res.success) {
             setIsSubmitted(true);

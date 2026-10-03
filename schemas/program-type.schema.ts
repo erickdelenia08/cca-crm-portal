@@ -6,7 +6,7 @@ export const documentRequirementSchema = z.object({
     name: z.string().min(1, "Nama dokumen wajib diisi"),
     code: z.string().min(1, "Kode dokumen wajib diisi"),
     description: z.string().optional().nullable(),
-    isRequired: z.boolean().default(true),
+    isRequired: z.boolean().optional(),
 });
 
 export const programTypeSchema = z.object({
@@ -15,8 +15,8 @@ export const programTypeSchema = z.object({
     name: z.string().min(1, "Nama layanan (Program Type) wajib diisi"),
     code: z.string().min(1, "Code wajib diisi"),
     description: z.string().optional().nullable(),
-    deliveryType: z.nativeEnum(ServiceDeliveryType).default("SERVICE"),
-    isActive: z.boolean().default(true),
+    deliveryType: z.nativeEnum(ServiceDeliveryType).optional(),
+    isActive: z.boolean().optional(),
     documentRequirements: z.array(documentRequirementSchema).optional(),
 });
 

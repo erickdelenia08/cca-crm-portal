@@ -32,7 +32,7 @@ export interface SessionDetailData {
   meetingUrl?: string | null;
   studentNotes?: string | null;
   existingNotes?: string;
-  existingActionItems?: any[];
+  existingActionItems?: { id: string; text: string; done: boolean }[];
 }
 
 interface SessionDetailClientProps {
@@ -41,7 +41,7 @@ interface SessionDetailClientProps {
 
 export function SessionDetailClient({ sessionData }: SessionDetailClientProps) {
   const [notes, setNotes] = useState(sessionData.existingNotes || "");
-  const [actionItems, setActionItems] = useState<any[]>(
+  const [actionItems, setActionItems] = useState<{ id: string; text: string; done: boolean }[]>(
     sessionData.existingActionItems || []
   );
   const [newItemText, setNewItemText] = useState("");

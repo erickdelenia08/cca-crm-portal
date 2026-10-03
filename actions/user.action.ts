@@ -113,26 +113,61 @@ export async function getMentors() {
     }));
 }
 
+// export async function getTeachers() {
+//     const session = await auth();
+//     if (!session || session.user.role !== "MANAGEMENT") {
+//         throw new Error("UNAUTHORIZED");
+//     }
+
+//     const teachers = await prisma.staffProfile.findMany({
+//         include: { user: true },
+//         where: {
+//             user: {
+//                 role: "TEACHER"
+//             }
+//         }
+//     });
+
+//     return teachers.map(t => ({
+//         id: t.id,
+//         name: t.user.name,
+//         role: t.user.role
+//     }));
+// }
+
 export async function getTeachers() {
     const session = await auth();
+
     if (!session || session.user.role !== "MANAGEMENT") {
         throw new Error("UNAUTHORIZED");
     }
 
     const teachers = await prisma.staffProfile.findMany({
-        include: { user: true },
         where: {
             user: {
-                role: "TEACHER"
-            }
-        }
+                role: "TEACHER",
+            },
+            isActive: true,
+        },
+        select: {
+            id: true,
+            fullName: true,
+        },
+        orderBy: {
+            fullName: "asc",
+        },
     });
 
-    return teachers.map(t => ({
-        id: t.id,
-        name: t.user.name,
-        role: t.user.role
-    }));
+    console.log(
+        "TEACHERS:",
+        teachers.map(t => ({
+            staffProfileId: t.id,
+            userId: t.id,
+            name: t.fullName,
+        }))
+    );
+
+    return teachers;
 }
 
 export async function createUser(data: unknown) {

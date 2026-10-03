@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { courseSchema, CourseInput } from "@/schemas/course.schema";
-import { upsertCourse } from "@/actions/course.action";
+import { createCourse, updateCourse } from "@/actions/course.action";
 
 export function CourseForm({
     initialData,
@@ -25,6 +25,7 @@ export function CourseForm({
     } = useForm<CourseInput>({
         resolver: zodResolver(courseSchema),
         defaultValues: initialData || {
+            programTypeId: "",
             code: "",
             name: "",
             category: "LANGUAGE",
@@ -39,7 +40,11 @@ export function CourseForm({
         setIsSubmitting(true);
         setError(null);
         try {
-            await upsertCourse(data);
+            if (data.id) {
+                await updateCourse(data.id, data);
+            } else {
+                await createCourse(data);
+            }
             onSuccess();
         } catch (err: unknown) {
             const errorMessage = err instanceof Error ? err.message : String(err);

@@ -13,7 +13,7 @@ import {
     Filter,
     X,
 } from 'lucide-react';
-import { deleteProgramType, upsertProgramType } from '@/actions/program-type.action';
+import { deleteProgramType, toggleProgramTypeStatus } from '@/actions/program-type.action';
 
 export interface ProgramTypeData {
     id: string;
@@ -79,13 +79,7 @@ export function ProgramTypeTable({ initialData }: { initialData: ProgramTypeData
 
         setIsProcessing(programType.id);
         try {
-            await upsertProgramType({
-                id: programType.id,
-                name: programType.name,
-                code: programType.code,
-                description: programType.description || undefined,
-                isActive: nextStatus === 'ACTIVE',
-            });
+            await toggleProgramTypeStatus(programType.id, nextStatus === 'ACTIVE');
         } catch (error: unknown) {
             alert(error instanceof Error ? error.message : "Gagal mengubah status program type");
         } finally {

@@ -11,7 +11,7 @@ export default async function CreateCourseClassPage({
     params: Promise<{ programId: string; productId: string; courseId: string }>;
 }) {
     const { programId, productId, courseId } = await params;
-    
+
     // Validate that the course exists
     const course = await getCourseById(courseId);
     if (!course || course.programTypeId !== productId) {
@@ -32,11 +32,11 @@ export default async function CreateCourseClassPage({
                 </p>
             </div>
 
-            <CourseClassFormWrapper 
-                programId={programId} 
-                productId={productId} 
-                courseId={courseId} 
-                teachers={teachers} 
+            <CourseClassFormWrapper
+                programId={programId}
+                productId={productId}
+                courseId={courseId}
+                teachers={teachers}
             />
         </div>
     );

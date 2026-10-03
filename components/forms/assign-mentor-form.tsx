@@ -32,7 +32,7 @@ export function AssignMentorForm({ student, mentors, onSuccess, onCancel }: Assi
     } = useForm<AssignMentorInput>({
         resolver: zodResolver(assignMentorSchema),
         defaultValues: {
-            studentId: student.id,
+            clientId: student.id,
             consultantId: "",
         }
     });
@@ -43,8 +43,8 @@ export function AssignMentorForm({ student, mentors, onSuccess, onCancel }: Assi
         try {
             await assignMentor(data);
             onSuccess();
-        } catch (err: any) {
-            setError(err.message || "Terjadi kesalahan");
+        } catch (err: unknown) {
+            setError(err instanceof Error ? err.message : String(err));
         } finally {
             setIsSubmitting(false);
         }
@@ -64,7 +64,7 @@ export function AssignMentorForm({ student, mentors, onSuccess, onCancel }: Assi
                 <p className="text-[11px] text-blue-700 font-mono font-semibold">{student.autoId}</p>
             </div>
 
-            <input type="hidden" {...register("studentId")} />
+            <input type="hidden" {...register("clientId")} />
 
             <div>
                 <label className="block text-xs font-semibold text-slate-600 mb-1">Pilih Mentor (Teacher / Consultant)</label>

@@ -74,6 +74,7 @@ export function DocumentsClient({ documents, enrollmentId }: DocumentsClientProp
           fileName: uploadFile.name,
           contentType: uploadFile.type,
           size: uploadFile.size,
+          enrollmentId,
         }),
       });
 
@@ -120,9 +121,9 @@ export function DocumentsClient({ documents, enrollmentId }: DocumentsClientProp
       setUploadFile(null);
       setSelectedDocForUpload(null);
       router.refresh();
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Upload error:", error);
-      alert(error.message || "Terjadi kesalahan saat mengunggah dokumen");
+      alert(error instanceof Error ? error.message : String(error) || "Terjadi kesalahan saat mengunggah dokumen");
     } finally {
       setIsUploading(false);
     }

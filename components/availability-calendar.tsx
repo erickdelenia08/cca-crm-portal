@@ -110,7 +110,7 @@ export function AvailabilityCalendar({
                 startTime: template.startTime,
                 endTime: template.endTime,
                 isBooked: !!booking,
-                studentName: booking?.student.name || null,
+                studentName: booking?.client?.name || null,
             };
         });
 
@@ -124,7 +124,7 @@ export function AvailabilityCalendar({
                 startTime: override.startTime,
                 endTime: override.endTime,
                 isBooked: !!booking,
-                studentName: booking?.student.name || null,
+                studentName: booking?.client?.name || null,
             };
         });
 
@@ -155,7 +155,7 @@ export function AvailabilityCalendar({
                 startTime: override.startTime,
                 endTime: override.endTime,
                 isBooked: !!booking,
-                studentName: booking?.student.name || null,
+                studentName: booking?.client?.name || null,
             };
         })
     ].sort((a, b) => a.startTime.localeCompare(b.startTime));

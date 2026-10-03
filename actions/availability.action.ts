@@ -141,7 +141,7 @@ export async function deleteAvailabilitySlot(id: string, type: "RECURRING" | "DA
                 throw new Error("Template tidak ditemukan atau bukan milik Anda.");
             }
 
-            const activeBookings = await prisma.booking.count({
+            const activeBookings = await prisma.clientBooking.count({
                 where: {
                     availabilityTemplateId: id,
                     status: { in: ["PENDING", "CONFIRMED"] },
@@ -165,7 +165,7 @@ export async function deleteAvailabilitySlot(id: string, type: "RECURRING" | "DA
                 throw new Error("Slot tidak ditemukan atau bukan milik Anda.");
             }
 
-            const activeBookings = await prisma.booking.count({
+            const activeBookings = await prisma.clientBooking.count({
                 where: {
                     availabilityOverrideId: id,
                     status: { in: ["PENDING", "CONFIRMED"] },
@@ -194,7 +194,7 @@ export async function getBookingsForCalendar() {
     try {
         const consultantId = await getAuthenticatedConsultantId();
 
-        const bookings = await prisma.booking.findMany({
+        const bookings = await prisma.clientBooking.findMany({
             where: {
                 consultantId, // 👈 Gunakan User ID
                 status: {
@@ -205,7 +205,7 @@ export async function getBookingsForCalendar() {
                 }
             },
             include: {
-                student: { // 👈 Select name langsung dari User model
+                client: { // 👈 Select name langsung dari User model
                     select: {
                         name: true,
                         email: true,

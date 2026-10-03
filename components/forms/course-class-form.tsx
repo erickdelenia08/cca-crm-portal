@@ -6,18 +6,22 @@ import { useState } from "react";
 import { courseClassSchema, CourseClassInput } from "@/schemas/course-class.schema";
 import { createCourseClass } from "@/actions/course-class.action";
 import { Plus, Trash2 } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 export function CourseClassForm({
     courseId,
     teachers,
+    initialData,
     onSuccess,
     onCancel,
 }: {
     courseId: string;
     teachers: { id: string; name: string }[];
-    onSuccess: () => void;
-    onCancel: () => void;
+    initialData?: any;
+    onSuccess?: () => void;
+    onCancel?: () => void;
 }) {
+    const router = useRouter();
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
@@ -28,7 +32,7 @@ export function CourseClassForm({
         formState: { errors },
     } = useForm<CourseClassInput>({
         resolver: zodResolver(courseClassSchema),
-        defaultValues: {
+        defaultValues: initialData || {
             courseId,
             code: "",
             name: "",
@@ -58,7 +62,7 @@ export function CourseClassForm({
         setError(null);
         try {
             await createCourseClass(data);
-            onSuccess();
+            router.push(`/management/courses/${courseId}`);
         } catch (err: unknown) {
             const errorMessage = err instanceof Error ? err.message : String(err);
             setError(errorMessage || "Terjadi kesalahan");
@@ -243,7 +247,7 @@ export function CourseClassForm({
             <div className="pt-5 border-t border-slate-100 flex justify-end gap-3">
                 <button
                     type="button"
-                    onClick={onCancel}
+                    onClick={() => onCancel ? onCancel() : router.push(`/management/courses/${courseId}`)}
                     disabled={isSubmitting}
                     className="px-4 py-2 border border-slate-300 rounded-lg text-sm font-semibold text-slate-600 hover:bg-slate-50"
                 >
