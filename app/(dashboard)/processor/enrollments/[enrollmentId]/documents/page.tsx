@@ -21,7 +21,7 @@ export default async function ProcessorEnrollmentDocumentsPage({
     }
 
     const getStatusInfo = (req: typeof requirements[0]) => {
-        if (req.documents.length === 0) {
+        if (!req.documents) {
             return {
                 label: "Missing",
                 icon: AlertCircle,
@@ -30,7 +30,7 @@ export default async function ProcessorEnrollmentDocumentsPage({
             };
         }
 
-        const latestDoc = req.documents[0];
+        const latestDoc = req.documents;
         
         switch (latestDoc.status) {
             case "APPROVED":
@@ -71,7 +71,7 @@ export default async function ProcessorEnrollmentDocumentsPage({
                 {requirements.map(req => {
                     const statusInfo = getStatusInfo(req);
                     const StatusIcon = statusInfo.icon;
-                    const latestDoc = req.documents.length > 0 ? req.documents[0] : null;
+                    const latestDoc = req.documents;
 
                     return (
                         <Card key={req.id} className="overflow-hidden border-slate-200 shadow-sm transition-all hover:shadow-md">

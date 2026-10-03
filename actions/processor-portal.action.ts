@@ -34,7 +34,7 @@ export async function getProcessorProfile() {
 export async function getProcessorDashboard() {
     try {
         await getProcessorProfile();
-        
+
         const todayStart = new Date();
         todayStart.setHours(0, 0, 0, 0);
 
@@ -63,12 +63,12 @@ export async function getProcessorDashboard() {
             }
         });
 
-        // Missing Documents
+        // Missing Documents (relasi 1-1: belum ada dokumen => is: null)
         const missingDocuments = await prisma.enrollmentDocumentRequirement.count({
             where: {
                 isRequired: true,
                 enrollment: { programType: { deliveryType: "SERVICE" } },
-                documents: { none: {} }
+                documents: { is: null }
             }
         });
 
@@ -99,7 +99,7 @@ export async function getDocumentQueue(params?: { search?: string, status?: stri
         const requirementWhere: Prisma.EnrollmentDocumentRequirementWhereInput = {
             isRequired: true,
             enrollment: { programType: { deliveryType: "SERVICE" } },
-            documents: { none: {} }
+            documents: { is: null }
         };
 
         // Status Filter
@@ -117,15 +117,15 @@ export async function getDocumentQueue(params?: { search?: string, status?: stri
         // Search Filter (Client Name, Requirement Name)
         if (params?.search) {
             const searchLower = params.search.toLowerCase();
-            const searchCondition = {
+            const searchCondition: Prisma.DocumentWhereInput = {
                 OR: [
                     { client: { name: { contains: searchLower } } },
                     { client: { clientProfile: { fullName: { contains: searchLower } } } },
                     { requirement: { name: { contains: searchLower } } }
                 ]
             };
-            
-            const reqSearchCondition = {
+
+            const reqSearchCondition: Prisma.EnrollmentDocumentRequirementWhereInput = {
                 OR: [
                     { name: { contains: searchLower } },
                     { enrollment: { client: { name: { contains: searchLower } } } },
@@ -155,7 +155,7 @@ export async function getDocumentQueue(params?: { search?: string, status?: stri
             where: requirementWhere,
             include: {
                 enrollment: {
-                    include: { 
+                    include: {
                         programType: { include: { program: true } },
                         client: { include: { clientProfile: true } }
                     }
@@ -195,7 +195,7 @@ export async function getDocumentQueue(params?: { search?: string, status?: stri
         let filteredQueue = queue;
         if (params?.search) {
             const searchLower = params.search.toLowerCase();
-            filteredQueue = queue.filter(item => 
+            filteredQueue = queue.filter(item =>
                 item.clientName.toLowerCase().includes(searchLower) ||
                 item.requirementName.toLowerCase().includes(searchLower) ||
                 item.enrollmentId.toLowerCase().includes(searchLower) ||
@@ -266,10 +266,8 @@ export async function getProcessorEnrollment(enrollmentId: string) {
                 consultant: { include: { consultantProfile: true } },
                 documentRequirements: {
                     include: {
-                        documents: {
-                            orderBy: { createdAt: 'desc' },
-                            take: 1
-                        }
+                        // Relasi 1-1 (Document?): tanpa orderBy/take
+                        documents: true
                     }
                 }
             }
@@ -293,8 +291,8 @@ export async function getEnrollmentDocumentRequirements(enrollmentId: string) {
         const requirements = await prisma.enrollmentDocumentRequirement.findMany({
             where: { enrollmentId },
             include: {
+                // Relasi 1-1 (Document?): tanpa orderBy
                 documents: {
-                    orderBy: { createdAt: 'desc' },
                     include: { clientDocument: true }
                 }
             },
@@ -393,7 +391,7 @@ export async function verifyDocument(documentId: string, note?: string) {
     try {
         const profile = await getProcessorProfile();
 
-        const document = await prisma.document.findUnique({ 
+        const document = await prisma.document.findUnique({
             where: { id: documentId },
             include: { enrollment: { include: { programType: true } } }
         });
@@ -462,7 +460,7 @@ export async function rejectDocument(documentId: string, reason: string) {
 
         const profile = await getProcessorProfile();
 
-        const document = await prisma.document.findUnique({ 
+        const document = await prisma.document.findUnique({
             where: { id: documentId },
             include: { enrollment: { include: { programType: true } }, client: true }
         });
@@ -521,7 +519,7 @@ export async function rejectDocument(documentId: string, reason: string) {
  */
 export async function requestDocumentReupload(requirementId: string, message: string) {
     try {
-        const profile = await getProcessorProfile();
+        await getProcessorProfile();
 
         const req = await prisma.enrollmentDocumentRequirement.findUnique({
             where: { id: requirementId },
@@ -555,16 +553,16 @@ export async function getProcessingFollowUps() {
     try {
         await getProcessorProfile();
 
-        // Find requirements that are required but have no documents
+        // Find requirements that are required but have no document (relasi 1-1 => is: null)
         const missingRequirements = await prisma.enrollmentDocumentRequirement.findMany({
             where: {
                 isRequired: true,
                 enrollment: { programType: { deliveryType: "SERVICE" } },
-                documents: { none: {} }
+                documents: { is: null }
             },
             include: {
                 enrollment: {
-                    include: { 
+                    include: {
                         programType: true,
                         client: { include: { clientProfile: true } },
                         consultant: { include: { consultantProfile: true } }
@@ -584,7 +582,7 @@ export async function getProcessingFollowUps() {
                 client: { include: { clientProfile: true } },
                 requirement: true,
                 enrollment: {
-                    include: { 
+                    include: {
                         programType: true,
                         consultant: { include: { consultantProfile: true } }
                     }

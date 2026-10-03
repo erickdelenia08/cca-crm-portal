@@ -27,7 +27,7 @@ export default async function ClientDetailPage({ params }: { params: Promise<{ i
                 where: { status: { in: ["ONBOARDING", "PROCESSING", "ACTIVE"] } },
                 include: {
                     documentRequirements: {
-                        include: { documents: { orderBy: { createdAt: "desc" }, take: 1 } }
+                        include: { documents: true }
                     }
                 },
                 orderBy: { createdAt: "desc" },
@@ -59,7 +59,7 @@ export default async function ClientDetailPage({ params }: { params: Promise<{ i
     const documentsData = [];
     if (client.clientEnrollments[0]) {
         for (const req of client.clientEnrollments[0].documentRequirements) {
-            const doc = req.documents[0];
+            const doc = req.documents;
             documentsData.push({
                 id: req.id,
                 name: req.name,

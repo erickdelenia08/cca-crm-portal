@@ -45,7 +45,7 @@ export default async function MyClientsPage() {
     });
 
     type EnrollmentType = typeof enrollments[0];
-    
+
     // Group by client
     const clientsMap = new Map<string, { client: EnrollmentType["client"]; enrollments: EnrollmentType[] }>();
     for (const enrollment of enrollments) {
@@ -62,7 +62,7 @@ export default async function MyClientsPage() {
     const clientCards: ClientCardData[] = Array.from(clientsMap.values()).map(({ client, enrollments }) => {
         // Use the most recent enrollment for the card status
         const activeEnrollment = enrollments[0];
-        
+
         let programName = "Belum terdaftar program";
         let status = "Onboarding";
         let docCompleted = 0;
@@ -71,14 +71,14 @@ export default async function MyClientsPage() {
         if (activeEnrollment) {
             programName = activeEnrollment.programType?.name || "Program";
             status = activeEnrollment.status === "ACTIVE" ? "Aktif" : (activeEnrollment.status === "PROCESSING" ? "Processing" : "Onboarding");
-            
+
             docTotal = activeEnrollment.documentRequirements.length;
-            docCompleted = activeEnrollment.documentRequirements.filter((req) => 
-                req.documents.some((doc) => doc.status === "APPROVED")
+            docCompleted = activeEnrollment.documentRequirements.filter(
+                (req) => req.documents?.status === "APPROVED"
             ).length;
         }
 
-        const lastSession = client.clientBookings && client.clientBookings.length > 0 
+        const lastSession = client.clientBookings && client.clientBookings.length > 0
             ? new Intl.DateTimeFormat("id-ID", {
                 day: "2-digit",
                 month: "short",

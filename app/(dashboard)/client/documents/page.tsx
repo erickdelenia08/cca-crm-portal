@@ -41,7 +41,7 @@ export default async function ClientDocumentsPage() {
             <div className="space-y-10">
                 {enrollments.map((enrollment: ClientDocumentRequirement) => {
                     const mappedDocs = enrollment.documentRequirements.map(req => {
-                        const doc = req.documents[0];
+                        const doc = req.documents;
                         return {
                             requirementId: req.id,
                             code: req.code,
@@ -49,7 +49,7 @@ export default async function ClientDocumentsPage() {
                             description: req.description,
                             isRequired: req.isRequired,
                             documentId: doc?.id || null,
-                            status: doc?.status || "NOT_UPLOADED",
+                            status: (doc?.status || "NOT_UPLOADED") as import("./documents-client").DocumentStatus,
                             fileName: doc?.clientDocument?.fileName || doc?.id || null, // clientDocument is not included in query currently, need to update action
                             fileUrl: doc ? `/api/documents/${doc.id}/download` : null,
                             uploadedAt: doc ? new Date(doc.createdAt).toLocaleDateString('id-ID') : null,

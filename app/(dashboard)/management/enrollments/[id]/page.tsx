@@ -136,7 +136,7 @@ export default async function EnrollmentDetailPage({
                                 <p className="text-xs text-gray-500">Tidak ada dokumen yang dipersyaratkan.</p>
                             ) : (
                                 enrollment.documentRequirements.map(req => {
-                                    const doc = req.documents[0]; // Active doc
+                                    const doc = req.documents; // Active doc
                                     return (
                                         <div key={req.id} className="p-3 border rounded text-xs">
                                             <div className="flex justify-between items-start mb-1">

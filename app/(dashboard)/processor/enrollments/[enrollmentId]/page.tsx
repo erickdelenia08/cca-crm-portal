@@ -18,16 +18,16 @@ export default async function ProcessorEnrollmentOverviewPage({
 
     const totalDocs = enrollment.documentRequirements.length;
     const verifiedDocs = enrollment.documentRequirements.filter(req => 
-        req.documents.length > 0 && req.documents[0].status === "APPROVED"
+        req.documents && req.documents.status === "APPROVED"
     ).length;
     const pendingDocs = enrollment.documentRequirements.filter(req => 
-        req.documents.length > 0 && (req.documents[0].status === "SUBMITTED" || req.documents[0].status === "UNDER_REVIEW")
+        req.documents && (req.documents.status === "SUBMITTED" || req.documents.status === "UNDER_REVIEW")
     ).length;
     const needsReupload = enrollment.documentRequirements.filter(req => 
-        req.documents.length > 0 && (req.documents[0].status === "REJECTED" || req.documents[0].status === "REVISION_REQUIRED")
+        req.documents && (req.documents.status === "REJECTED" || req.documents.status === "REVISION_REQUIRED")
     ).length;
     const missingDocs = enrollment.documentRequirements.filter(req => 
-        req.documents.length === 0
+        !req.documents
     ).length;
 
     const progressPercentage = totalDocs > 0 ? Math.round((verifiedDocs / totalDocs) * 100) : 0;
