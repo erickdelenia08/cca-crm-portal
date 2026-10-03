@@ -28,7 +28,7 @@ export default async function AdminDashboardPage() {
     const { metrics, documentBottlenecks, todayAttendance, pendingApprovals } = data;
 
     // Calculate total document sum for percentages
-    const totalDocs = documentBottlenecks.reduce((sum: number, item: any) => sum + item.count, 0);
+    const totalDocs = documentBottlenecks.reduce((sum: number, item) => sum + item.count, 0);
 
     return (
         <div className="space-y-6 p-6 max-w-7xl mx-auto">
@@ -114,7 +114,7 @@ export default async function AdminDashboardPage() {
                         {documentBottlenecks.length === 0 ? (
                             <p className="text-sm text-slate-500">Belum ada dokumen.</p>
                         ) : (
-                            documentBottlenecks.map((item: any, idx: number) => {
+                            documentBottlenecks.map((item, idx: number) => {
                                 const percentage = totalDocs > 0 ? Math.round((item.count / totalDocs) * 100) : 0;
                                 return (
                                     <div key={idx} className="space-y-1.5">
@@ -227,7 +227,7 @@ export default async function AdminDashboardPage() {
                         </thead>
                         <tbody className="divide-y divide-slate-100">
                             {pendingApprovals.length > 0 ? (
-                                pendingApprovals.map((req: any) => (
+                                pendingApprovals.map((req) => (
                                     <tr key={req.id} className="hover:bg-slate-50/50 transition-colors">
                                         <td className="p-4">
                                             <p className="font-bold text-slate-900">{req.staff.fullName}</p>
@@ -237,7 +237,7 @@ export default async function AdminDashboardPage() {
                                         </td>
                                         <td className="p-4">
                                             <span className="inline-block px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-blue-50 text-blue-700 border border-blue-200">
-                                                {req.leaveType}
+                                                {req.type}
                                             </span>
                                         </td>
                                         <td className="p-4 font-medium text-slate-800">

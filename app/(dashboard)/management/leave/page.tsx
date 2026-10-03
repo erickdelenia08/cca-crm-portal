@@ -21,7 +21,7 @@ export default async function ManagementLeavePage() {
                 <p className="text-sm text-slate-500 mt-1">Kelola dan setujui pengajuan izin/cuti karyawan.</p>
             </div>
             
-            <LeaveApprovalClient initialRequests={requests.success ? (requests.data as any) : []} />
+            <LeaveApprovalClient initialRequests={requests.success ? requests.data : []} />
         </div>
     );
 }

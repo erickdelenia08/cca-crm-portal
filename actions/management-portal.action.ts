@@ -65,13 +65,13 @@ export async function getManagementDashboard() {
             })
         ]);
 
-        const documentBottlenecks = documentStats.map((stat: any) => ({
+        const documentBottlenecks = documentStats.map((stat) => ({
             stage: stat.status,
             count: stat._count.status
         }));
 
-        const presentStaff = todayAttendance.filter((a: any) => a.status === "ON_TIME").length;
-        const lateStaff = todayAttendance.filter((a: any) => a.status === "LATE").length;
+        const presentStaff = todayAttendance.filter((a) => a.status === "ON_TIME").length;
+        const lateStaff = todayAttendance.filter((a) => a.status === "LATE").length;
 
         return {
             success: true,

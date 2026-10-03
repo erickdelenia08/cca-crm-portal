@@ -2,12 +2,14 @@
 
 import { useState } from "react";
 import { CheckCircle2, AlertCircle, ExternalLink, Download } from "lucide-react";
-import { updateLeaveRequestStatus } from "@/actions/hr-management.action";
+import { updateLeaveRequestStatus, getAllLeaveRequests } from "@/actions/hr-management.action";
 import { getLeaveAttachmentDownloadUrl } from "@/actions/hr.action";
 import { useRouter } from "next/navigation";
 
+type LeaveApprovalData = Extract<Awaited<ReturnType<typeof getAllLeaveRequests>>, { data: unknown }>["data"];
+
 interface LeaveApprovalClientProps {
-    initialRequests: any[];
+    initialRequests: LeaveApprovalData;
 }
 
 export function LeaveApprovalClient({ initialRequests }: LeaveApprovalClientProps) {
@@ -48,8 +50,9 @@ export function LeaveApprovalClient({ initialRequests }: LeaveApprovalClientProp
             } else {
                 alert(res.error || "Gagal mendapatkan link download.");
             }
-        } catch (error: any) {
-            alert(error.message || "Terjadi kesalahan sistem.");
+        } catch (error: unknown) {
+            const errorMessage = error instanceof Error ? error.message : String(error);
+            alert(errorMessage || "Terjadi kesalahan sistem.");
         }
     };
 

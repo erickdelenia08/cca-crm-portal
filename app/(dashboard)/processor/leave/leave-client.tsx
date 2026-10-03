@@ -2,11 +2,13 @@
 
 import { useState } from "react";
 import { FileText, Send, AlertCircle, CheckCircle2 } from "lucide-react";
-import { submitLeaveRequest, SubmitLeaveInput } from "@/actions/hr.action";
+import { getMyLeaveRequests, submitLeaveRequest, SubmitLeaveInput } from "@/actions/hr.action";
 import { useRouter } from "next/navigation";
 
+type LeaveRequestData = Extract<Awaited<ReturnType<typeof getMyLeaveRequests>>, { data: unknown }>["data"];
+
 interface LeaveClientProps {
-    initialRequests: any[];
+    initialRequests: LeaveRequestData;
 }
 
 export function LeaveClient({ initialRequests }: LeaveClientProps) {
@@ -27,7 +29,7 @@ export function LeaveClient({ initialRequests }: LeaveClientProps) {
         }
 
         setSubmitting(true);
-        let attachmentData: any = {};
+        let attachmentData: Record<string, string | number> = {};
 
         try {
             if (attachment) {
@@ -79,8 +81,9 @@ export function LeaveClient({ initialRequests }: LeaveClientProps) {
             } else {
                 throw new Error(res.error || "Gagal mengirim pengajuan.");
             }
-        } catch (error: any) {
-            alert(error.message || "Terjadi kesalahan sistem.");
+        } catch (error: unknown) {
+            const errorMessage = error instanceof Error ? error.message : String(error);
+            alert(errorMessage || "Terjadi kesalahan sistem.");
         } finally {
             setSubmitting(false);
         }
@@ -98,7 +101,7 @@ export function LeaveClient({ initialRequests }: LeaveClientProps) {
                         <label className="block text-xs font-semibold text-slate-700 mb-1">Jenis Pengajuan</label>
                         <select
                             value={leaveType}
-                            onChange={(e) => setLeaveType(e.target.value as any)}
+                            onChange={(e) => setLeaveType(e.target.value as SubmitLeaveInput["type"])}
                             className="w-full text-xs border border-slate-300 rounded-lg p-2.5 bg-white focus:outline-hidden focus:border-blue-500"
                         >
                             <option value="ANNUAL">Cuti Tahunan</option>

@@ -28,7 +28,7 @@ export default async function EditEnrollmentPage({
                 </div>
 
                 <div className="bg-white p-6 rounded-lg border border-gray-200 shadow-sm">
-                    <EnrollmentEditForm enrollment={enrollment as any} />
+                    <EnrollmentEditForm enrollment={enrollment} />
                 </div>
             </div>
         </div>

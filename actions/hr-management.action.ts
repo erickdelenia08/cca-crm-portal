@@ -8,7 +8,7 @@ export async function getAllLeaveRequests() {
     try {
         const session = await auth();
         if (!session?.user?.id || session.user.role !== "MANAGEMENT") {
-            return { success: false, error: "Unauthorized" };
+            return { success: false as const, error: "Unauthorized" };
         }
 
         const requests = await prisma.leaveRequest.findMany({
@@ -23,10 +23,10 @@ export async function getAllLeaveRequests() {
             orderBy: { createdAt: "desc" }
         });
 
-        return { success: true, data: requests };
+        return { success: true as const, data: requests };
     } catch (error: unknown) {
         const errorMessage = error instanceof Error ? error.message : String(error);
-        return { success: false, error: errorMessage };
+        return { success: false as const, error: errorMessage };
     }
 }
 
@@ -34,7 +34,7 @@ export async function updateLeaveRequestStatus(requestId: string, status: "APPRO
     try {
         const session = await auth();
         if (!session?.user?.id || session.user.role !== "MANAGEMENT") {
-            return { success: false, error: "Unauthorized" };
+            return { success: false as const, error: "Unauthorized" };
         }
 
         const updated = await prisma.leaveRequest.update({

@@ -2,10 +2,12 @@
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { updateEnrollmentStatus, cancelEnrollment } from "@/actions/enrollment.action";
+import { updateEnrollmentStatus, cancelEnrollment, getEnrollmentById } from "@/actions/enrollment.action";
 import { EnrollmentStatus } from "@prisma/client";
 
-export function EnrollmentEditForm({ enrollment }: { enrollment: any }) {
+type EnrollmentData = NonNullable<Awaited<ReturnType<typeof getEnrollmentById>>>;
+
+export function EnrollmentEditForm({ enrollment }: { enrollment: EnrollmentData }) {
     const router = useRouter();
     const [isPending, startTransition] = useTransition();
     const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);

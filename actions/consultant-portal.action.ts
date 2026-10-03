@@ -3,7 +3,23 @@
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/auth";
 
-export async function getConsultantDocuments() {
+export type ConsultantDocumentItem = {
+    id: string;
+    studentId: string;
+    studentName: string;
+    program: string;
+    programTypeName: string;
+    documentTitle: string;
+    uploadedAt: string;
+    status: string;
+    revisionNote: string | null;
+};
+
+export type GetConsultantDocumentsResponse = 
+    | { success: true; data: ConsultantDocumentItem[] }
+    | { success: false; error: string };
+
+export async function getConsultantDocuments(): Promise<GetConsultantDocumentsResponse> {
     try {
         const session = await auth();
 
